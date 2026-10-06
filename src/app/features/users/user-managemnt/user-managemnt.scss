@@ -1,0 +1,183 @@
+.user-management-page {
+  width: 100%;
+}
+
+.page-header {
+  margin-bottom: 1.5rem;
+
+  h1 {
+    margin: 0 0 0.35rem;
+    color: var(--sb-text);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  p {
+    margin: 0;
+    color: var(--sb-text-secondary);
+    font-size: 0.9rem;
+  }
+}
+
+.alert {
+  margin-bottom: 1.25rem;
+  border-radius: var(--sb-radius-md);
+  font-size: 0.875rem;
+}
+
+.user-form-card {
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--sb-border);
+
+  h2 {
+    margin: 0 0 0.35rem;
+    color: var(--sb-text);
+    font-size: 1.1rem;
+    font-weight: 650;
+  }
+
+  p {
+    margin: 0;
+    color: var(--sb-text-secondary);
+    font-size: 0.85rem;
+  }
+}
+
+form {
+  padding: 1.5rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.form-field {
+  min-width: 0;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 0.45rem;
+
+  color: var(--sb-text);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.form-control,
+.form-select {
+  min-height: 42px;
+
+  border-color: var(--sb-border);
+  color: var(--sb-text);
+  background-color: var(--sb-surface);
+
+  &:focus {
+    border-color: var(--sb-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-input-wrapper .form-control {
+  padding-right: 2.75rem;
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 32px;
+  height: 32px;
+
+  transform: translateY(-50%);
+
+  border: 0;
+  background: transparent;
+  color: var(--sb-text-muted);
+
+  cursor: pointer;
+}
+
+.password-toggle:hover {
+  color: var(--sb-text);
+}
+
+.password-toggle:focus-visible {
+  outline: 2px solid var(--sb-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.field-error {
+  margin-top: 0.4rem;
+  color: var(--sb-danger);
+  font-size: 0.78rem;
+}
+
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sb-border);
+}
+
+.temporary-password-note {
+  display: flex;
+  align-items: center;
+
+  color: var(--sb-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.form-footer .btn {
+  min-height: 42px;
+  padding-inline: 1.25rem;
+
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 767.98px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .form-footer .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .card-header,
+  form {
+    padding: 1.25rem;
+  }
+}

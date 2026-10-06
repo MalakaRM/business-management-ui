@@ -1,0 +1,421 @@
+<div class="products-page">
+
+  <!-- Page Header -->
+
+  <div class="products-header">
+
+
+    <div>
+      <h1 class="products-title">
+        Products
+      </h1>
+
+      <p class="products-subtitle">
+        Manage your products and inventory items.
+      </p>
+    </div>
+
+    @if (hasPermission('PRODUCT_CREATE')) {
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        [routerLink]="['/app/products/new']"
+      >
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Product
+      </button>
+
+    }
+    ```
+
+  </div>
+
+  <!-- Error -->
+
+  @if (errorMessage) {
+
+    ```
+    <div
+      class="products-alert"
+      role="alert"
+    >
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+    {{ errorMessage }}
+  </span>
+    </div>
+    ```
+
+  }
+
+  <!-- Products Card -->
+
+  <div class="products-card">
+
+    ```
+    <!-- Card Header -->
+    <div class="products-card-header">
+
+      <div>
+        <h2>
+          Product List
+        </h2>
+
+        <p>
+          View and manage available products.
+        </p>
+      </div>
+
+
+      <!-- Search -->
+      <div class="products-search">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by product name or SKU..."
+          [(ngModel)]="searchTerm"
+          aria-label="Search products"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- Content -->
+    @if (isLoading) {
+
+      <!-- Loading State -->
+      <div class="products-state">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+      <span class="visually-hidden">
+        Loading...
+      </span>
+        </div>
+
+        <p>
+          Loading products...
+        </p>
+
+      </div>
+
+    } @else {
+
+      @if (filteredProducts.length === 0) {
+
+        <!-- Empty State -->
+        <div class="products-state">
+
+          <i class="bi bi-box-seam"></i>
+
+          <h3>
+            No products found
+          </h3>
+
+          <p>
+            There are no products available yet.
+          </p>
+
+        </div>
+
+      } @else {
+
+        <!-- Products Table -->
+        <div class="table-responsive">
+
+          <table
+            class="table products-table mb-0"
+          >
+
+            <thead>
+
+            <tr>
+
+              <th>
+                Product
+              </th>
+
+              <th>
+                SKU
+              </th>
+
+              <th>
+                Category
+              </th>
+
+              <th>
+                Price
+              </th>
+
+              <th>
+                Cost
+              </th>
+
+              <th>
+                Status
+              </th>
+
+              @if (
+                hasPermission('PRODUCT_UPDATE')
+                ) {
+
+                <th class="text-end">
+                  Actions
+                </th>
+
+              }
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                product of filteredProducts;
+                track product.id
+                ) {
+
+                <tr>
+
+                  <!-- Product -->
+                  <td>
+
+                    <div class="product-name">
+                      {{ product.name }}
+                    </div>
+
+                    @if (product.description) {
+
+                      <div class="product-description">
+                        {{ product.description }}
+                      </div>
+
+                    }
+
+                  </td>
+
+
+                  <!-- SKU -->
+                  <td>
+
+                <span class="product-sku">
+                  {{ product.sku || '-' }}
+                </span>
+
+                  </td>
+
+
+                  <!-- Category -->
+                  <td>
+                    {{ product.categoryName || '-' }}
+                  </td>
+
+
+                  <!-- Price -->
+                  <td>
+
+                <span class="product-price">
+                  LKR
+                  {{
+                    (product.price || 0)
+                      | number:'1.2-2'
+                  }}
+                </span>
+
+                  </td>
+
+
+                  <!-- Cost -->
+                  <td>
+                    LKR
+                    {{
+                      (product.costPrice || 0)
+                        | number:'1.2-2'
+                    }}
+                  </td>
+
+
+                  <!-- Status -->
+                  <td>
+
+                    @if (
+                      product.active ||
+                      product.active === undefined
+                      ) {
+
+                      <span
+                        class="status-badge status-active"
+                      >
+                    Active
+                  </span>
+
+                    } @else {
+
+                      <span
+                        class="status-badge status-inactive"
+                      >
+                    Inactive
+                  </span>
+
+                    }
+
+                  </td>
+
+
+                  <!-- Actions -->
+                  @if (
+                    hasPermission('PRODUCT_UPDATE')
+                    ) {
+
+                    <td class="text-end">
+
+                      <div class="product-actions">
+
+                        <!-- Edit -->
+                        <a
+                          class="btn btn-sm action-btn"
+                          [routerLink]="[
+                        '/app/products/edit',
+                        product.id
+                      ]"
+                          title="Edit product"
+                          aria-label="Edit product"
+                        >
+                          <i
+                            class="bi bi-pencil"
+                          ></i>
+                        </a>
+
+
+                        <!-- Deactivate -->
+                        <button
+                          type="button"
+                          class="btn btn-sm action-btn action-danger"
+                          title="Deactivate product"
+                          [attr.aria-label]="
+                        'Deactivate ' + product.name
+                      "
+                          (click)="
+                        deactivateProduct(product)
+                      "
+                        >
+                          <i
+                            class="bi bi-person-dash"
+                          ></i>
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  }
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    }
+
+
+    <!-- Pagination -->
+    @if (
+      !isLoading &&
+      products.length > 0 &&
+      totalPages > 1
+      ) {
+
+      <div class="products-pagination">
+
+        <!-- Previous -->
+        <button
+          type="button"
+          class="btn btn-sm pagination-btn"
+          [disabled]="currentPage === 0"
+          (click)="
+        goToPage(currentPage - 1)
+      "
+        >
+          <i
+            class="bi bi-chevron-left"
+          ></i>
+
+          Previous
+        </button>
+
+
+        <!-- Page Numbers -->
+        <div class="pagination-pages">
+
+          @for (
+            page of pageNumbers;
+            track page
+            ) {
+
+            <button
+              type="button"
+              class="btn btn-sm pagination-page"
+              [class.active]="
+            page === currentPage
+          "
+              [attr.aria-current]="
+            page === currentPage
+              ? 'page'
+              : null
+          "
+              (click)="
+            goToPage(page)
+          "
+            >
+              {{ page + 1 }}
+            </button>
+
+          }
+
+        </div>
+
+
+        <!-- Next -->
+        <button
+          type="button"
+          class="btn btn-sm pagination-btn"
+          [disabled]="
+        currentPage === totalPages - 1
+      "
+          (click)="
+        goToPage(currentPage + 1)
+      "
+        >
+          Next
+
+          <i
+            class="bi bi-chevron-right"
+          ></i>
+        </button>
+
+      </div>
+
+    }
+
+
+  </div>
+
+</div>

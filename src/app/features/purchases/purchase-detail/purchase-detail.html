@@ -1,0 +1,743 @@
+<div class="purchase-detail-page">
+
+  @if (hasPermission('PURCHASE_READ')) {
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+      <div class="header-left">
+
+        <button
+          type="button"
+          class="back-button"
+          (click)="goBack()"
+          title="Back to purchases"
+          aria-label="Back to purchases"
+        >
+          <i
+            class="bi bi-arrow-left"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+        <div>
+          <h1 class="page-title">
+            Purchase Details
+          </h1>
+
+          <p class="page-subtitle">
+            Review purchase information and receiving status.
+          </p>
+        </div>
+
+      </div>
+
+
+      @if (purchase) {
+
+        <div class="header-actions">
+
+          @if (purchase.status === 'DRAFT') {
+
+            @if (canUpdate()) {
+
+              <!-- Edit Purchase -->
+              <a
+                class="btn btn-outline-primary"
+                [routerLink]="[
+                  '/app/purchases/edit',
+                  purchase.id
+                ]"
+              >
+                <i
+                  class="bi bi-pencil me-1"
+                  aria-hidden="true"
+                ></i>
+                Edit Purchase
+              </a>
+
+            }
+
+
+            @if (canUpdate()) {
+
+              <!-- Receive Purchase -->
+              <button
+                type="button"
+                class="btn btn-primary"
+                (click)="receivePurchase()"
+                [disabled]="isReceiving"
+              >
+
+                @if (isReceiving) {
+
+                  <span
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+
+                  Receiving...
+
+                }
+                @else {
+
+                  <i
+                    class="bi bi-check2-circle me-1"
+                    aria-hidden="true"
+                  ></i>
+
+                  Receive Purchase
+
+                }
+
+              </button>
+
+            }
+
+
+            @if (canDelete()) {
+
+              <!-- Cancel Purchase -->
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                (click)="cancelPurchase()"
+                [disabled]="isReceiving"
+              >
+
+                @if (isReceiving) {
+
+                  <span
+                    class="spinner-border spinner-border-sm me-1"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+
+                  Processing...
+
+                }
+                @else {
+
+                  <i
+                    class="bi bi-x-circle me-1"
+                    aria-hidden="true"
+                  ></i>
+
+                  Cancel Purchase
+
+                }
+
+              </button>
+
+            }
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+
+    <!-- Error Message -->
+    @if (errorMessage) {
+
+      <div
+        class="alert alert-danger page-alert"
+        role="alert"
+      >
+
+        <i
+          class="bi bi-exclamation-circle"
+          aria-hidden="true"
+        ></i>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- Success Message -->
+    @if (successMessage) {
+
+      <div
+        class="alert alert-success page-alert"
+        role="alert"
+      >
+
+        <i
+          class="bi bi-check-circle"
+          aria-hidden="true"
+        ></i>
+
+        <span>
+          {{ successMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- Loading -->
+    @if (isLoading) {
+
+      <div class="loading-state">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+
+          <span class="visually-hidden">
+            Loading...
+          </span>
+
+        </div>
+
+        <p>
+          Loading purchase details...
+        </p>
+
+      </div>
+
+    }
+    @else {
+
+      @if (purchase) {
+
+        <!-- Purchase Summary -->
+        <div class="purchase-summary">
+
+          <div class="summary-main">
+
+            <div class="reference-icon">
+              <i
+                class="bi bi-receipt"
+                aria-hidden="true"
+              ></i>
+            </div>
+
+            <div>
+
+              <span class="summary-label">
+                Purchase Reference
+              </span>
+
+              <h2>
+                {{ purchase.referenceNumber }}
+              </h2>
+
+              <span class="purchase-id">
+                Purchase #{{ purchase.id }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="summary-status">
+
+            <span
+              class="status-badge"
+              [class]="
+                getStatusClass(
+                  purchase.status
+                )
+              "
+            >
+
+              <span class="status-dot"></span>
+
+              {{
+                getStatusLabel(
+                  purchase.status
+                )
+              }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- Purchase Information -->
+        <div class="information-section">
+
+          <div class="section-header">
+
+            <div>
+
+              <h2>
+                Purchase Information
+              </h2>
+
+              <p>
+                Supplier and purchase transaction details.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <div class="info-grid">
+
+            <!-- Supplier -->
+            <div class="info-item">
+
+              <span class="info-label">
+                Supplier
+              </span>
+
+              <div
+                class="info-value supplier-value"
+              >
+
+                <div class="supplier-avatar">
+
+                  {{
+                    purchase.supplierName
+                      .charAt(0)
+                      .toUpperCase()
+                  }}
+
+                </div>
+
+                <span>
+                  {{ purchase.supplierName }}
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <!-- Purchase Date -->
+            <div class="info-item">
+
+              <span class="info-label">
+                Purchase Date
+              </span>
+
+              <span class="info-value">
+                {{ purchase.purchaseDate }}
+              </span>
+
+            </div>
+
+
+            <!-- Status -->
+            <div class="info-item">
+
+              <span class="info-label">
+                Status
+              </span>
+
+              <span
+                class="status-badge"
+                [class]="
+                  getStatusClass(
+                    purchase.status
+                  )
+                "
+              >
+
+                <span class="status-dot"></span>
+
+                {{
+                  getStatusLabel(
+                    purchase.status
+                  )
+                }}
+
+              </span>
+
+            </div>
+
+
+            <!-- Total Amount -->
+            <div class="info-item">
+
+              <span class="info-label">
+                Total Amount
+              </span>
+
+              <strong class="total-value">
+
+                Rs.
+                {{
+                  purchase.totalAmount
+                    | number:'1.2-2'
+                }}
+
+              </strong>
+
+            </div>
+
+          </div>
+
+
+          <!-- Notes -->
+          @if (purchase.notes) {
+
+            <div class="notes-section">
+
+              <span class="info-label">
+                Notes
+              </span>
+
+              <p>
+                {{ purchase.notes }}
+              </p>
+
+            </div>
+
+          }
+
+        </div>
+
+
+        <!-- Purchase Items -->
+        <div class="items-section">
+
+          <div class="section-header">
+
+            <div>
+
+              <h2>
+                Purchase Items
+              </h2>
+
+              <p>
+                Products included in this purchase.
+              </p>
+
+            </div>
+
+            <span class="item-count">
+
+              {{ purchase.items.length }}
+
+              {{
+                purchase.items.length === 1
+                  ? 'Item'
+                  : 'Items'
+              }}
+
+            </span>
+
+          </div>
+
+
+          <div class="table-responsive">
+
+            <table
+              class="table purchase-items-table"
+            >
+
+              <thead>
+
+              <tr>
+
+                <th>
+                  Product
+                </th>
+
+                <th>
+                  Quantity
+                </th>
+
+                <th>
+                  Unit Cost
+                </th>
+
+                <th>
+                  Subtotal
+                </th>
+
+              </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                @for (
+                  item of purchase.items;
+                  track item.id
+                  ) {
+
+                  <tr>
+
+                    <!-- Product -->
+                    <td>
+
+                      <div class="product-cell">
+
+                        <div class="product-icon">
+                          <i
+                            class="bi bi-box-seam"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+
+                        <div>
+
+                          <strong>
+                            {{ item.productName }}
+                          </strong>
+
+                          <span>
+                            Product #{{ item.productId }}
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    </td>
+
+
+                    <!-- Quantity -->
+                    <td>
+
+                      <span class="quantity-value">
+                        {{ item.quantity }}
+                      </span>
+
+                    </td>
+
+
+                    <!-- Unit Cost -->
+                    <td>
+
+                      <span class="money-value">
+
+                        Rs.
+                        {{
+                          item.unitCost
+                            | number:'1.2-2'
+                        }}
+
+                      </span>
+
+                    </td>
+
+
+                    <!-- Subtotal -->
+                    <td>
+
+                      <strong class="subtotal-value">
+
+                        Rs.
+                        {{
+                          item.subtotal
+                            | number:'1.2-2'
+                        }}
+
+                      </strong>
+
+                    </td>
+
+                  </tr>
+
+                }
+
+              </tbody>
+
+
+              <tfoot>
+
+              <tr>
+
+                <td
+                  colspan="3"
+                  class="total-label"
+                >
+                  Total
+                </td>
+
+                <td class="grand-total">
+
+                  Rs.
+                  {{
+                    purchase.totalAmount
+                      | number:'1.2-2'
+                  }}
+
+                </td>
+
+              </tr>
+
+              </tfoot>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <!-- Workflow Information -->
+
+          <!-- DRAFT -->
+        @if (
+          purchase.status === 'DRAFT'
+          ) {
+
+          <div class="workflow-info">
+
+            <div class="workflow-icon">
+
+              <i
+                class="bi bi-hourglass-split"
+                aria-hidden="true"
+              ></i>
+
+            </div>
+
+            <div>
+
+              <strong>
+                Purchase is ready
+              </strong>
+
+              <p>
+                This purchase is currently in draft status.
+                You can edit the purchase, receive it to increase
+                inventory stock, or cancel it if it is no longer required.
+              </p>
+
+            </div>
+
+          </div>
+
+        }
+
+
+        <!-- RECEIVED -->
+        @else if (
+          purchase.status === 'RECEIVED'
+          ) {
+
+          <div
+            class="workflow-info received-info"
+          >
+
+            <div class="workflow-icon">
+
+              <i
+                class="bi bi-check2-circle"
+                aria-hidden="true"
+              ></i>
+
+            </div>
+
+            <div>
+
+              <strong>
+                Purchase received
+              </strong>
+
+              <p>
+                The purchase has been received and inventory
+                stock has been updated successfully.
+              </p>
+
+            </div>
+
+          </div>
+
+        }
+
+
+        <!-- CANCELLED -->
+        @else if (
+          purchase.status === 'CANCELLED'
+          ) {
+
+          <div
+            class="workflow-info cancelled-info"
+          >
+
+            <div class="workflow-icon">
+
+              <i
+                class="bi bi-x-circle"
+                aria-hidden="true"
+              ></i>
+
+            </div>
+
+            <div>
+
+              <strong>
+                Purchase cancelled
+              </strong>
+
+              <p>
+                This purchase has been cancelled.
+                Inventory stock was not affected.
+              </p>
+
+            </div>
+
+          </div>
+
+        }
+
+      }
+
+    }
+
+  }
+
+  @else {
+
+    <!-- Permission Restricted -->
+    <div class="purchase-card">
+
+      <div class="purchase-permission-state">
+
+        <i
+          class="bi bi-shield-lock"
+          aria-hidden="true"
+        ></i>
+
+        <h3>
+          Access Restricted
+        </h3>
+
+        <p>
+          You do not have permission to view purchases.
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="goBack()"
+        >
+          <i
+            class="bi bi-arrow-left me-2"
+            aria-hidden="true"
+          ></i>
+
+          Back to Purchases
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

@@ -1,0 +1,201 @@
+<div class="purchase-report-page">
+
+  <!-- Header -->
+  <div class="report-header">
+    <div>
+      <h1>Purchase Report</h1>
+      <p>View purchase records and supplier activity.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="printReport()"
+    >
+      <i class="bi bi-printer me-2"></i>
+      Print
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="report-filters">
+
+    <div class="filter-group">
+      <label for="fromDate">From Date</label>
+      <input
+        id="fromDate"
+        type="date"
+        class="form-control"
+        [(ngModel)]="fromDate"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="toDate">To Date</label>
+      <input
+        id="toDate"
+        type="date"
+        class="form-control"
+        [(ngModel)]="toDate"
+      />
+    </div>
+
+    <div class="filter-group search-group">
+      <label for="search">Search</label>
+      <input
+        id="search"
+        type="text"
+        class="form-control"
+        placeholder="Purchase number or supplier"
+        [(ngModel)]="search"
+        (keyup.enter)="searchReport()"
+      />
+    </div>
+
+    <div class="filter-actions">
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="searchReport()"
+      >
+        <i class="bi bi-search me-2"></i>
+        Search
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-light"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Report Content -->
+  <div class="report-content">
+
+    <div class="report-table-header">
+      <div>
+        <h2>Purchases</h2>
+        <span>{{ totalElements }} records</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+
+      <div class="report-state">
+
+        <div
+          class="spinner-border"
+          role="status"
+          aria-label="Loading purchase report"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>Loading purchase report...</p>
+
+      </div>
+
+    }
+
+    <!-- Table -->
+    @if (!loading) {
+
+      @if (purchases.length > 0) {
+
+        <div class="table-responsive">
+
+          <table class="table report-table">
+
+            <thead>
+            <tr>
+              <th>Purchase No</th>
+              <th>Date</th>
+              <th>Supplier</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+              @for (purchase of purchases; track purchase.id) {
+
+                <tr>
+
+                  <td>
+                    <span class="purchase-number">
+                      {{ purchase.referenceNumber }}
+                    </span>
+                  </td>
+
+                  <td>
+                    {{ purchase.purchaseDate }}
+                  </td>
+
+                  <td>
+                    {{ purchase.supplierName || 'Unknown Supplier' }}
+                  </td>
+
+                  <td>
+                    {{ purchase.items?.length || 0 }}
+                  </td>
+
+                  <td>
+                    {{ purchase.totalAmount | number:'1.2-2' }}
+                  </td>
+
+                  <td>
+                    <span class="status-badge">
+                      {{ purchase.status }}
+                    </span>
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      } @else {
+
+        <div class="report-state empty-state">
+
+          <i class="bi bi-cart-x"></i>
+
+          <h3>No purchases found</h3>
+
+          <p>
+            No purchase records match the selected filters.
+          </p>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="changePage($event)"
+  ></app-pagination>
+
+    </div>
+

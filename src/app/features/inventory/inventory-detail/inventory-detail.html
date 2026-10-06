@@ -1,0 +1,497 @@
+<div class="inventory-detail-page">
+
+  <!-- Header -->
+  <div class="detail-header">
+
+    <div class="detail-header-left">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="goBack()"
+        title="Back to inventory"
+      >
+        <i class="bi bi-arrow-left"></i>
+      </button>
+
+      <div>
+
+        <h1 class="detail-title">
+          Inventory Details
+        </h1>
+
+        <p class="detail-subtitle">
+          Monitor stock levels and review inventory activity.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Error -->
+  @if (errorMessage) {
+
+    <div class="detail-alert">
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  <!-- Loading -->
+  @if (isLoading) {
+
+    <div class="detail-card detail-loading">
+
+      <div
+        class="spinner-border text-primary"
+        role="status"
+      >
+        <span class="visually-hidden">
+          Loading...
+        </span>
+      </div>
+
+      <p>
+        Loading inventory details...
+      </p>
+
+    </div>
+
+  }
+
+
+  @else if (inventory) {
+
+    <!-- Product Summary -->
+    <div class="product-summary-card">
+
+      <div class="product-summary-main">
+
+        <div class="product-large-icon">
+          <i class="bi bi-box-seam"></i>
+        </div>
+
+        <div>
+
+          <h2>
+            {{ inventory.productName }}
+          </h2>
+
+          <p>
+            Product #{{ inventory.productId }}
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="product-summary-status">
+
+        @if (inventory.active) {
+
+          <span class="status-badge status-active">
+            <i class="bi bi-check-circle"></i>
+            Active
+          </span>
+
+        } @else {
+
+          <span class="status-badge status-inactive">
+            Inactive
+          </span>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Stock Metrics -->
+    <div class="stock-metrics">
+
+      <!-- Current Stock -->
+      <div class="metric-card">
+
+        <div class="metric-icon metric-icon-stock">
+          <i class="bi bi-stack"></i>
+        </div>
+
+        <div>
+
+          <span class="metric-label">
+            Current Stock
+          </span>
+
+          <strong class="metric-value">
+            {{ inventory.quantity }}
+          </strong>
+
+          <span class="metric-description">
+            units available
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Reorder Level -->
+      <div class="metric-card">
+
+        <div class="metric-icon metric-icon-reorder">
+          <i class="bi bi-arrow-repeat"></i>
+        </div>
+
+        <div>
+
+          <span class="metric-label">
+            Reorder Level
+          </span>
+
+
+          @if (isEditingReorderLevel) {
+
+            <div class="reorder-edit">
+
+              <input
+                type="number"
+                class="form-control reorder-input"
+                min="0"
+                [(ngModel)]="reorderLevelValue"
+              >
+
+              <div class="reorder-edit-actions">
+
+                <button
+                  type="button"
+                  class="reorder-cancel-button"
+                  (click)="cancelReorderLevelEdit()"
+                  title="Cancel"
+                >
+                  <i class="bi bi-x"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="reorder-save-button"
+                  title="Save"
+                  (click)="saveReorderLevel()"
+                >
+                  <i class="bi bi-check2"></i>
+                </button>
+
+              </div>
+
+            </div>
+
+          } @else {
+
+            <div class="reorder-level-value">
+
+              <strong class="metric-value">
+                {{ inventory.reorderLevel }}
+              </strong>
+
+              <button
+                type="button"
+                class="reorder-edit-button"
+                title="Edit reorder level"
+                (click)="startReorderLevelEdit()"
+              >
+                <i class="bi bi-pencil"></i>
+              </button>
+
+            </div>
+
+          }
+
+
+          <span class="metric-description">
+            minimum stock level
+          </span>
+
+        </div>
+
+      </div>
+
+
+      <!-- Stock Status -->
+      <div class="metric-card">
+
+        <div
+          class="metric-icon"
+          [class.metric-icon-warning]="inventory.lowStock"
+          [class.metric-icon-healthy]="!inventory.lowStock"
+        >
+
+          <i
+            class="bi"
+            [class.bi-exclamation-triangle]="inventory.lowStock"
+            [class.bi-check-circle]="!inventory.lowStock"
+          ></i>
+
+        </div>
+
+        <div>
+
+          <span class="metric-label">
+            Stock Status
+          </span>
+
+          @if (inventory.lowStock) {
+
+            <strong class="metric-value metric-warning">
+              Low Stock
+            </strong>
+
+            <span class="metric-description">
+              Restocking recommended
+            </span>
+
+          } @else {
+
+            <strong class="metric-value metric-success">
+              Healthy
+            </strong>
+
+            <span class="metric-description">
+              Stock level is sufficient
+            </span>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Stock Movements -->
+    <div class="movements-card">
+
+      <div class="movements-header">
+
+        <div>
+
+          <h2>
+            Stock Movement History
+          </h2>
+
+          <p>
+            Review stock changes for this product.
+          </p>
+
+        </div>
+
+        <span class="movement-count">
+          {{ movements.length }} movements
+        </span>
+
+      </div>
+
+
+      @if (isLoadingMovements) {
+
+        <div class="movement-loading">
+
+          <div
+            class="spinner-border spinner-border-sm text-primary"
+            role="status"
+          >
+            <span class="visually-hidden">
+              Loading...
+            </span>
+          </div>
+
+          <span>
+            Loading movements...
+          </span>
+
+        </div>
+
+      }
+
+
+      @else if (movementErrorMessage) {
+
+        <div class="movement-empty">
+
+          <i class="bi bi-exclamation-circle"></i>
+
+          <p>
+            {{ movementErrorMessage }}
+          </p>
+
+        </div>
+
+      }
+
+
+      @else if (movements.length === 0) {
+
+        <div class="movement-empty">
+
+          <i class="bi bi-clock-history"></i>
+
+          <h3>
+            No stock movements
+          </h3>
+
+          <p>
+            No inventory activity has been recorded for this product.
+          </p>
+
+        </div>
+
+      }
+
+
+      @else {
+
+        <div class="table-responsive">
+
+          <table class="table movement-table mb-0">
+
+            <thead>
+
+            <tr>
+
+              <th>
+                Type
+              </th>
+
+              <th>
+                Quantity
+              </th>
+
+              <th>
+                Stock Change
+              </th>
+
+              <th>
+                Reason
+              </th>
+
+              <th>
+                Date
+              </th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                movement of movements;
+                track movement.id
+                ) {
+
+                <tr>
+
+                  <!-- Type -->
+                  <td>
+
+                    <div class="movement-type">
+
+                      <div
+                        class="movement-icon"
+                        [class]="getMovementClass(movement.type)"
+                      >
+
+                        <i
+                          class="bi"
+                          [class]="getMovementIcon(movement.type)"
+                        ></i>
+
+                      </div>
+
+                      <span>
+                        {{ getMovementLabel(movement.type) }}
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- Quantity -->
+                  <td>
+
+                    <strong class="movement-quantity">
+                      {{ movement.quantity }}
+                    </strong>
+
+                  </td>
+
+
+                  <!-- Stock Change -->
+                  <td>
+
+                    <div class="stock-change">
+
+                      <span>
+                        {{ movement.quantityBefore }}
+                      </span>
+
+                      <i class="bi bi-arrow-right"></i>
+
+                      <strong>
+                        {{ movement.quantityAfter }}
+                      </strong>
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- Reason -->
+                  <td>
+
+                    <span class="movement-reason">
+                      {{ movement.reason || '-' }}
+                    </span>
+
+                  </td>
+
+
+                  <!-- Date -->
+                  <td>
+
+                    <span class="movement-date">
+                      {{ movement.createdAt | date:'medium' }}
+                    </span>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</div>

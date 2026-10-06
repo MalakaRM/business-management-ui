@@ -1,0 +1,67 @@
+.not-found-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--sb-bg);
+}
+
+.not-found-content {
+  max-width: 520px;
+  text-align: center;
+}
+
+.not-found-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+  font-size: 1.75rem;
+}
+
+.not-found-code {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--sb-primary);
+  font-size: 4rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.not-found-content h1 {
+  margin: 0 0 0.75rem;
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.not-found-content p {
+  margin: 0 auto 1.5rem;
+  max-width: 460px;
+  color: var(--sb-text-secondary);
+  line-height: 1.6;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.1rem;
+  border: 0;
+  border-radius: var(--sb-radius-sm);
+  background: var(--sb-primary);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: var(--sb-primary-hover);
+}

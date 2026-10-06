@@ -1,0 +1,354 @@
+<div class="product-form-page">
+
+  <div class="product-form-header">
+    <div>
+      <h1 class="product-form-title">
+        {{ isEditMode ? 'Edit Product' : 'Add Product' }}
+      </h1>
+
+      <p class="product-form-subtitle">
+        {{
+          isEditMode
+            ? 'Update product information and details.'
+            : 'Create a new product for your business.'
+        }}
+      </p>
+    </div>
+
+  </div>
+
+  @if (submitError) { <div
+    class="alert alert-danger"
+    role="alert"
+  > <i class="bi bi-exclamation-circle me-2"></i>
+    {{ submitError }} </div>
+  }
+
+  @if (categoryError) { <div
+    class="alert alert-danger"
+    role="alert"
+  > <i class="bi bi-exclamation-circle me-2"></i>
+    {{ categoryError }} </div>
+  }
+
+  <div class="product-form-card">
+
+    <form
+      [formGroup]="productForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+
+      <div class="row g-3">
+
+        <!-- Product Name -->
+        <div class="col-md-6">
+
+          <label
+            for="name"
+            class="form-label"
+          >
+            Product Name
+          </label>
+
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            formControlName="name"
+            placeholder="Enter product name"
+          >
+
+          @if (
+            productForm.controls.name.touched &&
+            productForm.controls.name.invalid
+            ) {
+            <div class="field-error">
+
+              @if (
+                productForm.controls.name.errors?.['required']
+                ) {
+                Product name is required.
+              } @else if (
+                productForm.controls.name.errors?.['maxlength']
+                ) {
+                Product name cannot exceed
+                  150 characters.
+              }
+
+            </div>
+          }
+
+        </div>
+
+
+        <!-- SKU -->
+        <div class="col-md-6">
+
+          <label
+            for="sku"
+            class="form-label"
+          >
+            SKU
+          </label>
+
+          <input
+            id="sku"
+            type="text"
+            class="form-control"
+            formControlName="sku"
+            placeholder="e.g. ELEC-KB-001"
+            [readonly]="isEditMode"
+          >
+
+          @if (
+            productForm.controls.sku.touched &&
+            productForm.controls.sku.invalid
+            ) {
+            <div class="field-error">
+
+              @if (
+                productForm.controls.sku.errors?.['required']
+                ) {
+                SKU is required.
+              } @else if (
+                productForm.controls.sku.errors?.['maxlength']
+                ) {
+                SKU cannot exceed
+                  100 characters.
+              }
+
+            </div>
+          }
+
+        </div>
+
+
+        <!-- Selling Price -->
+        <div class="col-md-6">
+
+          <label
+            for="price"
+            class="form-label"
+          >
+            Selling Price
+          </label>
+
+          <input
+            id="price"
+            type="number"
+            class="form-control"
+            formControlName="price"
+            min="0.01"
+            step="0.01"
+            placeholder="0.00"
+          >
+
+          @if (
+            productForm.controls.price.touched &&
+            productForm.controls.price.invalid
+            ) {
+            <div class="field-error">
+              Price must be greater than 0.
+            </div>
+          }
+
+        </div>
+
+
+        <!-- Cost Price -->
+        <div class="col-md-6">
+
+          <label
+            for="costPrice"
+            class="form-label"
+          >
+            Cost Price
+          </label>
+
+          <input
+            id="costPrice"
+            type="number"
+            class="form-control"
+            formControlName="costPrice"
+            min="0.01"
+            step="0.01"
+            placeholder="0.00"
+          >
+
+          @if (
+            productForm.controls.costPrice.touched &&
+            productForm.controls.costPrice.invalid
+            ) {
+            <div class="field-error">
+              Cost price must be greater than 0.
+            </div>
+          }
+
+        </div>
+
+
+        <!-- Category -->
+        <div class="col-md-6">
+
+          <label
+            for="categoryId"
+            class="form-label"
+          >
+            Category
+          </label>
+
+          @if (isEditMode) {
+
+            <input
+              id="categoryId"
+              type="text"
+              class="form-control"
+              [value]="selectedCategoryName"
+              readonly
+            >
+
+          } @else {
+
+            <select
+              id="categoryId"
+              class="form-select"
+              formControlName="categoryId"
+              [disabled]="isLoadingCategories"
+            >
+
+              @if (isLoadingCategories) {
+
+                <option [ngValue]="0">
+                  Loading categories...
+                </option>
+
+              } @else {
+
+                <option [ngValue]="0">
+                  Select category
+                </option>
+
+                @for (
+                  category of categories;
+                  track category.id
+                  ) {
+                  <option
+                    [ngValue]="category.id"
+                  >
+                    {{ category.name }}
+                  </option>
+                }
+
+              }
+
+            </select>
+
+            @if (
+              productForm.controls.categoryId.touched &&
+              productForm.controls.categoryId.invalid
+              ) {
+              <div class="field-error">
+                Category is required.
+              </div>
+            }
+
+          }
+
+        </div>
+
+
+        <!-- Description -->
+        <div class="col-12">
+
+          <label
+            for="description"
+            class="form-label"
+          >
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            class="form-control"
+            formControlName="description"
+            rows="4"
+            placeholder="Enter product description"
+          ></textarea>
+
+          @if (
+            productForm.controls.description.touched &&
+            productForm.controls.description.invalid
+            ) {
+            <div class="field-error">
+              Description cannot exceed
+              500 characters.
+            </div>
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- Form Actions -->
+      <div class="product-form-actions">
+
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="cancel()"
+        >
+          <i class="bi bi-arrow-left me-2"></i>
+          Cancel
+        </button>
+
+        @if (canSubmit()) {
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="isSubmitting"
+          >
+
+            @if (isSubmitting) {
+
+              <span
+                class="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              ></span>
+
+              {{
+                isEditMode
+                  ? 'Updating...'
+                  : 'Creating...'
+              }}
+
+            } @else {
+
+              <i
+                class="bi"
+                [class.bi-pencil]="isEditMode"
+                [class.bi-plus-lg]="!isEditMode"
+              ></i>
+
+              {{
+                isEditMode
+                  ? 'Update Product'
+                  : 'Create Product'
+              }}
+
+            }
+
+          </button>
+
+        }
+
+      </div>
+
+    </form>
+
+
+  </div>
+
+</div>

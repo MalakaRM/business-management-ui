@@ -1,0 +1,548 @@
+<div class="dashboard-page">
+
+  <!-- Header -->
+  <div class="dashboard-header">
+    <div>
+      <h1 class="dashboard-title">
+        Dashboard
+      </h1>
+
+      <p class="dashboard-subtitle">
+        A real-time overview of your business performance,
+        inventory, sales, and purchasing activity.
+      </p>
+    </div>
+
+    <div class="dashboard-date">
+      <i class="bi bi-calendar3"></i>
+      <span>
+        {{ currentDate | date:'MMMM yyyy' }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Dashboard Error -->
+  @if (dashboardError) {
+    <div class="dashboard-alert">
+      <i class="bi bi-exclamation-circle"></i>
+      <span>{{ dashboardError }}</span>
+    </div>
+  }
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+
+    <!-- Total Products -->
+    <div class="kpi-card">
+      <div class="kpi-icon primary">
+        <i class="bi bi-box-seam"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Total Products</span>
+
+        @if (!hasPermission('PRODUCT_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.totalProducts !== null &&
+          dashboardData?.totalProducts !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.totalProducts }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Total Customers -->
+    <div class="kpi-card">
+      <div class="kpi-icon info">
+        <i class="bi bi-people"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Total Customers</span>
+
+        @if (!hasPermission('CUSTOMER_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.totalCustomers !== null &&
+          dashboardData?.totalCustomers !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.totalCustomers }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Current Stock -->
+    <div class="kpi-card">
+      <div class="kpi-icon success">
+        <i class="bi bi-boxes"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Current Stock</span>
+
+        @if (!hasPermission('INVENTORY_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.currentStock !== null &&
+          dashboardData?.currentStock !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.currentStock }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="kpi-card">
+      <div class="kpi-icon revenue">
+        <i class="bi bi-graph-up-arrow"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Total Revenue</span>
+
+        @if (!hasPermission('REPORT_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.revenue !== null &&
+          dashboardData?.revenue !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.revenue | number:'1.2-2' }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Total Suppliers -->
+    <div class="kpi-card">
+      <div class="kpi-icon purple">
+        <i class="bi bi-truck"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Total Suppliers</span>
+
+        @if (!hasPermission('SUPPLIER_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.totalSuppliers !== null &&
+          dashboardData?.totalSuppliers !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.totalSuppliers }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Low Stock -->
+    <div class="kpi-card">
+      <div class="kpi-icon warning">
+        <i class="bi bi-exclamation-triangle"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Low Stock</span>
+
+        @if (!hasPermission('INVENTORY_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.lowStockCount !== null &&
+          dashboardData?.lowStockCount !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.lowStockCount }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Pending Orders -->
+    <div class="kpi-card">
+      <div class="kpi-icon orange">
+        <i class="bi bi-clock-history"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Pending Orders</span>
+
+        @if (!hasPermission('ORDER_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.pendingOrders !== null &&
+          dashboardData?.pendingOrders !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.pendingOrders }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+    <!-- Today's Sales -->
+    <div class="kpi-card">
+      <div class="kpi-icon sales">
+        <i class="bi bi-cash-stack"></i>
+      </div>
+
+      <div class="kpi-content">
+        <span class="kpi-label">Today's Sales</span>
+
+        @if (!hasPermission('ORDER_READ')) {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-lock"></i>
+            Restricted
+          </span>
+
+        } @else if (isDashboardLoading) {
+
+          <span class="kpi-loading">
+            <span class="spinner-border spinner-border-sm"></span>
+          </span>
+
+        } @else if (
+          dashboardData?.todaySales !== null &&
+          dashboardData?.todaySales !== undefined
+          ) {
+
+          <strong class="kpi-value">
+            {{ dashboardData?.todaySales | number:'1.2-2' }}
+          </strong>
+
+        } @else {
+
+          <span class="kpi-restricted">
+            <i class="bi bi-dash-circle"></i>
+            No data
+          </span>
+
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+
+    <!-- Monthly Sales -->
+    <section class="dashboard-card">
+
+      <div class="card-header">
+
+        <div>
+          <h2>Monthly Sales</h2>
+          <p>Sales performance throughout the year.</p>
+        </div>
+
+        <div class="card-icon">
+          <i class="bi bi-graph-up"></i>
+        </div>
+
+      </div>
+
+      <div class="chart-container">
+
+        @if (!hasPermission('ORDER_READ')) {
+
+          <div class="chart-placeholder restricted">
+
+            <div class="restricted-icon">
+              <i class="bi bi-lock"></i>
+            </div>
+
+            <strong>Access restricted</strong>
+
+            <span>
+              You don't have permission to view sales data.
+            </span>
+
+          </div>
+
+        } @else if (isSalesLoading) {
+
+          <div class="chart-placeholder">
+
+            <div class="spinner-border spinner-border-sm"></div>
+
+            <span>
+              Loading sales...
+            </span>
+
+          </div>
+
+        } @else if (salesError) {
+
+          <div class="chart-placeholder error">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+              {{ salesError }}
+            </span>
+
+          </div>
+
+        } @else if (monthlySales.length === 0) {
+
+          <div class="chart-placeholder">
+
+            <i class="bi bi-bar-chart"></i>
+
+            <span>
+              No sales data available.
+            </span>
+
+          </div>
+
+        } @else {
+
+          <canvas
+            baseChart
+            [data]="salesChartData"
+            [options]="salesChartOptions"
+            type="line">
+          </canvas>
+
+        }
+
+      </div>
+
+    </section>
+
+    <!-- Monthly Purchases -->
+    <section class="dashboard-card">
+
+      <div class="card-header">
+
+        <div>
+          <h2>Purchase Overview</h2>
+          <p>Monthly purchasing activity.</p>
+        </div>
+
+        <div class="card-icon">
+          <i class="bi bi-cart-check"></i>
+        </div>
+
+      </div>
+
+      <div class="chart-container">
+
+        @if (!hasPermission('PURCHASE_READ')) {
+
+          <div class="chart-placeholder restricted">
+
+            <div class="restricted-icon">
+              <i class="bi bi-lock"></i>
+            </div>
+
+            <strong>Access restricted</strong>
+
+            <span>
+              You don't have permission to view purchase data.
+            </span>
+
+          </div>
+
+        } @else if (isPurchaseLoading) {
+
+          <div class="chart-placeholder">
+
+            <div class="spinner-border spinner-border-sm"></div>
+
+            <span>
+              Loading purchases...
+            </span>
+
+          </div>
+
+        } @else if (purchaseError) {
+
+          <div class="chart-placeholder error">
+
+            <i class="bi bi-exclamation-circle"></i>
+
+            <span>
+              {{ purchaseError }}
+            </span>
+
+          </div>
+
+        } @else if (monthlyPurchases.length === 0) {
+
+          <div class="chart-placeholder">
+
+            <i class="bi bi-bar-chart"></i>
+
+            <span>
+              No purchase data available.
+            </span>
+
+          </div>
+
+        } @else {
+
+          <canvas
+            baseChart
+            [data]="purchaseChartData"
+            [options]="purchaseChartOptions"
+            type="line">
+          </canvas>
+
+        }
+
+      </div>
+
+    </section>
+
+  </div>
+
+</div>

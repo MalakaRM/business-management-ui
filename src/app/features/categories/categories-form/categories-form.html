@@ -1,0 +1,253 @@
+<div class="category-form-page">
+
+  <!-- Page Header -->
+  <div class="category-form-header">
+    <div>
+      <h1 class="category-form-title">
+        {{ isEditMode ? 'Edit Category' : 'Add Category' }}
+      </h1>
+
+      <p class="category-form-subtitle">
+        {{
+          isEditMode
+            ? 'Update category information.'
+            : 'Create a new product category.'
+        }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Error -->
+  @if (submitError) {
+    <div
+      class="category-form-alert"
+      role="alert"
+    >
+      <i
+        class="bi bi-exclamation-circle"
+        aria-hidden="true"
+      ></i>
+
+      <span>{{ submitError }}</span>
+    </div>
+  }
+
+  <!-- Loading -->
+  @if (isLoadingCategory) {
+    <div class="category-form-card">
+      <div class="category-form-loading">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading category...
+          </span>
+        </div>
+
+        <p>Loading category...</p>
+
+      </div>
+    </div>
+  }
+
+  <!-- Content -->
+  @if (!isLoadingCategory) {
+
+    <!-- Edit / Create Form -->
+    @if (
+      (!isEditMode && hasPermission('CATEGORY_CREATE')) ||
+      (isEditMode && hasPermission('CATEGORY_READ'))
+      ) {
+
+      <div class="category-form-card">
+
+        <form
+          [formGroup]="categoryForm"
+          (ngSubmit)="onSubmit()"
+          novalidate
+        >
+
+          <!-- Category Name -->
+          <div class="mb-3">
+
+            <label
+              for="name"
+              class="form-label"
+            >
+              Category Name
+              <span class="text-danger">*</span>
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="Enter category name"
+              autocomplete="off"
+              [readonly]="
+                isEditMode &&
+                !hasPermission('CATEGORY_UPDATE')
+              "
+            >
+
+            @if (
+              categoryForm.controls.name.invalid &&
+              categoryForm.controls.name.touched
+              ) {
+
+              <div class="field-error">
+
+                @if (
+                  categoryForm.controls.name.errors?.['required']
+                  ) {
+                  Category name is required.
+                }
+
+                @if (
+                  categoryForm.controls.name.errors?.['maxlength']
+                  ) {
+                  Category name cannot exceed 100 characters.
+                }
+
+              </div>
+            }
+
+          </div>
+
+          <!-- Description -->
+          <div class="mb-3">
+
+            <label
+              for="description"
+              class="form-label"
+            >
+              Description
+            </label>
+
+            <textarea
+              id="description"
+              class="form-control"
+              formControlName="description"
+              placeholder="Enter category description"
+              rows="4"
+              [readonly]="
+                isEditMode &&
+                !hasPermission('CATEGORY_UPDATE')
+              "
+            ></textarea>
+
+            @if (
+              categoryForm.controls.description.invalid &&
+              categoryForm.controls.description.touched
+              ) {
+
+              <div class="field-error">
+
+                @if (
+                  categoryForm.controls.description.errors?.['maxlength']
+                  ) {
+                  Description cannot exceed 500 characters.
+                }
+
+              </div>
+            }
+
+          </div>
+
+          <!-- Actions -->
+          <div class="category-form-actions">
+
+            <button
+              type="button"
+              class="btn btn-light"
+              (click)="cancel()"
+              [disabled]="isSubmitting"
+            >
+              Cancel
+            </button>
+
+            @if (
+              !isEditMode ||
+              hasPermission('CATEGORY_UPDATE')
+              ) {
+
+              <button
+                type="submit"
+                class="btn btn-primary"
+                [disabled]="isSubmitting"
+              >
+
+                @if (isSubmitting) {
+
+                  <span
+                    class="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+
+                  {{
+                    isEditMode
+                      ? 'Updating...'
+                      : 'Saving...'
+                  }}
+
+                } @else {
+
+                  <i
+                    class="bi bi-check-lg me-2"
+                    aria-hidden="true"
+                  ></i>
+
+                  {{
+                    isEditMode
+                      ? 'Update Category'
+                      : 'Save Category'
+                  }}
+
+                }
+
+              </button>
+            }
+
+          </div>
+
+        </form>
+
+      </div>
+
+    } @else {
+
+      <!-- Access Restricted -->
+      <div class="category-form-card">
+
+        <div class="category-form-loading">
+
+          <i
+            class="bi bi-shield-lock"
+            aria-hidden="true"
+          ></i>
+
+          <h3>Access Restricted</h3>
+
+          <p>
+            You do not have permission to view this category.
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()"
+          >
+            Back to Categories
+          </button>
+
+        </div>
+
+      </div>
+    }
+
+  }
+
+</div>

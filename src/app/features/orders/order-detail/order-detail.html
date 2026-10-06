@@ -1,0 +1,621 @@
+<div class="order-detail-page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+
+    <div class="header-left">
+
+      <button
+        type="button"
+        class="back-button"
+        (click)="goBack()"
+      >
+        <i class="bi bi-arrow-left"></i>
+        <span>Back to Orders</span>
+      </button>
+
+      <div>
+
+        <div class="page-title-row">
+
+          <h1>Order Details</h1>
+
+          @if (order) {
+            <span
+              class="status-badge"
+              [ngClass]="getStatusClass(order.status)"
+            >
+              {{ getStatusLabel(order.status) }}
+            </span>
+          }
+
+        </div>
+
+        @if (order) {
+          <p class="page-subtitle">
+            Order #{{ order.orderNumber }}
+          </p>
+        }
+
+      </div>
+
+    </div>
+
+
+    <!-- Actions -->
+    @if (order) {
+
+      <div class="header-actions">
+
+        @if (order.status === 'PENDING') {
+
+          <!-- Edit Order -->
+          @if (hasPermission('ORDER_CREATE')) {
+
+            <a
+              class="btn btn-outline-primary"
+              [routerLink]="['/app/orders/edit', order.id]"
+            >
+              <i class="bi bi-pencil"></i>
+              Edit Order
+            </a>
+
+          }
+
+
+          <!-- Confirm + Cancel -->
+          @if (hasPermission('ORDER_CREATE')) {
+
+            <!-- Confirm -->
+            <button
+              type="button"
+              class="btn btn-primary"
+              [disabled]="
+                isConfirming ||
+                isCancelling ||
+                isCheckingStock ||
+                hasInsufficientStock()
+              "
+              (click)="confirmOrder()"
+            >
+
+              @if (isConfirming) {
+
+                <span
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+
+                Confirming...
+
+              } @else {
+
+                <i class="bi bi-check-circle"></i>
+
+                Confirm Order
+
+              }
+
+            </button>
+
+
+            <!-- Cancel -->
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              [disabled]="
+                isConfirming ||
+                isCancelling
+              "
+              (click)="cancelOrder()"
+            >
+
+              @if (isCancelling) {
+
+                <span
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+
+                Cancelling...
+
+              } @else {
+
+                <i class="bi bi-x-circle"></i>
+
+                Cancel Order
+
+              }
+
+            </button>
+
+          }
+
+        }
+
+
+        @else if (order.status === 'CONFIRMED') {
+
+          <!-- Cancel Confirmed Order -->
+          @if (hasPermission('ORDER_CREATE')) {
+
+            <button
+              type="button"
+              class="btn btn-outline-danger"
+              [disabled]="isCancelling"
+              (click)="cancelOrder()"
+            >
+
+              @if (isCancelling) {
+
+                <span
+                  class="spinner-border spinner-border-sm"
+                  aria-hidden="true"
+                ></span>
+
+                Cancelling...
+
+              } @else {
+
+                <i class="bi bi-x-circle"></i>
+
+                Cancel Order
+
+              }
+
+            </button>
+
+          }
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- Loading State -->
+  @if (isLoading) {
+
+    <div class="state-card">
+
+      <div
+        class="spinner-border text-primary"
+        aria-hidden="true"
+      ></div>
+
+      <p>
+        Loading order details...
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- Error Message -->
+  @if (!isLoading && errorMessage) {
+
+    <div
+      class="alert alert-danger page-alert"
+      role="alert"
+    >
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  <!-- Success Message -->
+  @if (!isLoading && successMessage) {
+
+    <div
+      class="alert alert-success page-alert"
+      role="status"
+    >
+
+      <i class="bi bi-check-circle"></i>
+
+      <span>
+        {{ successMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  <!-- Order Content -->
+  @if (!isLoading && order) {
+
+    <!-- Order Information -->
+    <section class="detail-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Order Information
+          </h2>
+
+          <p>
+            General information about this order.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="info-grid">
+
+        <!-- Order Number -->
+        <div class="info-item">
+
+          <span class="info-label">
+            Order Number
+          </span>
+
+          <span class="info-value">
+            {{ order.orderNumber }}
+          </span>
+
+        </div>
+
+
+        <!-- Customer -->
+        <div class="info-item">
+
+          <span class="info-label">
+            Customer
+          </span>
+
+          <span class="info-value">
+
+            @if (order.customerName) {
+
+              {{ order.customerName }}
+
+            } @else {
+
+              Walk-in Customer
+
+            }
+
+          </span>
+
+        </div>
+
+
+        <!-- Order Date -->
+        <div class="info-item">
+
+          <span class="info-label">
+            Order Date
+          </span>
+
+          <span class="info-value">
+            {{ order.orderDate | date:'dd MMM yyyy' }}
+          </span>
+
+        </div>
+
+
+        <!-- Status -->
+        <div class="info-item">
+
+          <span class="info-label">
+            Status
+          </span>
+
+          <span
+            class="status-badge"
+            [ngClass]="getStatusClass(order.status)"
+          >
+            {{ getStatusLabel(order.status) }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Order Items -->
+    <section class="detail-card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>
+            Order Items
+          </h2>
+
+          <p>
+            Products included in this order.
+          </p>
+
+        </div>
+
+        <span class="item-count">
+          {{ order.items.length }} item(s)
+        </span>
+
+      </div>
+
+
+      <!-- Insufficient Stock Warning -->
+      @if (
+        !isCheckingStock &&
+        order.status === 'PENDING' &&
+        hasInsufficientStock()
+        ) {
+
+        <div class="stock-warning">
+
+          <div class="stock-warning-icon">
+
+            <i
+              class="bi bi-exclamation-triangle"
+              aria-hidden="true"
+            ></i>
+
+          </div>
+
+          <div>
+
+            <strong>
+              Insufficient stock
+            </strong>
+
+            <p>
+              One or more products do not have enough stock
+              to confirm this order. Please reduce the order
+              quantity or update inventory before confirming.
+            </p>
+
+          </div>
+
+        </div>
+
+      }
+
+
+      <!-- Items Table -->
+      <div class="table-wrapper">
+
+        <table class="order-items-table">
+
+          <thead>
+
+          <tr>
+
+            <th>
+              Product
+            </th>
+
+            <th class="text-center">
+              Order Qty
+            </th>
+
+            <th class="text-center">
+              Available Stock
+            </th>
+
+            <th class="text-end">
+              Unit Price
+            </th>
+
+            <th class="text-end">
+              Subtotal
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              item of order.items;
+              track item.id
+              ) {
+
+              <tr>
+
+                <!-- Product -->
+                <td>
+
+                  <div class="product-cell">
+
+                    <div
+                      class="product-icon"
+                      aria-hidden="true"
+                    >
+                      <i class="bi bi-box-seam"></i>
+                    </div>
+
+                    <div>
+
+                      <div class="product-name">
+                        {{ item.productName }}
+                      </div>
+
+                      <div class="product-id">
+                        Product #{{ item.productId }}
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- Order Quantity -->
+                <td class="text-center">
+
+                  {{ item.quantity }}
+
+                </td>
+
+
+                <!-- Available Stock -->
+                <td class="text-center">
+
+                  @if (isCheckingStock) {
+
+                    <span class="stock-loading">
+
+                      <span
+                        class="spinner-border spinner-border-sm"
+                        aria-hidden="true"
+                      ></span>
+
+                      Checking...
+
+                    </span>
+
+                  } @else {
+
+                    @if (
+                      getAvailableStock(item.productId) !== null
+                      ) {
+
+                      <span
+                        class="stock-value"
+                        [class.stock-insufficient]="
+                          item.quantity >
+                          getAvailableStock(item.productId)!
+                        "
+                        [class.stock-available]="
+                          item.quantity <=
+                          getAvailableStock(item.productId)!
+                        "
+                      >
+                        {{ getAvailableStock(item.productId) }}
+                      </span>
+
+                    } @else {
+
+                      <span class="stock-unavailable">
+                        N/A
+                      </span>
+
+                    }
+
+                  }
+
+                </td>
+
+
+                <!-- Unit Price -->
+                <td class="text-end">
+
+                  Rs.
+                  {{ item.unitPrice | number:'1.2-2' }}
+
+                </td>
+
+
+                <!-- Subtotal -->
+                <td class="text-end subtotal">
+
+                  Rs.
+                  {{ item.subtotal | number:'1.2-2' }}
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- Total -->
+      <div class="total-section">
+
+        <div class="total-label">
+          Total Amount
+        </div>
+
+        <div class="total-value">
+          Rs. {{ order.totalAmount | number:'1.2-2' }}
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- Workflow Information -->
+    <section class="workflow-card">
+
+      <div
+        class="workflow-icon"
+        aria-hidden="true"
+      >
+        <i class="bi bi-info-circle"></i>
+      </div>
+
+      <div>
+
+        <h3>
+          Order Workflow
+        </h3>
+
+
+        @if (order.status === 'PENDING') {
+
+          <p>
+            This order is waiting for confirmation.
+            Confirming the order will deduct the required
+            quantity from inventory.
+          </p>
+
+        }
+
+
+        @else if (order.status === 'CONFIRMED') {
+
+          <p>
+            This order has been confirmed and the required
+            stock has been deducted from inventory.
+          </p>
+
+        }
+
+
+        @else {
+
+          <p>
+            This order has been cancelled and no further
+            actions are available.
+          </p>
+
+        }
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

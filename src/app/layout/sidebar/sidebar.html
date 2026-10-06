@@ -1,0 +1,222 @@
+<aside class="sidebar">
+
+  <div class="sidebar-brand">
+    <div class="brand-icon">
+      <i class="bi bi-building"></i>
+    </div>
+
+    <div class="brand-text">
+      <span class="brand-title">Smart Business</span>
+      <span class="brand-subtitle">Management System</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <!-- MAIN -->
+    <div class="nav-section">
+      <span class="nav-section-title">MAIN</span>
+
+      <a
+        class="nav-item"
+        [routerLink]="['/app/dashboard']"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <i class="bi bi-grid-1x2"></i>
+        <span>Dashboard</span>
+      </a>
+    </div>
+
+
+    <!-- OPERATIONS -->
+    <div class="nav-section">
+
+      <span class="nav-section-title">OPERATIONS</span>
+
+      @if (hasPermission('PRODUCT_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/products']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-box-seam"></i>
+          <span>Products</span>
+        </a>
+      }
+      @if (hasPermission('CATEGORY_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/categories']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-tags"></i>
+          <span>Categories</span>
+        </a>
+      }
+
+
+      @if (hasPermission('INVENTORY_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/inventory']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-boxes"></i>
+          <span>Inventory</span>
+        </a>
+      }
+
+
+      @if (hasPermission('PURCHASE_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/purchases']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-cart3"></i>
+          <span>Purchases</span>
+        </a>
+      }
+
+
+      @if (hasPermission('CUSTOMER_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/customers']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-people"></i>
+          <span>Customers</span>
+        </a>
+      }
+      @if (hasPermission('SUPPLIER_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/suppliers']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-truck"></i>
+          <span>Suppliers</span>
+        </a>
+      }
+
+
+      @if (hasPermission('ORDER_READ')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/orders']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-receipt"></i>
+          <span>Orders</span>
+        </a>
+      }
+
+
+      @if (hasPermission('ORDER_CREATE')) {
+        <a
+          class="nav-item"
+          [routerLink]="['/app/pos']"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <i class="bi bi-calculator"></i>
+          <span>POS</span>
+        </a>
+      }
+
+    </div>
+
+
+    <!-- ANALYTICS -->
+    @if (
+      hasPermission('REPORT_READ') ||
+      hasPermission('AUDIT_READ')
+      ) {
+
+      <div class="nav-section">
+
+        <span class="nav-section-title">ANALYTICS</span>
+
+
+        @if (hasPermission('REPORT_READ')) {
+          <a
+            class="nav-item"
+            [routerLink]="['/app/reports']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bi bi-bar-chart"></i>
+            <span>Reports</span>
+          </a>
+        }
+
+
+        @if (hasPermission('AUDIT_READ')) {
+          <a
+            class="nav-item"
+            [routerLink]="['/app/audit-logs']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bi bi-shield-check"></i>
+            <span>Audit Logs</span>
+          </a>
+        }
+
+      </div>
+
+    }
+
+
+    <!-- ADMINISTRATION -->
+    @if (
+      hasPermission('USER_MANAGE') ||
+      hasPermission('ROLE_MANAGE')
+      ) {
+
+      <div class="nav-section">
+
+        <span class="nav-section-title">ADMINISTRATION</span>
+
+
+        @if (hasPermission('USER_MANAGE')) {
+          <a
+            class="nav-item"
+            [routerLink]="['/app/users']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bi bi-person-gear"></i>
+            <span>User Management</span>
+          </a>
+        }
+
+
+        @if (hasPermission('ROLE_MANAGE')) {
+          <a
+            class="nav-item"
+            [routerLink]="['/app/roles']"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <i class="bi bi-shield-lock"></i>
+            <span>Roles &amp; Permissions</span>
+          </a>
+        }
+
+      </div>
+
+    }
+
+  </nav>
+
+</aside>

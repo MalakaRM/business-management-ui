@@ -1,0 +1,670 @@
+.purchase-form-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* ================================
+   Page Header
+================================ */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-title {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+}
+
+.back-button {
+  width: 42px;
+  height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-surface);
+  color: var(--sb-text-secondary);
+
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background: var(--sb-surface-muted);
+  color: var(--sb-text);
+  border-color: var(--sb-border-focus);
+}
+
+
+/* ================================
+   Alerts
+================================ */
+
+.page-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  margin-bottom: 1.25rem;
+
+  border-radius: var(--sb-radius-md);
+}
+
+
+/* ================================
+   Main Form
+================================ */
+
+.purchase-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+
+/* ================================
+   Form Sections
+================================ */
+
+.form-section {
+  padding: 1.5rem;
+
+  background: var(--sb-surface);
+
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+
+  color: var(--sb-text);
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.section-header p {
+  margin: 0.3rem 0 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.82rem;
+}
+
+.section-icon {
+  width: 40px;
+  height: 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+
+  font-size: 1rem;
+}
+
+
+/* ================================
+   Form Grid
+================================ */
+
+.form-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 1.25rem;
+}
+
+.form-field {
+  min-width: 0;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+
+/* ================================
+   Form Controls
+================================ */
+
+.form-label {
+  display: block;
+
+  margin-bottom: 0.45rem;
+
+  color: var(--sb-text);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.required {
+  color: var(--sb-danger);
+}
+
+.form-control,
+.form-select {
+  min-height: 42px;
+
+  border-color: var(--sb-border);
+
+  border-radius: var(--sb-radius-md);
+
+  color: var(--sb-text);
+
+  font-size: 0.88rem;
+
+  box-shadow: none;
+}
+
+.form-control::placeholder {
+  color: var(--sb-text-muted);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--sb-border-focus);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(37, 99, 235, 0.1);
+}
+
+textarea.form-control {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.field-error {
+  margin-top: 0.35rem;
+
+  color: var(--sb-danger);
+
+  font-size: 0.72rem;
+}
+
+.field-hint {
+  margin-top: 0.35rem;
+
+  color: var(--sb-text-muted);
+
+  font-size: 0.72rem;
+}
+
+
+/* ================================
+   Items Container
+================================ */
+
+.items-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+
+/* ================================
+   Purchase Item Row
+================================ */
+
+.item-row {
+  display: grid;
+
+  grid-template-columns:
+    36px
+    minmax(220px, 2fr)
+    minmax(100px, 0.8fr)
+    minmax(150px, 1fr)
+    minmax(150px, 1fr)
+    42px;
+
+  align-items: end;
+
+  gap: 0.75rem;
+
+  padding: 1rem;
+
+  border: 1px solid var(--sb-border);
+
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-surface-muted);
+
+  transition: border-color 0.2s ease;
+}
+
+.item-row:hover {
+  border-color: #cbd5e1;
+}
+
+
+/* ================================
+   Item Number
+================================ */
+
+.item-number {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 6px;
+
+  border-radius: 50%;
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+
+/* ================================
+   Item Fields
+================================ */
+
+.item-field {
+  min-width: 0;
+}
+
+.item-field .form-label {
+  margin-bottom: 0.4rem;
+}
+
+.product-field .form-select {
+  width: 100%;
+}
+
+.quantity-field .form-control,
+.cost-field .form-control {
+  width: 100%;
+}
+
+
+/* ================================
+   Money Input
+================================ */
+
+.input-money {
+  position: relative;
+}
+
+.input-money > span {
+  position: absolute;
+
+  left: 0.75rem;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: var(--sb-text-muted);
+
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+.input-money .form-control {
+  padding-left: 2.4rem;
+}
+
+
+/* ================================
+   Subtotal
+================================ */
+
+.subtotal-value {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 0.75rem;
+
+  border: 1px solid var(--sb-border);
+
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-surface);
+
+  color: var(--sb-text);
+
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+
+/* ================================
+   Item Actions
+================================ */
+
+.item-actions {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 1px;
+}
+
+.remove-item-button {
+  width: 38px;
+  height: 38px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid var(--sb-border);
+
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-surface);
+
+  color: var(--sb-text-muted);
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+.remove-item-button:hover:not(:disabled) {
+  border-color: var(--sb-danger);
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+}
+
+.remove-item-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+
+/* ================================
+   Total Section
+================================ */
+
+.total-section {
+  display: flex;
+
+  justify-content: flex-end;
+
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+
+  border-top: 1px solid var(--sb-border);
+}
+
+.total-content {
+  min-width: 280px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 2rem;
+}
+
+.total-label {
+  color: var(--sb-text-secondary);
+
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.grand-total {
+  color: var(--sb-primary);
+
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+
+/* ================================
+   Form Actions
+================================ */
+
+.form-actions {
+  display: flex;
+
+  justify-content: flex-end;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  padding-bottom: 1.5rem;
+}
+
+.cancel-button,
+.save-button {
+  min-width: 130px;
+  min-height: 42px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.45rem;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.save-button {
+  min-width: 165px;
+}
+
+
+/* ================================
+   Responsive
+================================ */
+
+@media (max-width: 1199.98px) {
+
+  .item-row {
+    grid-template-columns:
+      36px
+      minmax(180px, 2fr)
+      minmax(90px, 0.8fr)
+      minmax(130px, 1fr)
+      minmax(130px, 1fr)
+      42px;
+  }
+
+}
+
+@media (max-width: 991.98px) {
+
+  .form-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .item-row {
+    grid-template-columns:
+      36px
+      minmax(180px, 1fr)
+      minmax(100px, 0.8fr)
+      minmax(130px, 1fr)
+      42px;
+  }
+
+  .subtotal-field {
+    grid-column: 2 / 4;
+  }
+
+  .item-actions {
+    grid-column: 4;
+  }
+
+}
+
+@media (max-width: 767.98px) {
+
+  .page-header {
+    align-items: flex-start;
+  }
+
+  .form-section {
+    padding: 1rem;
+  }
+
+  .section-header {
+    align-items: flex-start;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .full-width {
+    grid-column: auto;
+  }
+
+  /*
+   * Keep purchase item rows readable on smaller
+   * screens instead of squeezing every field.
+   */
+  .item-row {
+    grid-template-columns:
+      36px
+      1fr
+      1fr;
+  }
+
+  .product-field {
+    grid-column: 2 / -1;
+  }
+
+  .quantity-field {
+    grid-column: 2;
+  }
+
+  .cost-field {
+    grid-column: 3;
+  }
+
+  .subtotal-field {
+    grid-column: 2;
+  }
+
+  .item-actions {
+    grid-column: 3;
+  }
+
+  .total-content {
+    width: 100%;
+    min-width: 0;
+  }
+
+}
+
+@media (max-width: 575.98px) {
+
+  .page-title {
+    font-size: 1.4rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .back-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .section-header {
+    flex-direction: column;
+  }
+
+  .section-header .btn {
+    width: 100%;
+  }
+
+  .item-row {
+    grid-template-columns:
+      32px
+      1fr;
+  }
+
+  .product-field,
+  .quantity-field,
+  .cost-field,
+  .subtotal-field,
+  .item-actions {
+    grid-column: 2;
+  }
+
+  .item-number {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .total-content {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.35rem;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancel-button,
+  .save-button {
+    width: 100%;
+  }
+
+}

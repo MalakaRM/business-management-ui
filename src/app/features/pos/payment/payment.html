@@ -1,0 +1,523 @@
+<div class="payment-page">
+
+  <!-- ===================================================== -->
+  <!-- ACCESS RESTRICTED -->
+  <!-- ===================================================== -->
+
+  <div
+    *ngIf="!hasPermission('ORDER_CREATE')"
+    class="access-card"
+    role="alert"
+  >
+    <div class="access-icon">
+      <i class="bi bi-shield-lock"></i>
+    </div>
+
+    <h2>Access Restricted</h2>
+
+    <p>
+      You do not have permission to complete sales.
+    </p>
+
+    <button
+      type="button"
+      class="back-btn"
+      (click)="backToPos()"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Back to POS
+    </button>
+  </div>
+
+
+  <!-- ===================================================== -->
+  <!-- PAYMENT PAGE -->
+  <!-- ===================================================== -->
+
+  <ng-container *ngIf="hasPermission('ORDER_CREATE')">
+
+    <!-- HEADER -->
+
+    <div class="payment-header">
+
+      <div>
+        <button
+          type="button"
+          class="back-btn"
+          (click)="backToPos()"
+          [disabled]="isCompletingSale"
+        >
+          <i class="bi bi-arrow-left"></i>
+          Back to POS
+        </button>
+
+        <h1>Complete Payment</h1>
+
+        <p>
+          Review the order and complete the payment.
+        </p>
+      </div>
+
+    </div>
+
+
+    <!-- LOADING -->
+
+    <div
+      *ngIf="isLoadingOrder"
+      class="state-card"
+    >
+      <div
+        class="spinner-border"
+        role="status"
+      >
+        <span class="visually-hidden">
+          Loading...
+        </span>
+      </div>
+
+      <p>Loading order details...</p>
+    </div>
+
+
+    <!-- ERROR -->
+
+    <div
+      *ngIf="!isLoadingOrder && errorMessage"
+      class="alert alert-danger"
+      role="alert"
+    >
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+    </div>
+
+
+    <!-- PAYMENT CONTENT -->
+
+    <div
+      *ngIf="!isLoadingOrder && order"
+      class="payment-content"
+    >
+
+      <!-- ORDER SUMMARY -->
+
+      <section class="payment-panel">
+
+        <div class="panel-header">
+
+          <div>
+            <h2>Order Summary</h2>
+
+            <p>
+              Review the items before completing the sale.
+            </p>
+          </div>
+
+          <div class="order-number">
+
+            <span>Order</span>
+
+            <strong>
+              #{{ order.orderNumber }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+
+        <div class="customer-summary">
+
+          <div class="summary-icon">
+            <i class="bi bi-person"></i>
+          </div>
+
+          <div>
+
+            <span>Customer</span>
+
+            <strong>
+              {{ order.customerName || 'Walk-in Customer' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- ITEMS -->
+
+        <div class="items-section">
+
+          <div class="section-title">
+            Items
+          </div>
+
+          <div class="items-table-wrapper">
+
+            <table class="items-table">
+
+              <thead>
+              <tr>
+
+                <th>
+                  Product
+                </th>
+
+                <th class="text-center">
+                  Qty
+                </th>
+
+                <th class="text-end">
+                  Unit Price
+                </th>
+
+                <th class="text-end">
+                  Amount
+                </th>
+
+              </tr>
+              </thead>
+
+              <tbody>
+
+              <tr
+                *ngFor="let item of order.items"
+              >
+
+                <td>
+                  <div class="product-name">
+                    {{ item.productName }}
+                  </div>
+                </td>
+
+                <td class="text-center">
+                  {{ item.quantity }}
+                </td>
+
+                <td class="text-end">
+                  Rs.
+                  {{ item.unitPrice | number:'1.2-2' }}
+                </td>
+
+                <td class="text-end amount">
+                  Rs.
+                  {{ item.subtotal | number:'1.2-2' }}
+                </td>
+
+              </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="order-total">
+
+          <span>
+            Total Amount
+          </span>
+
+          <strong>
+            Rs.
+            {{ totalAmount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </section>
+
+
+      <!-- PAYMENT -->
+
+      <section class="payment-panel payment-section">
+
+        <div class="panel-header">
+
+          <div>
+
+            <h2>
+              Payment
+            </h2>
+
+            <p>
+              Select the payment method and enter the amount.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <!-- PAYMENT METHOD -->
+
+        <div class="field-group">
+
+          <label class="field-label">
+            Payment Method
+          </label>
+
+          <div class="payment-methods">
+
+            <button
+              type="button"
+              class="payment-method"
+              [class.active]="paymentMethod === 'CASH'"
+              (click)="selectPaymentMethod('CASH')"
+              [disabled]="isCompletingSale"
+            >
+
+              <i class="bi bi-cash-stack"></i>
+
+              <span>
+                Cash
+              </span>
+
+            </button>
+
+            <button
+              type="button"
+              class="payment-method"
+              [class.active]="paymentMethod === 'CARD'"
+              (click)="selectPaymentMethod('CARD')"
+              [disabled]="isCompletingSale"
+            >
+
+              <i class="bi bi-credit-card"></i>
+
+              <span>
+                Card
+              </span>
+
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- AMOUNT TENDERED -->
+
+        <div class="field-group">
+
+          <label
+            for="amountTendered"
+            class="field-label"
+          >
+            Amount Tendered
+          </label>
+
+          <div class="amount-input-wrapper">
+
+            <span class="currency">
+              Rs.
+            </span>
+
+            <input
+              id="amountTendered"
+              type="number"
+              class="amount-input"
+              [(ngModel)]="amountTendered"
+              (ngModelChange)="onAmountTenderedChange()"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              [disabled]="isCompletingSale"
+            />
+
+          </div>
+
+        </div>
+
+
+        <!-- CHANGE -->
+
+        <div
+          *ngIf="paymentMethod === 'CASH'"
+          class="change-summary"
+        >
+
+          <span>
+            Change
+          </span>
+
+          <strong>
+            Rs.
+            {{ changeAmount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <!-- PAYMENT ERROR -->
+
+        <div
+          *ngIf="errorMessage"
+          class="payment-error"
+          role="alert"
+        >
+
+          <i class="bi bi-exclamation-triangle"></i>
+
+          <span>
+            {{ errorMessage }}
+          </span>
+
+        </div>
+
+
+        <!-- PAYMENT SUCCESS -->
+
+        <div
+          *ngIf="successMessage"
+          class="payment-success"
+          role="status"
+        >
+
+          <i class="bi bi-check-circle"></i>
+
+          <span>
+            {{ successMessage }}
+          </span>
+
+        </div>
+
+
+        <!-- COMPLETE SALE -->
+
+        <button
+          type="button"
+          class="complete-payment-btn"
+          (click)="completeSale()"
+          [disabled]="!canCompletePayment"
+        >
+
+          <span
+            *ngIf="isCompletingSale"
+            class="spinner-border spinner-border-sm"
+            aria-hidden="true"
+          ></span>
+
+          <i
+            *ngIf="!isCompletingSale"
+            class="bi bi-check2-circle"
+          ></i>
+
+          <span>
+            {{
+              isCompletingSale
+                ? 'Completing Sale...'
+                : 'Complete Sale'
+            }}
+          </span>
+
+        </button>
+
+      </section>
+
+    </div>
+
+
+    <!-- SUCCESS RESULT -->
+
+    <div
+      *ngIf="paymentResult"
+      class="sale-complete-card"
+    >
+
+      <div class="success-icon">
+        <i class="bi bi-check-lg"></i>
+      </div>
+
+      <h2>
+        Sale Completed
+      </h2>
+
+      <p>
+        Order #{{ paymentResult.orderNumber }}
+        has been completed successfully.
+      </p>
+
+      <div class="result-details">
+
+        <div>
+
+          <span>
+            Payment Method
+          </span>
+
+          <strong>
+            {{ paymentResult.paymentMethod }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+            Rs.
+            {{ paymentResult.totalAmount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Amount Paid
+          </span>
+
+          <strong>
+            Rs.
+            {{ paymentResult.amountTendered | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+        <div>
+
+          <span>
+            Change
+          </span>
+
+          <strong>
+            Rs.
+            {{ paymentResult.changeAmount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="new-sale-btn"
+        (click)="backToPos()"
+      >
+
+        <i class="bi bi-plus-circle"></i>
+
+        New Sale
+
+      </button>
+
+    </div>
+
+  </ng-container>
+
+</div>

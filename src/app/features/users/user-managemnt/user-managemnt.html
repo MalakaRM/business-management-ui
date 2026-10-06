@@ -1,0 +1,316 @@
+<div class="user-management-page">
+
+  <div class="page-header">
+    <div>
+      <h1>User Management</h1>
+      <p>Create and manage system users.</p>
+    </div>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success" role="alert">
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+    </div>
+  }
+
+  <div class="user-form-card">
+
+    <div class="card-header">
+      <div>
+        <h2>Create User</h2>
+        <p>
+          Create a user account with a temporary password.
+        </p>
+      </div>
+    </div>
+
+    <form
+      [formGroup]="userForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+
+      <div class="form-grid">
+
+        <!-- Username -->
+        <div class="form-field">
+
+          <label
+            for="username"
+            class="form-label"
+          >
+            Username
+          </label>
+
+          <input
+            id="username"
+            type="text"
+            class="form-control"
+            formControlName="username"
+            placeholder="Enter username"
+            autocomplete="username"
+          />
+
+          @if (
+            userForm.controls.username.touched &&
+            userForm.controls.username.errors?.['required']
+            ) {
+            <div class="field-error">
+              Username is required.
+            </div>
+          }
+
+          @if (
+            userForm.controls.username.touched &&
+            userForm.controls.username.errors?.['minlength']
+            ) {
+            <div class="field-error">
+              Username must be at least 3 characters.
+            </div>
+          }
+
+          @if (
+            userForm.controls.username.touched &&
+            userForm.controls.username.errors?.['maxlength']
+            ) {
+            <div class="field-error">
+              Username cannot exceed 50 characters.
+            </div>
+          }
+
+        </div>
+
+
+        <!-- Email -->
+        <div class="form-field">
+
+          <label
+            for="email"
+            class="form-label"
+          >
+            Email
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="Enter email address"
+            autocomplete="email"
+          />
+
+          @if (
+            userForm.controls.email.touched &&
+            userForm.controls.email.errors?.['required']
+            ) {
+            <div class="field-error">
+              Email is required.
+            </div>
+          }
+
+          @if (
+            userForm.controls.email.touched &&
+            userForm.controls.email.errors?.['email']
+            ) {
+            <div class="field-error">
+              Please enter a valid email address.
+            </div>
+          }
+
+          @if (
+            userForm.controls.email.touched &&
+            userForm.controls.email.errors?.['maxlength']
+            ) {
+            <div class="field-error">
+              Email cannot exceed 150 characters.
+            </div>
+          }
+
+        </div>
+
+
+        <!-- Temporary Password -->
+        <div class="form-field">
+
+          <label
+            for="password"
+            class="form-label"
+          >
+            Temporary Password
+          </label>
+
+          <div class="password-input-wrapper">
+
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control"
+              formControlName="password"
+              placeholder="Enter temporary password"
+              autocomplete="new-password"
+            />
+
+            <button
+              type="button"
+              class="password-toggle"
+              (click)="showPassword = !showPassword"
+              [attr.aria-label]="
+                showPassword
+                  ? 'Hide temporary password'
+                  : 'Show temporary password'
+              "
+            >
+              <i
+                class="bi"
+                [class.bi-eye]="!showPassword"
+                [class.bi-eye-slash]="showPassword"
+              ></i>
+            </button>
+
+          </div>
+
+          @if (
+            userForm.controls.password.touched &&
+            userForm.controls.password.errors?.['required']
+            ) {
+            <div class="field-error">
+              Temporary password is required.
+            </div>
+          }
+
+          @if (
+            userForm.controls.password.touched &&
+            userForm.controls.password.errors?.['minlength']
+            ) {
+            <div class="field-error">
+              Password must be at least 8 characters.
+            </div>
+          }
+
+          @if (
+            userForm.controls.password.touched &&
+            userForm.controls.password.errors?.['maxlength']
+            ) {
+            <div class="field-error">
+              Password cannot exceed 100 characters.
+            </div>
+          }
+
+        </div>
+
+
+        <!-- Role -->
+        <div class="form-field">
+
+          <label
+            for="role"
+            class="form-label"
+          >
+            Role
+          </label>
+
+          <select
+            id="role"
+            class="form-select"
+            formControlName="role"
+            [disabled]="isLoadingRoles"
+          >
+
+            @if (isLoadingRoles) {
+
+              <option value="">
+                Loading roles...
+              </option>
+
+            } @else if (roles.length === 0) {
+
+              <option value="">
+                No roles available
+              </option>
+
+            } @else {
+
+              @for (role of roles; track role.id) {
+
+                <option [value]="role.name">
+                  {{ role.name }}
+                </option>
+
+              }
+
+            }
+
+          </select>
+
+          @if (
+            userForm.controls.role.touched &&
+            userForm.controls.role.errors?.['required']
+            ) {
+            <div class="field-error">
+              Please select a role.
+            </div>
+          }
+
+          @if (
+            !isLoadingRoles &&
+            roles.length === 0
+            ) {
+            <div class="field-error">
+              No roles are available. Please create a role first.
+            </div>
+          }
+
+        </div>
+
+      </div>
+
+
+      <div class="form-footer">
+
+        <div class="temporary-password-note">
+          <i class="bi bi-info-circle me-2"></i>
+          The user will be required to change this password
+          on first login.
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="isLoading || isLoadingRoles || roles.length === 0"
+        >
+
+          @if (isLoading) {
+
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              aria-hidden="true"
+            ></span>
+
+            Creating...
+
+          } @else {
+
+            <i class="bi bi-person-plus me-2"></i>
+            Create User
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+
+</div>
+

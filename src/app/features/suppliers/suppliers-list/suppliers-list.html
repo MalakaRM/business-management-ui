@@ -1,0 +1,365 @@
+@if (hasPermission('SUPPLIER_READ')) {
+
+  <div class="suppliers-page">
+
+    <div class="suppliers-header">
+
+      <div>
+        <h1 class="suppliers-title">
+          Suppliers
+        </h1>
+
+        <p class="suppliers-subtitle">
+          Manage your suppliers and their contact information.
+        </p>
+      </div>
+
+      @if (hasPermission('SUPPLIER_CREATE')) {
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          [routerLink]="['/app/suppliers/new']"
+        >
+          <i class="bi bi-plus-lg me-2"></i>
+          Add Supplier
+        </button>
+
+      }
+
+    </div>
+
+    @if (errorMessage) {
+
+      <div
+        class="suppliers-alert"
+        role="alert"
+      >
+
+        <i
+          class="bi bi-exclamation-circle"
+          aria-hidden="true"
+        ></i>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+    }
+
+    <div class="suppliers-card">
+
+      <div class="suppliers-card-header">
+
+        <div>
+
+          <h2>
+            Supplier List
+          </h2>
+
+          <p>
+            View and manage registered suppliers.
+          </p>
+
+        </div>
+
+        <div class="suppliers-search">
+
+          <i
+            class="bi bi-search"
+            aria-hidden="true"
+          ></i>
+
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search by name, email or phone..."
+            [(ngModel)]="searchTerm"
+            aria-label="Search suppliers"
+          >
+
+        </div>
+
+      </div>
+
+      @if (isLoading) {
+
+        <div class="suppliers-state">
+
+          <div
+            class="spinner-border text-primary"
+            role="status"
+          >
+            <span class="visually-hidden">
+              Loading suppliers...
+            </span>
+          </div>
+
+          <p>
+            Loading suppliers...
+          </p>
+
+        </div>
+
+      } @else if (filteredSuppliers.length === 0) {
+
+        <div class="suppliers-state">
+
+          <i
+            class="bi bi-truck"
+            aria-hidden="true"
+          ></i>
+
+          <h3>
+            No suppliers found
+          </h3>
+
+          @if (searchTerm.trim()) {
+
+            <p>
+              Try adjusting your search criteria.
+            </p>
+
+          } @else {
+
+            <p>
+              There are no suppliers available yet.
+            </p>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="table-responsive">
+
+          <table class="table suppliers-table mb-0">
+
+            <thead>
+
+            <tr>
+              <th>Supplier</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Status</th>
+
+              @if (hasPermission('SUPPLIER_UPDATE')) {
+
+                <th class="text-end">
+                  Actions
+                </th>
+
+              }
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+              @for (
+                supplier of filteredSuppliers;
+                track supplier.id
+                ) {
+
+                <tr>
+
+                  <td>
+
+                    <div class="supplier-name">
+                      {{ supplier.name }}
+                    </div>
+
+                  </td>
+
+                  <td>
+
+                    <span class="supplier-email">
+                      {{ supplier.email || '-' }}
+                    </span>
+
+                  </td>
+
+                  <td>
+                    {{ supplier.phone || '-' }}
+                  </td>
+
+                  <td>
+
+                    <div class="supplier-address">
+                      {{ supplier.address || '-' }}
+                    </div>
+
+                  </td>
+
+                  <td>
+
+                    @if (supplier.active) {
+
+                      <span
+                        class="status-badge status-active"
+                      >
+                        Active
+                      </span>
+
+                    } @else {
+
+                      <span
+                        class="status-badge status-inactive"
+                      >
+                        Inactive
+                      </span>
+
+                    }
+
+                  </td>
+
+                  @if (hasPermission('SUPPLIER_UPDATE')) {
+
+                    <td class="text-end">
+
+                      <div class="supplier-actions">
+
+                        <a
+                          class="btn btn-sm action-btn"
+                          [routerLink]="[
+                            '/app/suppliers/edit',
+                            supplier.id
+                          ]"
+                          title="Edit supplier"
+                          aria-label="Edit supplier"
+                        >
+                          <i
+                            class="bi bi-pencil"
+                            aria-hidden="true"
+                          ></i>
+                        </a>
+
+                        <button
+                          type="button"
+                          class="btn btn-sm action-btn action-danger"
+                          title="Deactivate supplier"
+                          aria-label="Deactivate supplier"
+                          [disabled]="!supplier.active"
+                          (click)="deactivateSupplier(supplier)"
+                        >
+                          <i
+                            class="bi bi-truck-flatbed"
+                            aria-hidden="true"
+                          ></i>
+                        </button>
+
+                      </div>
+
+                    </td>
+
+                  }
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+      @if (
+        !isLoading &&
+        suppliers.length > 0 &&
+        totalPages > 1
+        ) {
+
+        <div class="suppliers-pagination">
+
+          <button
+            type="button"
+            class="btn btn-sm pagination-btn"
+            [disabled]="currentPage === 0"
+            (click)="goToPage(currentPage - 1)"
+          >
+            <i
+              class="bi bi-chevron-left"
+              aria-hidden="true"
+            ></i>
+
+            Previous
+          </button>
+
+          <div class="pagination-pages">
+
+            @for (
+              page of pageNumbers;
+              track page
+              ) {
+
+              <button
+                type="button"
+                class="btn btn-sm pagination-page"
+                [class.active]="page === currentPage"
+                [attr.aria-current]="
+                  page === currentPage ? 'page' : null
+                "
+                (click)="goToPage(page)"
+              >
+                {{ page + 1 }}
+              </button>
+
+            }
+
+          </div>
+
+          <button
+            type="button"
+            class="btn btn-sm pagination-btn"
+            [disabled]="currentPage === totalPages - 1"
+            (click)="goToPage(currentPage + 1)"
+          >
+            Next
+
+            <i
+              class="bi bi-chevron-right"
+              aria-hidden="true"
+            ></i>
+
+          </button>
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+} @else {
+
+  <div class="suppliers-page">
+
+    <div class="suppliers-state">
+
+      <i
+        class="bi bi-shield-lock"
+        aria-hidden="true"
+      ></i>
+
+      <h3>
+        Access Restricted
+      </h3>
+
+      <p>
+        You do not have permission to view suppliers.
+      </p>
+
+    </div>
+
+  </div>
+
+}

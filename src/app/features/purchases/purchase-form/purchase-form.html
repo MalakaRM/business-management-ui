@@ -1,0 +1,619 @@
+<div class="purchase-form-page">
+
+  <div class="purchase-form-header">
+
+    <div>
+      <h1 class="purchase-form-title">
+        {{ isEditMode ? 'Edit Purchase' : 'New Purchase' }}
+      </h1>
+
+      <p class="purchase-form-subtitle">
+        {{
+          isEditMode
+            ? 'Update the purchase order details.'
+            : 'Create a new purchase order for your business.'
+        }}
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-light"
+      (click)="cancel()"
+      [disabled]="isSaving"
+    >
+      <i class="bi bi-arrow-left me-2"></i>
+      Back to Purchases
+    </button>
+
+  </div>
+
+
+  @if (errorMessage) {
+
+    <div
+      class="alert alert-danger"
+      role="alert"
+    >
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  @if (successMessage) {
+
+    <div
+      class="alert alert-success"
+      role="alert"
+    >
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+
+  }
+
+
+  @if (isLoading) {
+
+    <div class="purchase-form-card">
+
+      <div class="purchase-loading-state">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>
+          Loading purchase...
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+  @else {
+
+    @if (
+      (!isEditMode && canCreate()) ||
+      (isEditMode && canUpdate())
+      ) {
+
+      <div class="purchase-form-card">
+
+        <form
+          [formGroup]="purchaseForm"
+          (ngSubmit)="submit()"
+          novalidate
+        >
+
+          <!-- Purchase Information -->
+
+          <section class="form-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <h2>
+                  Purchase Information
+                </h2>
+
+                <p>
+                  Enter the basic purchase details.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="row g-3">
+
+              <!-- Reference Number -->
+
+              <div class="col-md-6">
+
+                <label
+                  for="referenceNumber"
+                  class="form-label"
+                >
+                  Reference Number
+                </label>
+
+                <input
+                  id="referenceNumber"
+                  type="text"
+                  class="form-control"
+                  formControlName="referenceNumber"
+                  placeholder="e.g. PO-2026-002"
+                >
+
+                @if (
+                  purchaseForm.controls.referenceNumber.touched &&
+                  purchaseForm.controls.referenceNumber.invalid
+                  ) {
+
+                  <div class="field-error">
+
+                    @if (
+                      purchaseForm.controls.referenceNumber.errors?.['required']
+                      ) {
+                      Reference number is required.
+                    }
+
+                    @else if (
+                      purchaseForm.controls.referenceNumber.errors?.['maxlength']
+                      ) {
+                      Reference number cannot exceed 100 characters.
+                    }
+
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- Supplier -->
+
+              <div class="col-md-6">
+
+                <label
+                  for="supplierId"
+                  class="form-label"
+                >
+                  Supplier
+                </label>
+
+                <select
+                  id="supplierId"
+                  class="form-select"
+                  formControlName="supplierId"
+                  [disabled]="isLoadingSuppliers"
+                >
+
+                  @if (isLoadingSuppliers) {
+
+                    <option [ngValue]="0">
+                      Loading suppliers...
+                    </option>
+
+                  }
+
+                  @else {
+
+                    <option [ngValue]="0">
+                      Select supplier
+                    </option>
+
+                    @for (
+                      supplier of suppliers;
+                      track supplier.id
+                      ) {
+
+                      <option [ngValue]="supplier.id">
+                        {{ supplier.name }}
+                      </option>
+
+                    }
+
+                  }
+
+                </select>
+
+
+                @if (
+                  purchaseForm.controls.supplierId.touched &&
+                  purchaseForm.controls.supplierId.invalid
+                  ) {
+
+                  <div class="field-error">
+                    Supplier is required.
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- Purchase Date -->
+
+              <div class="col-md-6">
+
+                <label
+                  for="purchaseDate"
+                  class="form-label"
+                >
+                  Purchase Date
+                </label>
+
+                <input
+                  id="purchaseDate"
+                  type="date"
+                  class="form-control"
+                  formControlName="purchaseDate"
+                >
+
+                @if (
+                  purchaseForm.controls.purchaseDate.touched &&
+                  purchaseForm.controls.purchaseDate.invalid
+                  ) {
+
+                  <div class="field-error">
+                    Purchase date is required.
+                  </div>
+
+                }
+
+              </div>
+
+
+              <!-- Notes -->
+
+              <div class="col-12">
+
+                <label
+                  for="notes"
+                  class="form-label"
+                >
+                  Notes
+                </label>
+
+                <textarea
+                  id="notes"
+                  class="form-control"
+                  formControlName="notes"
+                  rows="3"
+                  placeholder="Optional purchase notes"
+                ></textarea>
+
+                @if (
+                  purchaseForm.controls.notes.touched &&
+                  purchaseForm.controls.notes.invalid
+                  ) {
+
+                  <div class="field-error">
+                    Notes cannot exceed 500 characters.
+                  </div>
+
+                }
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- Purchase Items -->
+
+          <section class="form-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <h2>
+                  Purchase Items
+                </h2>
+
+                <p>
+                  Add the products and quantities included in this purchase.
+                </p>
+
+              </div>
+
+
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="addItem()"
+                [disabled]="isSaving"
+              >
+                <i class="bi bi-plus-lg me-2"></i>
+                Add Item
+              </button>
+
+            </div>
+
+
+            <div
+              class="purchase-items"
+              formArrayName="items"
+            >
+
+              @for (
+                item of items.controls;
+                track $index;
+                let i = $index
+                ) {
+
+                <div
+                  class="purchase-item-row"
+                  [formGroupName]="i"
+                >
+
+                  <!-- Product -->
+
+                  <div class="item-product">
+
+                    <label class="form-label">
+                      Product
+                    </label>
+
+                    <select
+                      class="form-select"
+                      formControlName="productId"
+                      [disabled]="isLoadingProducts"
+                      (change)="onProductChange(i)"
+                    >
+
+                      @if (isLoadingProducts) {
+
+                        <option [ngValue]="0">
+                          Loading products...
+                        </option>
+
+                      }
+
+                      @else {
+
+                        <option [ngValue]="0">
+                          Select product
+                        </option>
+
+                        @for (
+                          product of products;
+                          track product.id
+                          ) {
+
+                          <option [ngValue]="product.id">
+                            {{ product.name }} — {{ product.sku }}
+                          </option>
+
+                        }
+
+                      }
+
+                    </select>
+
+
+                    @if (
+                      item.get('productId')?.touched &&
+                      item.get('productId')?.invalid
+                      ) {
+
+                      <div class="field-error">
+                        Product is required.
+                      </div>
+
+                    }
+
+                  </div>
+
+
+                  <!-- Quantity -->
+
+                  <div class="item-quantity">
+
+                    <label class="form-label">
+                      Quantity
+                    </label>
+
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="quantity"
+                      min="1"
+                      step="1"
+                    >
+
+                    @if (
+                      item.get('quantity')?.touched &&
+                      item.get('quantity')?.invalid
+                      ) {
+
+                      <div class="field-error">
+                        Quantity must be at least 1.
+                      </div>
+
+                    }
+
+                  </div>
+
+
+                  <!-- Unit Cost -->
+
+                  <div class="item-cost">
+
+                    <label class="form-label">
+                      Unit Cost
+                    </label>
+
+                    <input
+                      type="number"
+                      class="form-control"
+                      formControlName="unitCost"
+                      min="0.01"
+                      step="0.01"
+                    >
+
+                    @if (
+                      item.get('unitCost')?.touched &&
+                      item.get('unitCost')?.invalid
+                      ) {
+
+                      <div class="field-error">
+                        Unit cost must be greater than 0.
+                      </div>
+
+                    }
+
+                  </div>
+
+
+                  <!-- Subtotal -->
+
+                  <div class="item-subtotal">
+
+                    <label class="form-label">
+                      Subtotal
+                    </label>
+
+                    <div class="subtotal-value">
+                      {{ getItemSubtotal(i) | number:'1.2-2' }}
+                    </div>
+
+                  </div>
+
+
+                  <!-- Remove -->
+
+                  <div class="item-action">
+
+                    <label class="form-label">
+                      &nbsp;
+                    </label>
+
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger"
+                      (click)="removeItem(i)"
+                      [disabled]="
+                        items.length === 1 ||
+                        isSaving
+                      "
+                      title="Remove item"
+                      aria-label="Remove item"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+          </section>
+
+
+          <!-- Grand Total -->
+
+          <section class="purchase-total-section">
+
+            <div>
+
+              <span class="total-label">
+                Grand Total
+              </span>
+
+              <span class="total-description">
+                Total purchase amount
+              </span>
+
+            </div>
+
+            <div class="grand-total">
+              {{ grandTotal | number:'1.2-2' }}
+            </div>
+
+          </section>
+
+
+          <!-- Actions -->
+
+          <div class="purchase-form-actions">
+
+            <button
+              type="button"
+              class="btn btn-light"
+              (click)="cancel()"
+              [disabled]="isSaving"
+            >
+              Cancel
+            </button>
+
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSaving"
+            >
+
+              @if (isSaving) {
+
+                <span
+                  class="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+
+                {{ isEditMode ? 'Updating...' : 'Creating...' }}
+
+              }
+
+              @else {
+
+                <i class="bi bi-check-lg me-2"></i>
+
+                {{ isEditMode ? 'Update Purchase' : 'Create Purchase' }}
+
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    }
+
+    @else {
+
+      <div class="purchase-form-card">
+
+        <div class="purchase-permission-state">
+
+          <i class="bi bi-shield-lock"></i>
+
+          <h3>
+            Access Restricted
+          </h3>
+
+          <p>
+            You do not have permission to
+            {{ isEditMode ? 'update' : 'create' }}
+            purchases.
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()"
+          >
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Purchases
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>

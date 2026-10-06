@@ -1,0 +1,120 @@
+.supplier-form-page {
+  width: 100%;
+}
+
+.supplier-form-header {
+  margin-bottom: 1.5rem;
+}
+
+.supplier-form-title {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.supplier-form-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+}
+
+.supplier-form-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--sb-danger-soft);
+  border: 1px solid var(--sb-danger);
+  border-radius: var(--sb-radius-md);
+  color: var(--sb-danger);
+  font-size: 0.85rem;
+}
+
+.supplier-form-card {
+  padding: 1.5rem;
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.form-label {
+  margin-bottom: 0.45rem;
+  color: var(--sb-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.form-control {
+  min-height: 42px;
+  border-color: var(--sb-border);
+  color: var(--sb-text);
+  font-size: 0.85rem;
+}
+
+.form-control::placeholder {
+  color: var(--sb-text-muted);
+}
+
+.form-control:focus {
+  border-color: var(--sb-border-focus);
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.field-error {
+  margin-top: 0.35rem;
+  color: var(--sb-danger);
+  font-size: 0.75rem;
+}
+
+.supplier-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sb-border);
+}
+
+.supplier-form-actions .btn-light {
+  border: 1px solid var(--sb-border);
+  background-color: var(--sb-surface);
+  color: var(--sb-text-secondary);
+}
+
+.supplier-form-actions .btn-light:hover {
+  background-color: var(--sb-surface-muted);
+  border-color: var(--sb-border);
+  color: var(--sb-text);
+}
+
+.supplier-form-actions .btn:disabled {
+  cursor: not-allowed;
+}
+
+@media (max-width: 767.98px) {
+
+  .supplier-form-card {
+    padding: 1rem;
+  }
+
+  .supplier-form-title {
+    font-size: 1.45rem;
+  }
+
+  .supplier-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .supplier-form-actions .btn {
+    width: 100%;
+  }
+}

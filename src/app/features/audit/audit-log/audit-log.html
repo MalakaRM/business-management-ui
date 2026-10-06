@@ -1,0 +1,483 @@
+<div class="audit-page">
+
+  <!-- =====================================================
+       ACCESS RESTRICTED
+       ===================================================== -->
+
+  @if (!hasPermission('AUDIT_READ')) {
+
+    <div
+      class="audit-access-card"
+      role="alert"
+    >
+
+      <div class="audit-access-icon">
+        <i class="bi bi-shield-lock"></i>
+      </div>
+
+      <h2>
+        Access Restricted
+      </h2>
+
+      <p>
+        You do not have permission to view audit logs.
+      </p>
+
+    </div>
+
+  } @else {
+
+    <!-- ===================================================
+         PAGE HEADER
+         =================================================== -->
+
+    <div class="audit-header">
+
+      <div>
+
+        <h1 class="audit-title">
+          Audit Logs
+        </h1>
+
+        <p class="audit-subtitle">
+          Monitor system activities and user actions.
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================
+         ERROR
+         =================================================== -->
+
+    @if (errorMessage) {
+
+      <div
+        class="audit-alert"
+        role="alert"
+      >
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================
+         AUDIT CARD
+         =================================================== -->
+
+    <div class="audit-card">
+
+      <!-- FILTERS -->
+
+      <div class="audit-filters">
+
+        <div class="audit-filter-group">
+
+          <label
+            for="username"
+            class="form-label"
+          >
+            Username
+          </label>
+
+          <input
+            id="username"
+            type="text"
+            class="form-control"
+            placeholder="Filter by username"
+            [(ngModel)]="selectedUsername"
+            (keyup.enter)="applyFilters()"
+          >
+
+        </div>
+
+
+        <div class="audit-filter-group">
+
+          <label
+            for="entity"
+            class="form-label"
+          >
+            Entity
+          </label>
+
+          <input
+            id="entity"
+            type="text"
+            class="form-control"
+            placeholder="Filter by entity"
+            [(ngModel)]="selectedEntity"
+            (keyup.enter)="applyFilters()"
+          >
+
+        </div>
+
+
+        <div class="audit-filter-actions">
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            [disabled]="isLoading"
+            (click)="applyFilters()"
+          >
+
+            <i class="bi bi-funnel me-2"></i>
+
+            Apply
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn btn-light"
+            [disabled]="isLoading"
+            (click)="clearFilters()"
+          >
+
+            <i class="bi bi-x-lg me-2"></i>
+
+            Clear
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           CARD HEADER
+           ================================================= -->
+
+      <div class="audit-card-header">
+
+        <div>
+
+          <h2>
+            Activity History
+          </h2>
+
+          <p>
+            {{ totalElements }} audit records
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <!-- =================================================
+           CONTENT
+           ================================================= -->
+
+      @if (isLoading) {
+
+        <div class="audit-state">
+
+          <div
+            class="spinner-border text-primary"
+            role="status"
+          >
+
+            <span class="visually-hidden">
+              Loading...
+            </span>
+
+          </div>
+
+          <p>
+            Loading audit logs...
+          </p>
+
+        </div>
+
+      } @else {
+
+        @if (auditLogs.length === 0) {
+
+          <div class="audit-state">
+
+            <i class="bi bi-shield-check"></i>
+
+            <h3>
+              No audit logs found
+            </h3>
+
+            <p>
+              No activity records match your current filters.
+            </p>
+
+          </div>
+
+        } @else {
+
+          <!-- =================================================
+               TABLE
+               ================================================= -->
+
+          <div class="table-responsive">
+
+            <table class="table audit-table mb-0">
+
+              <thead>
+
+              <tr>
+
+                <th>
+                  Date &amp; Time
+                </th>
+
+                <th>
+                  User
+                </th>
+
+                <th>
+                  Action
+                </th>
+
+                <th>
+                  Entity
+                </th>
+
+                <th>
+                  Entity ID
+                </th>
+
+                <th>
+                  Description
+                </th>
+
+              </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                @for (
+                  log of auditLogs;
+                  track log.id
+                  ) {
+
+                  <tr>
+
+                    <td>
+
+                      <div class="audit-date">
+                        {{ log.createdAt | date:'dd MMM yyyy' }}
+                      </div>
+
+                      <div class="audit-time">
+                        {{ log.createdAt | date:'hh:mm:ss a' }}
+                      </div>
+
+                    </td>
+
+
+                    <td>
+
+                      <div class="audit-user">
+
+                        <div class="audit-user-icon">
+                          <i class="bi bi-person"></i>
+                        </div>
+
+                        <span>
+                          {{ log.username }}
+                        </span>
+
+                      </div>
+
+                    </td>
+
+
+                    <td>
+
+                      <span
+                        class="audit-action"
+
+                        [class.action-create]="
+                          log.action === 'CREATE'
+                        "
+
+                        [class.action-update]="
+                          log.action === 'UPDATE'
+                        "
+
+                        [class.action-delete]="
+                          log.action === 'DELETE'
+                        "
+
+                        [class.action-login]="
+                          log.action === 'LOGIN'
+                        "
+
+                        [class.action-logout]="
+                          log.action === 'LOGOUT'
+                        "
+
+                        [class.action-password]="
+                          log.action === 'PASSWORD_CHANGE'
+                        "
+
+                        [class.action-deactivate]="
+                          log.action === 'DEACTIVATE'
+                        "
+
+                        [class.action-activate]="
+                          log.action === 'ACTIVATE'
+                        "
+                      >
+
+                        {{ log.action }}
+
+                      </span>
+
+                    </td>
+
+
+                    <td>
+
+                      <span class="entity-name">
+                        {{ log.entityName }}
+                      </span>
+
+                    </td>
+
+
+                    <td>
+
+                      @if (log.entityId) {
+
+                        <span class="entity-id">
+                          #{{ log.entityId }}
+                        </span>
+
+                      } @else {
+
+                        <span class="text-muted">
+                          —
+                        </span>
+
+                      }
+
+                    </td>
+
+
+                    <td>
+
+                      <span class="audit-description">
+                        {{ log.description || '—' }}
+                      </span>
+
+                    </td>
+
+                  </tr>
+
+                }
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+
+          <!-- =================================================
+               PAGINATION
+               ================================================= -->
+
+          @if (totalPages > 1) {
+
+            <div class="audit-pagination">
+
+              <button
+                type="button"
+                class="btn btn-sm pagination-btn"
+
+                [disabled]="currentPage === 0"
+
+                (click)="goToPage(currentPage - 1)"
+              >
+
+                <i class="bi bi-chevron-left"></i>
+
+                Previous
+
+              </button>
+
+
+              <div class="pagination-pages">
+
+                @for (
+                  page of pageNumbers;
+                  track page
+                  ) {
+
+                  <button
+                    type="button"
+                    class="btn btn-sm pagination-page"
+
+                    [class.active]="
+                      page === currentPage
+                    "
+
+                    [attr.aria-current]="
+                      page === currentPage
+                        ? 'page'
+                        : null
+                    "
+
+                    (click)="goToPage(page)"
+                  >
+
+                    {{ page + 1 }}
+
+                  </button>
+
+                }
+
+              </div>
+
+
+              <button
+                type="button"
+                class="btn btn-sm pagination-btn"
+
+                [disabled]="
+                  currentPage === totalPages - 1
+                "
+
+                (click)="goToPage(currentPage + 1)"
+              >
+
+                Next
+
+                <i class="bi bi-chevron-right"></i>
+
+              </button>
+
+            </div>
+
+          }
+
+        }
+
+      }
+
+    </div>
+
+  }
+
+</div>

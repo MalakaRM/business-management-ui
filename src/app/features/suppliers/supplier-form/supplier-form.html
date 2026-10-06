@@ -1,0 +1,334 @@
+<div class="supplier-form-page">
+
+  <div class="supplier-form-header">
+
+    <div>
+      <h1 class="supplier-form-title">
+        {{ isEditMode ? 'Edit Supplier' : 'Add Supplier' }}
+      </h1>
+
+      <p class="supplier-form-subtitle">
+        {{
+          isEditMode
+            ? 'Update supplier information.'
+            : 'Create a new supplier record.'
+        }}
+      </p>
+    </div>
+
+  </div>
+
+  @if (submitError) {
+
+    <div
+      class="supplier-form-alert"
+      role="alert"
+    >
+
+      <i
+        class="bi bi-exclamation-circle"
+        aria-hidden="true"
+      ></i>
+
+      <span>
+        {{ submitError }}
+      </span>
+
+    </div>
+
+  }
+
+  @if (isLoadingSupplier) {
+
+    <div class="supplier-form-card">
+
+      <div class="supplier-form-loading">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading supplier...
+          </span>
+        </div>
+
+        <p>
+          Loading supplier...
+        </p>
+
+      </div>
+
+    </div>
+
+  } @else {
+
+    @if (
+      (!isEditMode &&
+        hasPermission('SUPPLIER_CREATE')) ||
+      (isEditMode &&
+        hasPermission('SUPPLIER_UPDATE'))
+      ) {
+
+      <div class="supplier-form-card">
+
+        <form
+          [formGroup]="supplierForm"
+          (ngSubmit)="onSubmit()"
+          novalidate
+        >
+
+          <!-- Name -->
+
+          <div class="mb-3">
+
+            <label
+              for="name"
+              class="form-label"
+            >
+              Supplier Name
+              <span class="text-danger">*</span>
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              placeholder="Enter supplier name"
+              autocomplete="organization"
+            >
+
+            @if (
+              supplierForm.controls.name.invalid &&
+              supplierForm.controls.name.touched
+              ) {
+
+              <div class="field-error">
+
+                @if (
+                  supplierForm.controls.name.errors?.['required']
+                  ) {
+                  Supplier name is required.
+                }
+
+                @if (
+                  supplierForm.controls.name.errors?.['maxlength']
+                  ) {
+                  Supplier name cannot exceed 150 characters.
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+          <!-- Email -->
+
+          <div class="mb-3">
+
+            <label
+              for="email"
+              class="form-label"
+            >
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              placeholder="Enter email address"
+              autocomplete="email"
+            >
+
+            @if (
+              supplierForm.controls.email.invalid &&
+              supplierForm.controls.email.touched
+              ) {
+
+              <div class="field-error">
+
+                @if (
+                  supplierForm.controls.email.errors?.['email']
+                  ) {
+                  Please enter a valid email address.
+                }
+
+                @if (
+                  supplierForm.controls.email.errors?.['maxlength']
+                  ) {
+                  Email cannot exceed 150 characters.
+                }
+
+              </div>
+
+            }
+
+          </div>
+
+          <!-- Phone -->
+
+          <div class="mb-3">
+
+            <label
+              for="phone"
+              class="form-label"
+            >
+              Phone
+            </label>
+
+            <input
+              id="phone"
+              type="tel"
+              class="form-control"
+              formControlName="phone"
+              placeholder="Enter phone number"
+              autocomplete="tel"
+            >
+
+            @if (
+              supplierForm.controls.phone.invalid &&
+              supplierForm.controls.phone.touched
+              ) {
+
+              <div class="field-error">
+
+                Phone number cannot exceed
+                30 characters.
+
+              </div>
+
+            }
+
+          </div>
+
+          <!-- Address -->
+
+          <div class="mb-3">
+
+            <label
+              for="address"
+              class="form-label"
+            >
+              Address
+            </label>
+
+            <textarea
+              id="address"
+              class="form-control"
+              formControlName="address"
+              placeholder="Enter supplier address"
+              rows="4"
+              autocomplete="street-address"
+            ></textarea>
+
+            @if (
+              supplierForm.controls.address.invalid &&
+              supplierForm.controls.address.touched
+              ) {
+
+              <div class="field-error">
+
+                Address cannot exceed
+                500 characters.
+
+              </div>
+
+            }
+
+          </div>
+
+          <!-- Actions -->
+
+          <div class="supplier-form-actions">
+
+            <button
+              type="button"
+              class="btn btn-light"
+              (click)="cancel()"
+              [disabled]="isSubmitting"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="isSubmitting"
+            >
+
+              @if (isSubmitting) {
+
+                <span
+                  class="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+
+                {{ isEditMode ? 'Updating...' : 'Saving...' }}
+
+              } @else {
+
+                <i
+                  class="bi bi-check-lg me-2"
+                  aria-hidden="true"
+                ></i>
+
+                {{
+                  isEditMode
+                    ? 'Update Supplier'
+                    : 'Save Supplier'
+                }}
+
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    } @else {
+
+      <div class="supplier-form-card">
+
+        <div class="supplier-form-loading">
+
+          <i
+            class="bi bi-shield-lock"
+            aria-hidden="true"
+          ></i>
+
+          <h3>
+            Access Restricted
+          </h3>
+
+          <p>
+            {{
+              isEditMode
+                ? 'You do not have permission to update suppliers.'
+                : 'You do not have permission to create suppliers.'
+            }}
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()"
+          >
+            Back to Suppliers
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>

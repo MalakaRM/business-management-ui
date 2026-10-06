@@ -1,0 +1,277 @@
+.category-form-page {
+  width: 100%;
+}
+
+/* =========================
+   Page Header
+   ========================= */
+
+.category-form-header {
+  margin-bottom: 1.5rem;
+}
+
+.category-form-title {
+  margin: 0;
+
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.category-form-subtitle {
+  margin: 0.35rem 0 0;
+
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+/* =========================
+   Error Alert
+   ========================= */
+
+.category-form-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+
+  border: 1px solid var(--sb-danger);
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+.category-form-alert i {
+  flex-shrink: 0;
+  font-size: 1rem;
+}
+
+/* =========================
+   Form Card
+   ========================= */
+
+.category-form-card {
+  padding: 1.5rem;
+
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+
+  box-shadow: var(--sb-shadow-sm);
+}
+
+/* =========================
+   Loading / Restricted
+   ========================= */
+
+.category-form-loading {
+  min-height: 220px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.category-form-loading .spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+.category-form-loading > i {
+  margin-bottom: 0.75rem;
+
+  color: var(--sb-text-muted);
+  font-size: 2rem;
+}
+
+.category-form-loading h3 {
+  margin: 0 0 0.35rem;
+
+  color: var(--sb-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.category-form-loading p {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+  font-size: 0.85rem;
+}
+
+/* =========================
+   Form Labels
+   ========================= */
+
+.form-label {
+  margin-bottom: 0.45rem;
+
+  color: var(--sb-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* =========================
+   Form Controls
+   ========================= */
+
+.form-control {
+  min-height: 42px;
+
+  border-color: var(--sb-border);
+
+  background-color: var(--sb-surface);
+  color: var(--sb-text);
+
+  font-size: 0.85rem;
+
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.form-control::placeholder {
+  color: var(--sb-text-muted);
+}
+
+.form-control:hover:not(:focus):not([readonly]) {
+  border-color: var(--sb-border-focus);
+}
+
+.form-control:focus {
+  border-color: var(--sb-border-focus);
+
+  box-shadow:
+    0 0 0 0.2rem rgba(37, 99, 235, 0.1);
+
+  outline: none;
+}
+
+.form-control[readonly] {
+  background-color: var(--sb-surface-muted);
+
+  color: var(--sb-text-secondary);
+
+  cursor: default;
+}
+
+textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* =========================
+   Validation
+   ========================= */
+
+.field-error {
+  margin-top: 0.35rem;
+
+  color: var(--sb-danger);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+/* =========================
+   Actions
+   ========================= */
+
+.category-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+
+  border-top: 1px solid var(--sb-border);
+}
+
+.category-form-actions .btn {
+  min-height: 40px;
+
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* Cancel */
+
+.category-form-actions .btn-light {
+  border: 1px solid var(--sb-border);
+
+  background-color: var(--sb-surface);
+  color: var(--sb-text-secondary);
+}
+
+.category-form-actions .btn-light:hover {
+  background-color: var(--sb-surface-muted);
+
+  border-color: var(--sb-border);
+  color: var(--sb-text);
+}
+
+/* Primary */
+
+.category-form-actions .btn-primary {
+  border-color: var(--sb-primary);
+
+  background-color: var(--sb-primary);
+}
+
+.category-form-actions .btn-primary:hover {
+  border-color: var(--sb-primary-hover);
+
+  background-color: var(--sb-primary-hover);
+}
+
+/* Disabled */
+
+.category-form-actions .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 767.98px) {
+
+  .category-form-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .category-form-title {
+    font-size: 1.45rem;
+  }
+
+  .category-form-subtitle {
+    font-size: 0.85rem;
+  }
+
+  .category-form-card {
+    padding: 1rem;
+  }
+
+  .category-form-actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+
+  .category-form-actions .btn {
+    width: 100%;
+  }
+}

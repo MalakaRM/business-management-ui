@@ -1,0 +1,147 @@
+.customer-form-page {
+  width: 100%;
+}
+
+.customer-form-header {
+  margin-bottom: 1.5rem;
+}
+
+.customer-form-title {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.customer-form-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Error */
+
+.customer-form-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  background: var(--sb-danger-soft);
+  border: 1px solid var(--sb-danger);
+  border-radius: var(--sb-radius-md);
+  color: var(--sb-danger);
+  font-size: 0.85rem;
+}
+
+/* Form Card */
+
+.customer-form-card {
+  padding: 1.5rem;
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow-sm);
+}
+
+/* Loading */
+
+.customer-form-loading {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--sb-text-muted);
+}
+
+.customer-form-loading p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+/* Form */
+
+.form-label {
+  margin-bottom: 0.45rem;
+  color: var(--sb-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.form-control {
+  min-height: 42px;
+  border-color: var(--sb-border);
+  color: var(--sb-text);
+  font-size: 0.85rem;
+}
+
+.form-control::placeholder {
+  color: var(--sb-text-muted);
+}
+
+.form-control:focus {
+  border-color: var(--sb-border-focus);
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.1);
+  outline: none;
+}
+
+textarea.form-control {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.field-error {
+  margin-top: 0.35rem;
+  color: var(--sb-danger);
+  font-size: 0.75rem;
+}
+
+/* Actions */
+
+.customer-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--sb-border);
+}
+
+.customer-form-actions .btn-light {
+  border: 1px solid var(--sb-border);
+  background-color: var(--sb-surface);
+  color: var(--sb-text-secondary);
+}
+
+.customer-form-actions .btn-light:hover {
+  background-color: var(--sb-surface-muted);
+  border-color: var(--sb-border);
+  color: var(--sb-text);
+}
+
+.customer-form-actions .btn:disabled {
+  cursor: not-allowed;
+}
+
+/* Responsive */
+
+@media (max-width: 767.98px) {
+
+  .customer-form-card {
+    padding: 1rem;
+  }
+
+  .customer-form-title {
+    font-size: 1.45rem;
+  }
+
+  .customer-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .customer-form-actions .btn {
+    width: 100%;
+  }
+}

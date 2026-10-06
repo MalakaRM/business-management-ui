@@ -1,0 +1,201 @@
+<div class="inventory-report-page">
+
+  <div class="report-header">
+    <div>
+      <h1>Inventory Report</h1>
+      <p>View current inventory levels and stock values.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="printReport()"
+    >
+      <i class="bi bi-printer me-2"></i>
+      Print
+    </button>
+  </div>
+
+  <div class="report-filters">
+
+    <div class="filter-group search-group">
+      <label for="search">Search</label>
+
+      <input
+        id="search"
+        type="text"
+        class="form-control"
+        placeholder="Product, SKU or category"
+        [(ngModel)]="search"
+        (keyup.enter)="searchReport()"
+      />
+    </div>
+
+    <div class="filter-actions">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="searchReport()"
+      >
+        <i class="bi bi-search me-2"></i>
+        Search
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-light"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+    </div>
+
+  </div>
+
+  <div class="report-content">
+
+    <div class="report-table-header">
+      <div>
+        <h2>Inventory</h2>
+        <span>{{ totalElements }} records</span>
+      </div>
+    </div>
+
+    @if (loading) {
+
+      <div class="report-state">
+
+        <div
+          class="spinner-border"
+          role="status"
+          aria-label="Loading inventory report"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>Loading inventory report...</p>
+
+      </div>
+
+    }
+
+    @if (!loading) {
+
+      @if (inventories.length > 0) {
+
+        <div class="table-responsive">
+
+          <table class="table report-table">
+
+            <thead>
+            <tr>
+              <th>Product</th>
+              <th>SKU</th>
+              <th>Category</th>
+              <th>Stock</th>
+              <th>Unit Price</th>
+              <th>Stock Value</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+              @for (
+                inventory of inventories;
+                track inventory.id
+                ) {
+
+                <tr>
+
+                  <td>
+                    <span class="product-name">
+                      {{ inventory.productName }}
+                    </span>
+                  </td>
+
+                  <td>
+                    {{ inventory.sku }}
+                  </td>
+
+                  <td>
+                    {{ inventory.categoryName }}
+                  </td>
+
+                  <td>
+                    {{ inventory.quantity }}
+                  </td>
+
+                  <td>
+                    {{ inventory.price | number:'1.2-2' }}
+                  </td>
+
+                  <td>
+                    {{
+                      (inventory.quantity * inventory.price)
+                        | number:'1.2-2'
+                    }}
+                  </td>
+
+                  <td>
+
+                    @if (
+                      inventory.quantity <=
+                      inventory.reorderLevel
+                      ) {
+
+                      <span class="status-badge status-low">
+                        Low Stock
+                      </span>
+
+                    } @else {
+
+                      <span class="status-badge status-ok">
+                        In Stock
+                      </span>
+
+                    }
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      } @else {
+
+        <div class="report-state empty-state">
+
+          <i class="bi bi-box-seam"></i>
+
+          <h3>No inventory found</h3>
+
+          <p>
+            No inventory records match the search.
+          </p>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="changePage($event)"
+  ></app-pagination>
+
+
+    </div>
+

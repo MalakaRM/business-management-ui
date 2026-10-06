@@ -1,0 +1,273 @@
+.inventory-report-page {
+  padding: 24px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.report-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+  }
+}
+
+.report-filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.filter-group {
+  min-width: 180px;
+
+  label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+}
+
+.search-group {
+  flex: 1;
+  min-width: 280px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.report-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.report-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+
+  h2 {
+    margin: 0 0 3px;
+    font-size: 17px;
+    font-weight: 650;
+    color: var(--text);
+  }
+
+  span {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+}
+
+.report-table {
+  margin: 0;
+
+  th {
+    padding: 13px 20px;
+    background: var(--muted);
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 14px;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  tbody tr:hover {
+    background: var(--bg);
+  }
+}
+
+.product-name {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-low {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.status-ok {
+  color: var(--success);
+  background: var(--success-soft);
+}
+
+.report-state {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+
+  p {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.empty-state {
+  i {
+    font-size: 36px;
+    color: var(--text-muted);
+  }
+
+  h3 {
+    margin: 4px 0 0;
+    color: var(--text);
+    font-size: 17px;
+    font-weight: 650;
+  }
+}
+
+
+
+  span {
+    min-width: 120px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 13px;
+  }
+
+
+@media (max-width: 768px) {
+  .inventory-report-page {
+    padding: 16px;
+  }
+
+  .report-header {
+    flex-direction: column;
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .report-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-group,
+  .filter-group {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .filter-actions {
+    width: 100%;
+
+    .btn {
+      flex: 1;
+    }
+  }
+
+  .report-table {
+    th,
+    td {
+      padding: 12px 14px;
+    }
+  }
+}
+
+@media print {
+  .inventory-report-page {
+    padding: 0;
+    max-width: none;
+  }
+
+  .report-header {
+    margin-bottom: 16px;
+
+    button {
+      display: none;
+    }
+  }
+
+  .report-filters,
+  .report-pagination {
+    display: none;
+  }
+
+  .report-content {
+    border: 0;
+    box-shadow: none;
+  }
+
+  .report-table {
+    th,
+    td {
+      padding: 8px 10px;
+      font-size: 11px;
+    }
+
+    th {
+      background: transparent;
+      color: #000;
+    }
+
+    td {
+      color: #000;
+    }
+  }
+
+  .report-table-header {
+    padding: 0 0 10px;
+  }
+}

@@ -1,0 +1,202 @@
+<div class="sales-report-page">
+
+  <!-- Header -->
+  <div class="report-header">
+    <div>
+      <h1>Sales Report</h1>
+      <p>View sales orders and transaction activity.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="printReport()"
+    >
+      <i class="bi bi-printer me-2"></i>
+      Print
+    </button>
+  </div>
+
+  <!-- Filters -->
+  <div class="report-filters">
+
+    <div class="filter-group">
+      <label for="fromDate">From Date</label>
+      <input
+        id="fromDate"
+        type="date"
+        class="form-control"
+        [(ngModel)]="fromDate"
+      />
+    </div>
+
+    <div class="filter-group">
+      <label for="toDate">To Date</label>
+      <input
+        id="toDate"
+        type="date"
+        class="form-control"
+        [(ngModel)]="toDate"
+      />
+    </div>
+
+    <div class="filter-group search-group">
+      <label for="search">Search</label>
+      <input
+        id="search"
+        type="text"
+        class="form-control"
+        placeholder="Order number or customer"
+        [(ngModel)]="search"
+        (keyup.enter)="searchReport()"
+      />
+    </div>
+
+    <div class="filter-actions">
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="searchReport()"
+      >
+        <i class="bi bi-search me-2"></i>
+        Search
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-light"
+        (click)="clearFilters()"
+      >
+        Clear
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Report Content -->
+  <div class="report-content">
+
+    <div class="report-table-header">
+      <div>
+        <h2>Sales</h2>
+        <span>{{ totalElements }} records</span>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    @if (loading) {
+
+      <div class="report-state">
+
+        <div
+          class="spinner-border"
+          role="status"
+          aria-label="Loading sales report"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>Loading sales report...</p>
+
+      </div>
+
+    }
+
+    <!-- Table -->
+    @if (!loading) {
+
+      @if (orders.length > 0) {
+
+        <div class="table-responsive">
+
+          <table class="table report-table">
+
+            <thead>
+            <tr>
+              <th>Order No</th>
+              <th>Date</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+              @for (order of orders; track order.id) {
+
+                <tr>
+
+                  <td>
+                    <span class="order-number">
+                      {{ order.orderNumber }}
+                    </span>
+                  </td>
+
+                  <td>
+                    {{ order.orderDate }}
+                  </td>
+
+                  <td>
+                    {{ order.customerName || 'Walk-in Customer' }}
+                  </td>
+
+                  <td>
+                    {{ order.items?.length || 0 }}
+                  </td>
+
+                  <td>
+                    {{ order.totalAmount | number:'1.2-2' }}
+                  </td>
+
+                  <td>
+                    <span class="status-badge">
+                      {{ order.status }}
+                    </span>
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      } @else {
+
+        <div class="report-state empty-state">
+
+          <i class="bi bi-receipt"></i>
+
+          <h3>No sales found</h3>
+
+          <p>
+            No sales records match the selected filters.
+          </p>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+
+  <!-- Pagination -->
+  <app-pagination
+    [currentPage]="currentPage"
+    [totalPages]="totalPages"
+    (pageChange)="changePage($event)"
+  ></app-pagination>
+
+    </div>
+
+

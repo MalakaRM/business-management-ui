@@ -1,0 +1,364 @@
+<!--<div class="customer-form-page">-->
+
+<!--  <div class="customer-form-header">-->
+<!--    <div>-->
+<!--      <h1 class="customer-form-title">-->
+<!--        {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}-->
+<!--      </h1>-->
+
+<!--      <p class="customer-form-subtitle">-->
+<!--        {{-->
+<!--          isEditMode-->
+<!--            ? 'Update customer information.'-->
+<!--            : 'Create a new customer record.'-->
+<!--        }}-->
+<!--      </p>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  @if (submitError) {-->
+<!--    <div class="customer-form-alert">-->
+<!--      <i class="bi bi-exclamation-circle"></i>-->
+
+<!--      <span>-->
+<!--        {{ submitError }}-->
+<!--      </span>-->
+<!--    </div>-->
+<!--  }-->
+
+<!--&lt;!&ndash;  @if (isLoadingCustomer) {&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="customer-form-card customer-form-loading">&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <div&ndash;&gt;-->
+<!--&lt;!&ndash;        class="spinner-border text-primary"&ndash;&gt;-->
+<!--&lt;!&ndash;        role="status"&ndash;&gt;-->
+<!--&lt;!&ndash;      >&ndash;&gt;-->
+<!--&lt;!&ndash;        <span class="visually-hidden">&ndash;&gt;-->
+<!--&lt;!&ndash;          Loading...&ndash;&gt;-->
+<!--&lt;!&ndash;        </span>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;      <p>&ndash;&gt;-->
+<!--&lt;!&ndash;        Loading customer...&ndash;&gt;-->
+<!--&lt;!&ndash;      </p>&ndash;&gt;-->
+
+<!--&lt;!&ndash;    </div>&ndash;&gt;-->
+
+<!--&lt;!&ndash;  } @else {&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <div class="customer-form-card">&ndash;&gt;-->
+
+<!--      <form-->
+<!--        [formGroup]="customerForm"-->
+<!--        (ngSubmit)="onSubmit()"-->
+<!--        novalidate-->
+<!--      >-->
+
+<!--        &lt;!&ndash; Customer Name &ndash;&gt;-->
+
+<!--        <div class="mb-3">-->
+
+<!--          <label-->
+<!--            for="name"-->
+<!--            class="form-label"-->
+<!--          >-->
+<!--            Customer Name-->
+<!--            <span class="text-danger">*</span>-->
+<!--          </label>-->
+
+<!--          <input-->
+<!--            id="name"-->
+<!--            type="text"-->
+<!--            class="form-control"-->
+<!--            formControlName="name"-->
+<!--            placeholder="Enter customer name"-->
+<!--            autocomplete="name"-->
+<!--          >-->
+
+<!--          @if (-->
+<!--            customerForm.controls.name.invalid &&-->
+<!--            customerForm.controls.name.touched-->
+<!--            ) {-->
+<!--            <div class="field-error">-->
+<!--              Customer name is required.-->
+<!--            </div>-->
+<!--          }-->
+
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Email &ndash;&gt;-->
+
+<!--        <div class="mb-3">-->
+
+<!--          <label-->
+<!--            for="email"-->
+<!--            class="form-label"-->
+<!--          >-->
+<!--            Email-->
+<!--          </label>-->
+
+<!--          <input-->
+<!--            id="email"-->
+<!--            type="email"-->
+<!--            class="form-control"-->
+<!--            formControlName="email"-->
+<!--            placeholder="Enter email address"-->
+<!--            autocomplete="email"-->
+<!--          >-->
+
+<!--          @if (-->
+<!--            customerForm.controls.email.invalid &&-->
+<!--            customerForm.controls.email.touched-->
+<!--            ) {-->
+<!--            <div class="field-error">-->
+<!--              Please enter a valid email address.-->
+<!--            </div>-->
+<!--          }-->
+
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Phone &ndash;&gt;-->
+
+<!--        <div class="mb-3">-->
+
+<!--          <label-->
+<!--            for="phone"-->
+<!--            class="form-label"-->
+<!--          >-->
+<!--            Phone-->
+<!--          </label>-->
+
+<!--          <input-->
+<!--            id="phone"-->
+<!--            type="tel"-->
+<!--            class="form-control"-->
+<!--            formControlName="phone"-->
+<!--            placeholder="Enter phone number"-->
+<!--            autocomplete="tel"-->
+<!--          >-->
+
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Address &ndash;&gt;-->
+
+<!--        <div class="mb-3">-->
+
+<!--          <label-->
+<!--            for="address"-->
+<!--            class="form-label"-->
+<!--          >-->
+<!--            Address-->
+<!--          </label>-->
+
+<!--          <textarea-->
+<!--            id="address"-->
+<!--            class="form-control"-->
+<!--            formControlName="address"-->
+<!--            placeholder="Enter customer address"-->
+<!--            rows="4"-->
+<!--            autocomplete="street-address"-->
+<!--          ></textarea>-->
+
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Actions &ndash;&gt;-->
+
+<!--        <div class="customer-form-actions">-->
+
+<!--          <button-->
+<!--            type="button"-->
+<!--            class="btn btn-light"-->
+<!--            (click)="cancel()"-->
+<!--            [disabled]="isSubmitting"-->
+<!--          >-->
+<!--            Cancel-->
+<!--          </button>-->
+
+<!--          <button-->
+<!--            type="submit"-->
+<!--            class="btn btn-primary"-->
+<!--            [disabled]="isSubmitting"-->
+<!--          >-->
+
+<!--            @if (isSubmitting) {-->
+
+<!--              <span-->
+<!--                class="spinner-border spinner-border-sm me-2"-->
+<!--                aria-hidden="true"-->
+<!--              ></span>-->
+
+<!--              {{ isEditMode ? 'Updating...' : 'Saving...' }}-->
+
+<!--            } @else {-->
+
+<!--              <i class="bi bi-check-lg me-2"></i>-->
+
+<!--              {{-->
+<!--                isEditMode-->
+<!--                  ? 'Update Customer'-->
+<!--                  : 'Save Customer'-->
+<!--              }}-->
+
+<!--            }-->
+
+<!--          </button>-->
+
+<!--        </div>-->
+
+<!--      </form>-->
+
+<!--</div>-->
+
+<!--</div>-->
+
+<div class="customer-form-page">
+
+  <div class="customer-form-header">
+    <div>
+      <h1 class="customer-form-title">
+        {{ isEditMode ? 'Edit Customer' : 'Add Customer' }}
+      </h1>
+
+      <p class="customer-form-subtitle">
+        {{
+          isEditMode
+            ? 'Update customer information.'
+            : 'Create a new customer record.'
+        }}
+      </p>
+    </div>
+  </div>
+
+  @if (submitError) {
+    <div class="customer-form-alert">
+      <i class="bi bi-exclamation-circle"></i>
+      <span>{{ submitError }}</span>
+    </div>
+  }
+
+  <div class="customer-form-card">
+
+    <form
+      [formGroup]="customerForm"
+      (ngSubmit)="onSubmit()"
+      novalidate
+    >
+
+      <!-- Customer Name -->
+      <div class="mb-3">
+        <label for="name" class="form-label">
+          Customer Name
+          <span class="text-danger">*</span>
+        </label>
+
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          formControlName="name"
+          placeholder="Enter customer name"
+          autocomplete="name"
+        >
+
+        @if (
+          customerForm.controls.name.invalid &&
+          customerForm.controls.name.touched
+          ) {
+          <div class="field-error">
+            Customer name is required.
+          </div>
+        }
+      </div>
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">
+          Email
+        </label>
+
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          formControlName="email"
+          placeholder="Enter email address"
+          autocomplete="email"
+        >
+
+        @if (
+          customerForm.controls.email.invalid &&
+          customerForm.controls.email.touched
+          ) {
+          <div class="field-error">
+            Please enter a valid email address.
+          </div>
+        }
+      </div>
+
+      <!-- Phone -->
+      <div class="mb-3">
+        <label for="phone" class="form-label">
+          Phone
+        </label>
+
+        <input
+          id="phone"
+          type="tel"
+          class="form-control"
+          formControlName="phone"
+          placeholder="Enter phone number"
+          autocomplete="tel"
+        >
+      </div>
+
+      <!-- Address -->
+      <div class="mb-3">
+        <label for="address" class="form-label">
+          Address
+        </label>
+
+        <textarea
+          id="address"
+          class="form-control"
+          formControlName="address"
+          placeholder="Enter customer address"
+          rows="4"
+          autocomplete="street-address"
+        ></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="customer-form-actions">
+        <button
+          type="button"
+          class="btn btn-light"
+          (click)="cancel()"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="isSubmitting"
+        >
+          @if (isSubmitting) {
+            <span
+              class="spinner-border spinner-border-sm me-2"
+              aria-hidden="true"
+            ></span>
+            {{ isEditMode ? 'Updating...' : 'Saving...' }}
+          } @else {
+            <i class="bi bi-check-lg me-2"></i>
+            {{ isEditMode ? 'Update Customer' : 'Save Customer' }}
+          }
+        </button>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

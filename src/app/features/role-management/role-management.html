@@ -1,0 +1,277 @@
+<div class="role-management-page">
+
+  <div class="page-header">
+    <div>
+      <h1>Role Management</h1>
+      <p>
+        Create roles and control which permissions each role can access.
+      </p>
+    </div>
+  </div>
+
+  @if (successMessage) {
+    <div class="alert alert-success" role="alert">
+      <i class="bi bi-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger" role="alert">
+      <i class="bi bi-exclamation-circle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+  <div class="role-layout">
+
+    <!-- Create Role -->
+    <section class="panel">
+
+      <div class="panel-header">
+        <div>
+          <h2>Create Role</h2>
+          <p>Add a new access role to the system.</p>
+        </div>
+      </div>
+
+      <form
+        [formGroup]="roleForm"
+        (ngSubmit)="createRole()"
+      >
+
+        <div class="form-group">
+
+          <label for="role-name">
+            Role Name
+          </label>
+
+          <input
+            id="role-name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Accountant"
+          />
+
+          @if (
+            roleForm.controls.name.touched &&
+            roleForm.controls.name.invalid
+            ) {
+            <small class="field-error">
+              Role name is required.
+            </small>
+          }
+
+        </div>
+
+        <div class="form-group">
+
+          <label for="role-description">
+            Description
+          </label>
+
+          <textarea
+            id="role-description"
+            rows="4"
+            formControlName="description"
+            placeholder="Describe the purpose of this role"
+          ></textarea>
+
+        </div>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="isSaving"
+        >
+
+          @if (isSaving) {
+            <span class="spinner"></span>
+            <span>Creating...</span>
+          } @else {
+            <i class="bi bi-plus-lg"></i>
+            <span>Create Role</span>
+          }
+
+        </button>
+
+      </form>
+
+    </section>
+
+    <!-- Roles -->
+    <section class="panel">
+
+      <div class="panel-header">
+        <div>
+          <h2>Roles</h2>
+          <p>Select a role to manage its permissions.</p>
+        </div>
+      </div>
+
+      @if (isLoadingRoles) {
+
+        <div class="loading-state">
+          <span class="spinner"></span>
+          <span>Loading roles...</span>
+        </div>
+
+      } @else if (roles.length === 0) {
+
+        <div class="empty-state">
+          <i class="bi bi-shield-x"></i>
+          <span>No roles found.</span>
+        </div>
+
+      } @else {
+
+        <div class="role-list">
+
+          @for (role of roles; track role.id) {
+
+            <button
+              type="button"
+              class="role-item"
+              [class.selected]="selectedRoleId === role.id"
+              (click)="selectRole(role)"
+            >
+
+              <div class="role-item-content">
+
+                <span class="role-name">
+                  {{ role.name }}
+                </span>
+
+                <span class="role-description">
+                  {{ role.description || 'No description provided.' }}
+                </span>
+
+              </div>
+
+              <i class="bi bi-chevron-right"></i>
+
+            </button>
+
+          }
+
+        </div>
+
+      }
+
+    </section>
+
+  </div>
+
+  <!-- Permissions -->
+  <section class="panel permissions-panel">
+
+    <div class="panel-header">
+
+      <div>
+        <h2>Permissions</h2>
+
+        @if (selectedRoleId !== null) {
+          <p>
+            Select the permissions for the selected role.
+          </p>
+        } @else {
+          <p>
+            Select a role first to manage permissions.
+          </p>
+        }
+
+      </div>
+
+    </div>
+
+    @if (isLoadingPermissions) {
+
+      <div class="loading-state">
+        <span class="spinner"></span>
+        <span>Loading permissions...</span>
+      </div>
+
+    } @else if (selectedRoleId === null) {
+
+      <div class="empty-state">
+        <i class="bi bi-shield-lock"></i>
+        <span>Select a role from the list above.</span>
+      </div>
+
+    } @else if (permissions.length === 0) {
+
+      <div class="empty-state">
+        <i class="bi bi-shield-x"></i>
+        <span>No permissions available.</span>
+      </div>
+
+    } @else {
+
+      <div class="permission-list">
+
+        @for (
+          permission of permissions;
+          track permission.id
+          ) {
+
+          <label class="permission-item">
+
+            <input
+              type="checkbox"
+              [checked]="
+                selectedPermissionIds.has(permission.id)
+              "
+              (change)="
+                togglePermission(permission.id)
+              "
+            />
+
+            <div class="permission-content">
+
+              <span class="permission-name">
+                {{ permission.name }}
+              </span>
+
+              <span class="permission-description">
+                {{ permission.description }}
+              </span>
+
+            </div>
+
+          </label>
+
+        }
+
+      </div>
+
+      <div class="permissions-footer">
+
+        <span class="permission-count">
+          {{ selectedPermissionIds.size }}
+          permission(s) selected
+        </span>
+
+        <button
+          type="button"
+          class="btn-primary"
+          [disabled]="isSaving"
+          (click)="savePermissions()"
+        >
+
+          @if (isSaving) {
+            <span class="spinner"></span>
+            <span>Saving...</span>
+          } @else {
+            <i class="bi bi-check-lg"></i>
+            <span>Save Permissions</span>
+          }
+
+        </button>
+
+      </div>
+
+    }
+
+  </section>
+
+</div>

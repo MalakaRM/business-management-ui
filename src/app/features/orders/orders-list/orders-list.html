@@ -1,0 +1,631 @@
+<div class="orders-page">
+
+  @if (hasPermission('ORDER_READ')) {
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+      <div>
+
+        <h1 class="page-title">
+          Orders
+        </h1>
+
+        <p class="page-subtitle">
+          Manage customer orders and monitor order status.
+        </p>
+
+      </div>
+
+      @if (hasPermission('ORDER_CREATE')) {
+
+        <a
+          routerLink="/app/orders/new"
+          class="btn btn-primary"
+        >
+          <i class="bi bi-plus-lg me-2"></i>
+          New Order
+        </a>
+
+      }
+
+    </div>
+
+
+    <!-- Summary -->
+    <div class="summary-grid">
+
+      <div class="summary-item">
+
+        <div class="summary-icon total-icon">
+          <i class="bi bi-receipt"></i>
+        </div>
+
+        <div>
+
+          <span class="summary-label">
+            Total Orders
+          </span>
+
+          <strong class="summary-value">
+            {{ totalElements }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-item">
+
+        <div class="summary-icon pending-icon">
+          <i class="bi bi-hourglass-split"></i>
+        </div>
+
+        <div>
+
+          <span class="summary-label">
+            Pending
+          </span>
+
+          <strong class="summary-value">
+            {{ pendingCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-item">
+
+        <div class="summary-icon confirmed-icon">
+          <i class="bi bi-check2-circle"></i>
+        </div>
+
+        <div>
+
+          <span class="summary-label">
+            Confirmed
+          </span>
+
+          <strong class="summary-value">
+            {{ confirmedCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="summary-item">
+
+        <div class="summary-icon cancelled-icon">
+          <i class="bi bi-x-circle"></i>
+        </div>
+
+        <div>
+
+          <span class="summary-label">
+            Cancelled
+          </span>
+
+          <strong class="summary-value">
+            {{ cancelledCount }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Error -->
+    @if (errorMessage) {
+
+      <div
+        class="alert alert-danger page-alert"
+        role="alert"
+      >
+
+        <i
+          class="bi bi-exclamation-circle me-2"
+          aria-hidden="true"
+        ></i>
+
+        {{ errorMessage }}
+
+      </div>
+
+    }
+
+
+    <!-- Orders Section -->
+    <div class="orders-section">
+
+      <!-- Toolbar -->
+      <div class="orders-toolbar">
+
+        <div class="search-wrapper">
+
+          <i
+            class="bi bi-search search-icon"
+            aria-hidden="true"
+          ></i>
+
+          <input
+            type="text"
+            class="form-control search-input"
+            placeholder="Search order number or customer..."
+            [(ngModel)]="searchTerm"
+          />
+
+        </div>
+
+
+        <div class="filter-wrapper">
+
+          <select
+            class="form-select"
+            [(ngModel)]="statusFilter"
+            aria-label="Filter orders by status"
+          >
+
+            <option value="">
+              All Statuses
+            </option>
+
+            <option value="PENDING">
+              Pending
+            </option>
+
+            <option value="CONFIRMED">
+              Confirmed
+            </option>
+
+            <option value="CANCELLED">
+              Cancelled
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Loading -->
+      @if (isLoading) {
+
+        <div class="loading-state">
+
+          <div
+            class="spinner-border text-primary"
+            role="status"
+          >
+
+            <span class="visually-hidden">
+              Loading...
+            </span>
+
+          </div>
+
+          <p>
+            Loading orders...
+          </p>
+
+        </div>
+
+      }
+      @else {
+
+        <!-- Empty -->
+        @if (filteredOrders.length === 0) {
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              <i
+                class="bi bi-receipt"
+                aria-hidden="true"
+              ></i>
+            </div>
+
+            <h3>
+              No orders found
+            </h3>
+
+            <p>
+              {{
+                searchTerm || statusFilter
+                  ? 'Try changing your search or filter.'
+                  : 'Create your first order to get started.'
+              }}
+            </p>
+
+            @if (
+              !searchTerm &&
+              !statusFilter &&
+              hasPermission('ORDER_CREATE')
+              ) {
+
+              <a
+                routerLink="/app/orders/new"
+                class="btn btn-primary"
+              >
+
+                <i class="bi bi-plus-lg me-2"></i>
+
+                Create Order
+
+              </a>
+
+            }
+
+          </div>
+
+        }
+        @else {
+
+          <!-- Table -->
+          <div class="table-responsive">
+
+            <table class="table orders-table">
+
+              <thead>
+
+              <tr>
+
+                <th>
+                  Order
+                </th>
+
+                <th>
+                  Customer
+                </th>
+
+                <th>
+                  Order Date
+                </th>
+
+                <th>
+                  Items
+                </th>
+
+                <th>
+                  Total
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th class="text-end">
+                  Action
+                </th>
+
+              </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                @for (
+                  order of filteredOrders;
+                  track order.id
+                  ) {
+
+                  <tr>
+
+                    <!-- Order -->
+                    <td>
+
+                      <div class="order-cell">
+
+                        <div class="order-icon">
+                          <i
+                            class="bi bi-receipt"
+                            aria-hidden="true"
+                          ></i>
+                        </div>
+
+                        <div>
+
+                          <strong>
+                            {{ order.orderNumber }}
+                          </strong>
+
+                          <span>
+                            Order #{{ order.id }}
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    </td>
+
+
+                    <!-- Customer -->
+                    <td>
+
+                      @if (order.customerName) {
+
+                        <div class="customer-cell">
+
+                          <div class="customer-avatar">
+
+                            {{
+                              order.customerName
+                                .charAt(0)
+                                .toUpperCase()
+                            }}
+
+                          </div>
+
+                          <span>
+                            {{ order.customerName }}
+                          </span>
+
+                        </div>
+
+                      }
+                      @else {
+
+                        <span class="walk-in-customer">
+
+                          <i
+                            class="bi bi-person"
+                            aria-hidden="true"
+                          ></i>
+
+                          Walk-in Customer
+
+                        </span>
+
+                      }
+
+                    </td>
+
+
+                    <!-- Date -->
+                    <td>
+
+                      <span class="date-value">
+                        {{ order.orderDate }}
+                      </span>
+
+                    </td>
+
+
+                    <!-- Items -->
+                    <td>
+
+                      <span class="item-count">
+
+                        {{ order.items.length }}
+
+                        {{
+                          order.items.length === 1
+                            ? 'Item'
+                            : 'Items'
+                        }}
+
+                      </span>
+
+                    </td>
+
+
+                    <!-- Total -->
+                    <td>
+
+                      <strong class="total-value">
+
+                        Rs.
+                        {{
+                          order.totalAmount
+                            | number:'1.2-2'
+                        }}
+
+                      </strong>
+
+                    </td>
+
+
+                    <!-- Status -->
+                    <td>
+
+                      <span
+                        class="status-badge"
+                        [class]="
+                          getStatusClass(
+                            order.status
+                          )
+                        "
+                      >
+
+                        <span class="status-dot"></span>
+
+                        {{
+                          getStatusLabel(
+                            order.status
+                          )
+                        }}
+
+                      </span>
+
+                    </td>
+
+
+                    <!-- Action -->
+                    <td class="text-end">
+
+                      @if (
+                        hasPermission('ORDER_READ')
+                        ) {
+
+                        <a
+                          class="btn btn-sm btn-outline-primary"
+                          [routerLink]="[
+                            '/app/orders',
+                            order.id
+                          ]"
+                          title="View order"
+                          aria-label="View order"
+                        >
+
+                          <i
+                            class="bi bi-eye me-1"
+                            aria-hidden="true"
+                          ></i>
+
+                          View
+
+                        </a>
+
+                      }
+
+                    </td>
+
+                  </tr>
+
+                }
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+
+          <!-- Pagination -->
+          @if (totalPages > 1) {
+
+            <div class="pagination-wrapper">
+
+              <!-- Previous -->
+              <button
+                type="button"
+                class="page-link pagination-nav"
+                (click)="
+                  goToPage(
+                    currentPage - 1
+                  )
+                "
+                [disabled]="
+                  currentPage === 0
+                "
+                aria-label="Previous page"
+              >
+
+                <i
+                  class="bi bi-chevron-left"
+                  aria-hidden="true"
+                ></i>
+
+                <span>
+                  Previous
+                </span>
+
+              </button>
+
+
+              <!-- Page Numbers -->
+              <div class="pagination-numbers">
+
+                @for (
+                  page of pageNumbers;
+                  track page
+                  ) {
+
+                  <button
+                    type="button"
+                    class="page-link"
+                    [class.active]="
+                      page === currentPage
+                    "
+                    (click)="
+                      goToPage(page)
+                    "
+                    [attr.aria-current]="
+                      page === currentPage
+                        ? 'page'
+                        : null
+                    "
+                  >
+                    {{ page + 1 }}
+                  </button>
+
+                }
+
+              </div>
+
+
+              <!-- Next -->
+              <button
+                type="button"
+                class="page-link pagination-nav"
+                (click)="
+                  goToPage(
+                    currentPage + 1
+                  )
+                "
+                [disabled]="
+                  currentPage ===
+                  totalPages - 1
+                "
+                aria-label="Next page"
+              >
+
+                <span>
+                  Next
+                </span>
+
+                <i
+                  class="bi bi-chevron-right"
+                  aria-hidden="true"
+                ></i>
+
+              </button>
+
+            </div>
+
+          }
+
+        }
+
+      }
+
+    </div>
+
+  }
+
+  @else {
+
+    <!-- Permission Restricted -->
+    <div class="orders-section">
+
+      <div class="purchase-permission-state">
+
+        <i
+          class="bi bi-shield-lock"
+          aria-hidden="true"
+        ></i>
+
+        <h3>
+          Access Restricted
+        </h3>
+
+        <p>
+          You do not have permission to view orders.
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

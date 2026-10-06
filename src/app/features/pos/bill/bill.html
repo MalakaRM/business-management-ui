@@ -1,0 +1,382 @@
+<div class="bill-page">
+
+  <!-- ===================================================== -->
+  <!-- ACCESS RESTRICTED                                     -->
+  <!-- ===================================================== -->
+
+  @if (
+    !hasPermission('ORDER_READ') &&
+    !isLoading &&
+    !invoice
+    ) {
+
+    <div class="bill-state access-restricted-state">
+
+      <div class="state-icon">
+        <i class="bi bi-shield-lock"></i>
+      </div>
+
+      <h2>Access Restricted</h2>
+
+      <p>
+        You do not have permission to view bills.
+      </p>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="backToPos()"
+      >
+        <i class="bi bi-arrow-left"></i>
+        Back to POS
+      </button>
+
+    </div>
+
+  }
+
+  <!-- ===================================================== -->
+  <!-- AUTHORIZED CONTENT                                    -->
+  <!-- ===================================================== -->
+
+  @if (hasPermission('ORDER_READ')) {
+
+    <!-- Loading -->
+
+    @if (isLoading) {
+
+      <div class="bill-state">
+
+        <div
+          class="spinner-border"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>
+          Loading invoice...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- Error -->
+
+    @if (!isLoading && errorMessage && !invoice) {
+
+      <div
+        class="bill-state error-state"
+      >
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <p>
+          {{ errorMessage }}
+        </p>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="backToPos()"
+        >
+          <i class="bi bi-arrow-left"></i>
+          Back to POS
+        </button>
+
+      </div>
+
+    }
+
+
+    <!-- =================================================== -->
+      <!-- BILL                                                 -->
+      <!-- =================================================== -->
+
+    @if (!isLoading && invoice) {
+
+      <div class="bill-wrapper">
+
+        <!-- ================================================= -->
+        <!-- ACTIONS                                            -->
+        <!-- ================================================= -->
+
+        <div class="bill-actions no-print">
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="backToPos()"
+          >
+            <i class="bi bi-arrow-left"></i>
+            Back to POS
+          </button>
+
+          <div class="bill-action-group">
+
+            @if (hasPermission('ORDER_CREATE')) {
+
+              <button
+                type="button"
+                class="btn btn-outline-primary"
+                (click)="newSale()"
+              >
+                <i class="bi bi-plus-circle"></i>
+                New Sale
+              </button>
+
+            }
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="printBill()"
+            >
+              <i class="bi bi-printer"></i>
+              Print Bill
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- RECEIPT                                            -->
+        <!-- ================================================= -->
+
+        <div class="bill">
+
+          <!-- Business Header -->
+
+          <header class="bill-header">
+
+            <h1>
+              SMART BUSINESS
+            </h1>
+
+            <p>
+              Kurunegala, Sri Lanka
+            </p>
+
+            <p>
+              081 234 5678 · info@smartbusiness.com
+            </p>
+
+          </header>
+
+
+          <div class="bill-divider"></div>
+
+
+          <!-- Invoice Information -->
+
+          <section class="bill-info">
+
+            <div class="info-row">
+              <span>Invoice</span>
+
+              <strong>
+                {{ invoice.invoiceNumber }}
+              </strong>
+            </div>
+
+
+            <div class="info-row">
+              <span>Order</span>
+
+              <strong>
+                {{ invoice.orderNumber }}
+              </strong>
+            </div>
+
+
+            <div class="info-row">
+              <span>Date</span>
+
+              <strong>
+                {{ formatDate(invoice.issuedAt) }}
+              </strong>
+            </div>
+
+
+            <div class="info-row">
+              <span>Time</span>
+
+              <strong>
+                {{ formatTime(invoice.issuedAt) }}
+              </strong>
+            </div>
+
+
+            <div class="info-row">
+              <span>Customer</span>
+
+              <strong>
+                {{ customerName }}
+              </strong>
+            </div>
+
+
+            <div class="info-row">
+              <span>Cashier</span>
+
+              <strong>
+                {{ invoice.cashierName }}
+              </strong>
+            </div>
+
+          </section>
+
+
+          <div class="bill-divider"></div>
+
+
+          <!-- ================================================= -->
+          <!-- ITEMS                                               -->
+          <!-- ================================================= -->
+
+          <section class="bill-items">
+
+            <div class="items-header">
+
+              <span class="product-col">
+                Product
+              </span>
+
+              <span class="qty-col">
+                Qty
+              </span>
+
+              <span class="price-col">
+                Price
+              </span>
+
+              <span class="amount-col">
+                Amount
+              </span>
+
+            </div>
+
+
+            <div
+              class="item-row"
+              *ngFor="let item of invoice.items"
+            >
+
+              <span class="product-col">
+                {{ item.productName }}
+              </span>
+
+              <span class="qty-col">
+                {{ item.quantity }}
+              </span>
+
+              <span class="price-col">
+                {{ item.unitPrice | number:'1.2-2' }}
+              </span>
+
+              <span class="amount-col">
+                {{ item.subtotal | number:'1.2-2' }}
+              </span>
+
+            </div>
+
+          </section>
+
+
+          <div class="bill-divider"></div>
+
+
+          <!-- ================================================= -->
+          <!-- PAYMENT SUMMARY                                    -->
+          <!-- ================================================= -->
+
+          <section class="bill-summary">
+
+            <div class="summary-row total-row">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                {{ invoice.totalAmount | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span>
+                Paid
+              </span>
+
+              <strong>
+                {{ invoice.amountTendered | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span>
+                Change
+              </span>
+
+              <strong>
+                {{ invoice.changeAmount | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-row payment-row">
+
+              <span>
+                Payment
+              </span>
+
+              <strong>
+                {{ invoice.paymentMethod }}
+              </strong>
+
+            </div>
+
+          </section>
+
+
+          <div class="bill-divider"></div>
+
+
+          <!-- ================================================= -->
+          <!-- FOOTER                                             -->
+          <!-- ================================================= -->
+
+          <footer class="bill-footer">
+
+            <p class="thank-you">
+              Thank you!
+            </p>
+
+            <p>
+              We appreciate your business.
+            </p>
+
+          </footer>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>

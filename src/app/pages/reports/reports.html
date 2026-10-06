@@ -1,0 +1,125 @@
+<div class="reports-page">
+
+  @if (hasPermission('REPORT_READ')) {
+
+    <div class="reports-header">
+      <div>
+        <h1>Reports</h1>
+        <p>View and analyze your business reports.</p>
+      </div>
+    </div>
+
+    <div class="report-grid">
+
+      <button
+        type="button"
+        class="report-card"
+        (click)="openReport('sales')"
+      >
+        <div class="report-icon sales-icon">
+          <i class="bi bi-graph-up"></i>
+        </div>
+
+        <div class="report-content">
+          <h2>Sales</h2>
+          <p>
+            View sales orders, customers, payments and sales activity.
+          </p>
+        </div>
+
+        <div class="report-action">
+          <span>View Report</span>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+      </button>
+
+
+      <button
+        type="button"
+        class="report-card"
+        (click)="openReport('purchases')"
+      >
+        <div class="report-icon purchases-icon">
+          <i class="bi bi-bag-check"></i>
+        </div>
+
+        <div class="report-content">
+          <h2>Purchases</h2>
+          <p>
+            View purchase records, suppliers and purchase activity.
+          </p>
+        </div>
+
+        <div class="report-action">
+          <span>View Report</span>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+      </button>
+
+
+      <button
+        type="button"
+        class="report-card"
+        (click)="openReport('inventory')"
+      >
+        <div class="report-icon inventory-icon">
+          <i class="bi bi-box-seam"></i>
+        </div>
+
+        <div class="report-content">
+          <h2>Inventory</h2>
+          <p>
+            View current stock, product values and inventory status.
+          </p>
+        </div>
+
+        <div class="report-action">
+          <span>View Report</span>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+      </button>
+
+
+      <button
+        type="button"
+        class="report-card"
+        (click)="openReport('low-stock-report')"
+      >
+        <div class="report-icon low-stock-icon">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+
+        <div class="report-content">
+          <h2>Low Stock</h2>
+          <p>
+            Identify products that are below their minimum stock level.
+          </p>
+        </div>
+
+        <div class="report-action">
+          <span>View Report</span>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+      </button>
+
+    </div>
+
+  } @else {
+
+    <div class="reports-empty">
+
+      <div class="reports-empty-icon">
+        <i class="bi bi-lock"></i>
+      </div>
+
+      <h2>Access Restricted</h2>
+
+      <p>
+        You do not have permission to view reports.
+      </p>
+
+    </div>
+
+  }
+
+</div>

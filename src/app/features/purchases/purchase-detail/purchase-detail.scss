@@ -1,0 +1,651 @@
+.purchase-detail-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+
+/* ================================
+   Page Header
+================================ */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-title {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.back-button {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-md);
+  background: var(--sb-surface);
+  color: var(--sb-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background: var(--sb-surface-muted);
+  color: var(--sb-text);
+  border-color: var(--sb-border-focus);
+}
+
+
+/* ================================
+   Alerts
+================================ */
+
+.page-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+  border-radius: var(--sb-radius-md);
+}
+
+
+/* ================================
+   Loading
+================================ */
+
+.loading-state {
+  min-height: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--sb-text-secondary);
+}
+
+.loading-state p {
+  margin: 0.9rem 0 0;
+  font-size: 0.9rem;
+}
+
+
+/* ================================
+   Purchase Summary
+================================ */
+
+.purchase-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 1.5rem;
+
+  margin-bottom: 1.5rem;
+
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.summary-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.reference-icon {
+  width: 52px;
+  height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+
+  font-size: 1.3rem;
+}
+
+.summary-label {
+  display: block;
+  margin-bottom: 0.2rem;
+
+  color: var(--sb-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-main h2 {
+  margin: 0;
+
+  color: var(--sb-text);
+  font-size: 1.35rem;
+  font-weight: 700;
+}
+
+.purchase-id {
+  display: block;
+  margin-top: 0.25rem;
+
+  color: var(--sb-text-muted);
+  font-size: 0.8rem;
+}
+
+
+/* ================================
+   Status
+================================ */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+
+  padding: 0.4rem 0.7rem;
+
+  border-radius: 999px;
+
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.status-draft {
+  background: var(--sb-warning-soft);
+  color: var(--sb-warning);
+}
+
+.status-draft .status-dot {
+  background: var(--sb-warning);
+}
+
+.status-received {
+  background: var(--sb-success-soft);
+  color: var(--sb-success);
+}
+
+.status-received .status-dot {
+  background: var(--sb-success);
+}
+
+.status-cancelled {
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+}
+
+.status-cancelled .status-dot {
+  background: var(--sb-danger);
+}
+
+
+/* ================================
+   Sections
+================================ */
+
+.information-section,
+.items-section {
+  margin-bottom: 1.5rem;
+
+  padding: 1.5rem;
+
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+
+  color: var(--sb-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.section-header p {
+  margin: 0.3rem 0 0;
+
+  color: var(--sb-text-secondary);
+  font-size: 0.82rem;
+}
+
+
+/* ================================
+   Information Grid
+================================ */
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.info-item {
+  min-width: 0;
+}
+
+.info-label {
+  display: block;
+  margin-bottom: 0.45rem;
+
+  color: var(--sb-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.info-value {
+  display: block;
+
+  color: var(--sb-text);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.supplier-value {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.supplier-avatar {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.total-value {
+  display: block;
+
+  color: var(--sb-primary);
+  font-size: 1.05rem;
+  font-weight: 700;
+}
+
+.notes-section {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+
+  border-top: 1px solid var(--sb-border);
+}
+
+.notes-section p {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+
+/* ================================
+   Items
+================================ */
+
+.item-count {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0.35rem 0.65rem;
+
+  border-radius: 999px;
+
+  background: var(--sb-surface-muted);
+  color: var(--sb-text-secondary);
+
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+
+/* ================================
+   Items Table
+================================ */
+
+.purchase-items-table {
+  margin: 0;
+
+  vertical-align: middle;
+}
+
+.purchase-items-table thead th {
+  padding: 0.85rem 1rem;
+
+  border-bottom: 1px solid var(--sb-border);
+
+  background: var(--sb-surface-muted);
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.purchase-items-table tbody td {
+  padding: 1rem;
+
+  border-bottom: 1px solid var(--sb-border);
+
+  color: var(--sb-text);
+
+  font-size: 0.88rem;
+}
+
+.purchase-items-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.product-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.product-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+.product-cell strong {
+  display: block;
+
+  color: var(--sb-text);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.product-cell span {
+  display: block;
+  margin-top: 0.2rem;
+
+  color: var(--sb-text-muted);
+  font-size: 0.75rem;
+}
+
+.quantity-value {
+  display: inline-flex;
+
+  min-width: 40px;
+
+  justify-content: center;
+
+  padding: 0.3rem 0.55rem;
+
+  border-radius: var(--sb-radius-sm);
+
+  background: var(--sb-surface-muted);
+
+  color: var(--sb-text);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.money-value {
+  color: var(--sb-text-secondary);
+}
+
+.subtotal-value {
+  color: var(--sb-text);
+}
+
+.purchase-items-table tfoot td {
+  padding: 1rem;
+
+  border-top: 2px solid var(--sb-border);
+
+  background: var(--sb-surface-muted);
+}
+
+.total-label {
+  text-align: right;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.grand-total {
+  color: var(--sb-primary);
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+
+/* ================================
+   Workflow Info
+================================ */
+
+.workflow-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+
+  padding: 1rem 1.15rem;
+
+  margin-bottom: 1.5rem;
+
+  border: 1px solid var(--sb-primary);
+  border-radius: var(--sb-radius-md);
+
+  background: var(--sb-primary-soft);
+}
+
+.workflow-icon {
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: var(--sb-surface);
+  color: var(--sb-primary);
+}
+
+.workflow-info strong {
+  display: block;
+
+  color: var(--sb-text);
+
+  font-size: 0.88rem;
+}
+
+.workflow-info p {
+  margin: 0.25rem 0 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.received-info {
+  border-color: var(--sb-success);
+  background: var(--sb-success-soft);
+}
+
+.received-info .workflow-icon {
+  color: var(--sb-success);
+}
+
+
+/* ================================
+   Responsive
+================================ */
+
+@media (max-width: 991.98px) {
+
+  .info-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 767.98px) {
+
+  .purchase-detail-page {
+    max-width: none;
+  }
+
+  .page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    width: 100%;
+  }
+
+  .purchase-summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .summary-status {
+    width: 100%;
+  }
+
+  .summary-status .status-badge {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .information-section,
+  .items-section {
+    padding: 1rem;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .section-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+}
+
+@media (max-width: 575.98px) {
+
+  .page-title {
+    font-size: 1.4rem;
+  }
+
+  .page-subtitle {
+    font-size: 0.82rem;
+  }
+
+  .back-button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .purchase-summary {
+    padding: 1rem;
+  }
+
+  .summary-main {
+    align-items: flex-start;
+  }
+
+  .reference-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .purchase-items-table {
+    min-width: 650px;
+  }
+
+}

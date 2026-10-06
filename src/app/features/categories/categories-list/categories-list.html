@@ -1,0 +1,388 @@
+<div class="categories-page">
+
+  <!-- Page Header -->
+  <div class="categories-header">
+
+    <div>
+      <h1 class="categories-title">
+        Categories
+      </h1>
+
+      <p class="categories-subtitle">
+        Manage product categories.
+      </p>
+    </div>
+
+    @if (hasPermission('CATEGORY_CREATE')) {
+      <a
+        class="btn btn-primary"
+        [routerLink]="['/app/categories/new']"
+      >
+        <i class="bi bi-plus-lg me-2"></i>
+        Add Category
+      </a>
+    }
+
+  </div>
+
+
+  <!-- Error Alert -->
+  @if (errorMessage) {
+    <div
+      class="categories-alert"
+      role="alert"
+    >
+      <i
+        class="bi bi-exclamation-circle"
+        aria-hidden="true"
+      ></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+    </div>
+  }
+
+
+  <!-- Categories Card -->
+  <div class="categories-card">
+
+    <!-- Card Header -->
+    <div class="categories-card-header">
+
+      <div>
+        <h2>
+          Category List
+        </h2>
+
+        <p>
+          View and manage product categories.
+        </p>
+      </div>
+
+
+      <!-- Search -->
+      <div class="categories-search">
+
+        <i
+          class="bi bi-search"
+          aria-hidden="true"
+        ></i>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by category name..."
+          [(ngModel)]="searchTerm"
+          autocomplete="off"
+          aria-label="Search categories"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- Loading State -->
+    @if (isLoading) {
+
+      <div class="categories-state">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>
+          Loading categories...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- No Categories -->
+    @else if (categories.length === 0) {
+
+      <div class="categories-state">
+
+        <i
+          class="bi bi-tags"
+          aria-hidden="true"
+        ></i>
+
+        <h3>
+          No categories found
+        </h3>
+
+        <p>
+          There are no categories available yet.
+        </p>
+
+        @if (hasPermission('CATEGORY_CREATE')) {
+
+          <a
+            class="btn btn-primary"
+            [routerLink]="['/app/categories/new']"
+          >
+            <i class="bi bi-plus-lg me-2"></i>
+            Add Category
+          </a>
+
+        }
+
+      </div>
+
+    }
+
+
+    <!-- Search No Results -->
+    @else if (filteredCategories.length === 0) {
+
+      <div class="categories-state">
+
+        <i
+          class="bi bi-search"
+          aria-hidden="true"
+        ></i>
+
+        <h3>
+          No matching categories
+        </h3>
+
+        <p>
+          Try a different category name.
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- Category Table -->
+    @else {
+
+      <div class="table-responsive">
+
+        <table class="table categories-table mb-0">
+
+          <thead>
+          <tr>
+
+            <th>
+              Name
+            </th>
+
+            <th>
+              Description
+            </th>
+
+            <th>
+              Status
+            </th>
+
+            @if (hasPermission('CATEGORY_UPDATE')) {
+              <th class="text-end">
+                Actions
+              </th>
+            }
+
+          </tr>
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              category of filteredCategories;
+              track category.id
+              ) {
+
+              <tr>
+
+                <!-- Name -->
+                <td>
+                  <div class="category-name">
+                    {{ category.name }}
+                  </div>
+                </td>
+
+
+                <!-- Description -->
+                <td>
+
+                  @if (category.description) {
+
+                    <div class="category-description">
+                      {{ category.description }}
+                    </div>
+
+                  } @else {
+
+                    <span class="text-muted">
+                      -
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- Status -->
+                <td>
+
+                  @if (category.active) {
+
+                    <span
+                      class="status-badge status-active"
+                    >
+                      Active
+                    </span>
+
+                  } @else {
+
+                    <span
+                      class="status-badge status-inactive"
+                    >
+                      Inactive
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- Actions -->
+                @if (hasPermission('CATEGORY_UPDATE')) {
+
+                  <td class="text-end">
+
+                    <div class="category-actions">
+
+                      <!-- Edit -->
+                      <a
+                        class="btn btn-sm action-btn"
+                        [routerLink]="[
+                          '/app/categories/edit',
+                          category.id
+                        ]"
+                        title="Edit category"
+                        aria-label="Edit category"
+                      >
+                        <i
+                          class="bi bi-pencil"
+                          aria-hidden="true"
+                        ></i>
+                      </a>
+
+
+                      <!-- Deactivate -->
+                      <button
+                        type="button"
+                        class="btn btn-sm action-btn action-danger"
+                        title="Deactivate category"
+                        aria-label="Deactivate category"
+                        [disabled]="!category.active"
+                        (click)="deactivateCategory(category)"
+                      >
+                        <i
+                          class="bi bi-tag"
+                          aria-hidden="true"
+                        ></i>
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                }
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- Pagination -->
+      @if (
+        !isLoading &&
+        categories.length > 0 &&
+        totalPages > 1
+        ) {
+
+        <div class="categories-pagination">
+
+          <button
+            type="button"
+            class="btn btn-sm pagination-btn"
+            [disabled]="currentPage === 0"
+            (click)="goToPage(currentPage - 1)"
+          >
+            <i
+              class="bi bi-chevron-left"
+              aria-hidden="true"
+            ></i>
+
+            Previous
+          </button>
+
+
+          <div class="pagination-pages">
+
+            @for (
+              page of pageNumbers;
+              track page
+              ) {
+
+              <button
+                type="button"
+                class="btn btn-sm pagination-page"
+                [class.active]="page === currentPage"
+                [attr.aria-current]="
+                  page === currentPage ? 'page' : null
+                "
+                (click)="goToPage(page)"
+              >
+                {{ page + 1 }}
+              </button>
+
+            }
+
+          </div>
+
+
+          <button
+            type="button"
+            class="btn btn-sm pagination-btn"
+            [disabled]="
+              currentPage === totalPages - 1
+            "
+            (click)="goToPage(currentPage + 1)"
+          >
+            Next
+
+            <i
+              class="bi bi-chevron-right"
+              aria-hidden="true"
+            ></i>
+          </button>
+
+        </div>
+
+      }
+
+    }
+
+  </div>
+
+</div>

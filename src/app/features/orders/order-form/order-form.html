@@ -1,0 +1,815 @@
+
+<div class="order-form-page">
+
+  <!-- Header -->
+  <div class="order-form-header">
+
+    <div>
+
+      <h1 class="order-form-title">
+        {{
+          isEditMode
+            ? 'Edit Order'
+            : 'New Order'
+        }}
+      </h1>
+
+      <p class="order-form-subtitle">
+        {{
+          isEditMode
+            ? 'Update the order details before confirming it.'
+            : 'Create a new customer order.'
+        }}
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-light"
+      (click)="cancel()"
+      [disabled]="isSaving"
+    >
+      <i class="bi bi-arrow-left me-2"></i>
+      Back to Orders
+    </button>
+
+  </div>
+
+
+  <!-- Error -->
+  @if (errorMessage) {
+
+    <div
+      class="alert alert-danger"
+      role="alert"
+    >
+      <i class="bi bi-exclamation-circle me-2"></i>
+      {{ errorMessage }}
+    </div>
+
+  }
+
+
+  <!-- Success -->
+  @if (successMessage) {
+
+    <div
+      class="alert alert-success"
+      role="alert"
+    >
+      <i class="bi bi-check-circle me-2"></i>
+      {{ successMessage }}
+    </div>
+
+  }
+
+
+  <!-- Loading Order -->
+  @if (isLoading) {
+
+    <div class="loading-state">
+
+      <div
+        class="spinner-border text-primary"
+        role="status"
+      >
+        <span class="visually-hidden">
+          Loading...
+        </span>
+      </div>
+
+      <p>
+        Loading order details...
+      </p>
+
+    </div>
+
+  } @else {
+
+    <!-- ================================================== -->
+      <!-- Permission Check -->
+      <!-- ================================================== -->
+
+    @if (canManageOrder()) {
+
+      <div class="order-form-card">
+
+        <form
+          [formGroup]="orderForm"
+          (ngSubmit)="submit()"
+          novalidate
+        >
+
+          <!-- ================================================== -->
+          <!-- Order Information -->
+          <!-- ================================================== -->
+
+          <section class="form-section">
+
+            <div class="section-header">
+
+              <div>
+
+                <h2>
+                  Order Information
+                </h2>
+
+                <p>
+                  Enter the basic order details.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-grid">
+
+              <!-- Order Number -->
+              <div class="form-field">
+
+                <label
+                  for="orderNumber"
+                  class="form-label"
+                >
+                  Order Number
+
+                  <span class="optional-label">
+                    Optional
+                  </span>
+                </label>
+
+                <input
+                  id="orderNumber"
+                  type="text"
+                  class="form-control"
+                  formControlName="orderNumber"
+                  placeholder="Leave blank to generate automatically"
+                  maxlength="100"
+                  autocomplete="off"
+                />
+
+                <small class="field-help">
+                  If left blank, the system will generate
+                  an order number.
+                </small>
+
+              </div>
+
+
+              <!-- Customer -->
+              <div class="form-field">
+
+                <label
+                  for="customerId"
+                  class="form-label"
+                >
+                  Customer
+
+                  <span class="optional-label">
+                    Optional
+                  </span>
+                </label>
+
+                <select
+                  id="customerId"
+                  class="form-select"
+                  formControlName="customerId"
+                  [disabled]="isLoadingCustomers"
+                >
+
+                  <option [ngValue]="null">
+                    Walk-in Customer
+                  </option>
+
+                  @for (
+                    customer of customers;
+                    track customer.id
+                    ) {
+
+                    <option
+                      [ngValue]="customer.id"
+                    >
+                      {{ customer.name }}
+                    </option>
+
+                  }
+
+                </select>
+
+                <small class="field-help">
+                  Leave blank for a walk-in customer.
+                </small>
+
+              </div>
+
+
+              <!-- Order Date -->
+              <div class="form-field">
+
+                <label
+                  for="orderDate"
+                  class="form-label"
+                >
+                  Order Date
+                </label>
+
+                <input
+                  id="orderDate"
+                  type="date"
+                  class="form-control"
+                  formControlName="orderDate"
+                />
+
+                @if (
+                  orderForm.get('orderDate')?.touched &&
+                  orderForm.get('orderDate')?.invalid
+                  ) {
+
+                  <small class="field-error">
+                    Order date is required.
+                  </small>
+
+                }
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ================================================== -->
+          <!-- Order Items -->
+          <!-- ================================================== -->
+
+          <section class="form-section">
+
+            <div class="section-header items-header">
+
+              <div>
+
+                <h2>
+                  Order Items
+                </h2>
+
+                <p>
+                  Select products and specify the required quantity.
+                </p>
+
+              </div>
+
+              <button
+                type="button"
+                class="btn btn-outline-primary btn-sm"
+                (click)="addItem()"
+                [disabled]="isSaving"
+              >
+                <i class="bi bi-plus-lg me-1"></i>
+                Add Item
+              </button>
+
+            </div>
+
+
+            <div
+              class="items-container"
+              formArrayName="items"
+            >
+
+              @for (
+                item of items.controls;
+                track $index;
+                let i = $index
+                ) {
+
+                <div
+                  class="order-item-row"
+                  [formGroupName]="i"
+                >
+
+                  <!-- Item Number -->
+                  <div class="item-number">
+                    {{ i + 1 }}
+                  </div>
+
+
+                  <!-- Product -->
+                  <div class="item-product">
+
+                    <label
+                      class="form-label"
+                      [for]="'product-' + i"
+                    >
+                      Product
+                    </label>
+
+                    <select
+                      class="form-select"
+                      [id]="'product-' + i"
+                      formControlName="productId"
+                      [disabled]="isLoadingProducts"
+                    >
+
+                      <option [ngValue]="0">
+                        Select product
+                      </option>
+
+                      @for (
+                        product of products;
+                        track product.id
+                        ) {
+
+                        <option
+                          [ngValue]="product.id"
+                        >
+                          {{ product.name }}
+                        </option>
+
+                      }
+
+                    </select>
+
+                    @if (
+                      item.get('productId')?.touched &&
+                      item.get('productId')?.invalid
+                      ) {
+
+                      <small class="field-error">
+                        Product is required.
+                      </small>
+
+                    }
+
+                  </div>
+
+
+                  <!-- Quantity -->
+                  <div class="item-quantity">
+
+                    <label
+                      class="form-label"
+                      [for]="'quantity-' + i"
+                    >
+                      Quantity
+                    </label>
+
+                    <input
+                      [id]="'quantity-' + i"
+                      type="number"
+                      class="form-control"
+                      formControlName="quantity"
+                      min="1"
+                      step="1"
+                    />
+
+                    @if (
+                      item.get('quantity')?.touched &&
+                      item.get('quantity')?.invalid
+                      ) {
+
+                      <small class="field-error">
+                        Minimum quantity is 1.
+                      </small>
+
+                    }
+
+                  </div>
+
+
+                  <!-- Available Stock -->
+                  @if (!isEditMode) {
+
+                    <div class="item-stock">
+
+                      <label class="form-label">
+                        Available Stock
+                      </label>
+
+                      @if (
+                        isLoadingStock ||
+                        isCheckingStock
+                        ) {
+
+                        <div
+                          class="readonly-value stock-loading-value"
+                        >
+
+                          <span
+                            class="spinner-border spinner-border-sm"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
+
+                          Checking...
+
+                        </div>
+
+                      } @else {
+
+                        @if (
+                          getAvailableStock(
+                            Number(
+                              item.get('productId')?.value
+                            )
+                          ) !== null
+                          ) {
+
+                          <div
+                            class="readonly-value stock-value"
+                            [class.stock-insufficient]="
+                              isStockInsufficient(i)
+                            "
+                            [class.stock-available]="
+                              !isStockInsufficient(i)
+                            "
+                          >
+
+                            @if (
+                              isStockInsufficient(i)
+                              ) {
+
+                              <i
+                                class="bi bi-exclamation-circle"
+                                aria-hidden="true"
+                              ></i>
+
+                            } @else {
+
+                              <i
+                                class="bi bi-check-circle"
+                                aria-hidden="true"
+                              ></i>
+
+                            }
+
+                            {{
+                              getAvailableStock(
+                                Number(
+                                  item.get('productId')?.value
+                                )
+                              )
+                            }}
+
+                          </div>
+
+                        } @else {
+
+                          <div
+                            class="readonly-value stock-unavailable"
+                          >
+
+                            <i
+                              class="bi bi-box-seam"
+                              aria-hidden="true"
+                            ></i>
+
+                            Select product
+
+                          </div>
+
+                        }
+
+                      }
+
+
+                      @if (
+                        isStockInsufficient(i)
+                        ) {
+
+                        <small class="stock-error">
+
+                          <i
+                            class="bi bi-exclamation-triangle"
+                            aria-hidden="true"
+                          ></i>
+
+                          Insufficient stock
+
+                        </small>
+
+                      }
+
+                    </div>
+
+                  }
+
+
+                  <!-- Unit Price -->
+                  <div class="item-price">
+
+                    <label class="form-label">
+                      Unit Price
+                    </label>
+
+                    <div class="readonly-value">
+
+                      Rs.
+                      {{
+                        getItemUnitPrice(i)
+                          | number:'1.2-2'
+                      }}
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- Subtotal -->
+                  <div class="item-subtotal">
+
+                    <label class="form-label">
+                      Subtotal
+                    </label>
+
+                    <div
+                      class="readonly-value subtotal"
+                    >
+
+                      Rs.
+                      {{
+                        getItemSubtotal(i)
+                          | number:'1.2-2'
+                      }}
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- Remove -->
+                  <div class="item-remove">
+
+                    <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      (click)="removeItem(i)"
+                      [disabled]="
+                        items.length === 1 ||
+                        isSaving
+                      "
+                      title="Remove item"
+                      aria-label="Remove item"
+                    >
+                      <i class="bi bi-trash"></i>
+                    </button>
+
+                  </div>
+
+                </div>
+
+              }
+
+            </div>
+
+
+            <!-- ================================================== -->
+            <!-- Insufficient Stock Warning -->
+            <!-- ================================================== -->
+
+            @if (
+              !isEditMode &&
+              !isLoadingStock &&
+              !isCheckingStock &&
+              hasInsufficientStock()
+              ) {
+
+              <div
+                class="inline-warning stock-warning"
+                role="alert"
+              >
+
+                <div class="stock-warning-icon">
+
+                  <i
+                    class="bi bi-exclamation-triangle"
+                    aria-hidden="true"
+                  ></i>
+
+                </div>
+
+                <div>
+
+                  <strong>
+                    Insufficient stock
+                  </strong>
+
+                  <span>
+                    One or more products have insufficient
+                    stock. Please reduce the quantity before
+                    creating the order.
+                  </span>
+
+                </div>
+
+              </div>
+
+            }
+
+
+            <!-- No Active Products -->
+            @if (
+              !isLoadingProducts &&
+              products.length === 0
+              ) {
+
+              <div
+                class="inline-warning"
+                role="alert"
+              >
+
+                <i
+                  class="bi bi-exclamation-triangle"
+                  aria-hidden="true"
+                ></i>
+
+                <span>
+                  No active products are available.
+                  Please create an active product first.
+                </span>
+
+              </div>
+
+            }
+
+          </section>
+
+
+          <!-- ================================================== -->
+          <!-- Order Total -->
+          <!-- ================================================== -->
+
+          <section class="total-section">
+
+            <div>
+
+              <span class="total-label">
+                Order Total
+              </span>
+
+              <span class="total-description">
+                Calculated from selected products
+                and quantities.
+              </span>
+
+            </div>
+
+            <strong class="grand-total">
+
+              Rs.
+              {{
+                grandTotal
+                  | number:'1.2-2'
+              }}
+
+            </strong>
+
+          </section>
+
+
+          <!-- ================================================== -->
+          <!-- Workflow Notice -->
+          <!-- ================================================== -->
+
+          <div class="workflow-info">
+
+            <div class="workflow-icon">
+
+              <i
+                class="bi bi-info-circle"
+                aria-hidden="true"
+              ></i>
+
+            </div>
+
+            <div>
+
+              <strong>
+                Order workflow
+              </strong>
+
+              <p>
+                {{
+                  isEditMode
+                    ? 'This order remains PENDING after updating. Inventory will only change when the order is confirmed.'
+                    : 'The order will be created as PENDING. Inventory will only change when the order is confirmed.'
+                }}
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <!-- ================================================== -->
+          <!-- Actions -->
+          <!-- ================================================== -->
+
+          <div class="form-actions">
+
+            <button
+              type="button"
+              class="btn btn-light"
+              (click)="cancel()"
+              [disabled]="isSaving"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="
+                isSaving ||
+                isLoadingProducts ||
+                isLoadingStock ||
+                isCheckingStock ||
+                products.length === 0 ||
+                (!isEditMode && hasInsufficientStock())
+              "
+            >
+
+              @if (isSaving) {
+
+                <span
+                  class="spinner-border spinner-border-sm me-2"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+
+                {{
+                  isEditMode
+                    ? 'Updating...'
+                    : 'Creating...'
+                }}
+
+              } @else {
+
+                <i
+                  class="bi me-2"
+                  [class.bi-check-lg]="isEditMode"
+                  [class.bi-plus-lg]="!isEditMode"
+                  aria-hidden="true"
+                ></i>
+
+                {{
+                  isEditMode
+                    ? 'Update Order'
+                    : 'Create Order'
+                }}
+
+              }
+
+            </button>
+
+          </div>
+
+        </form>
+
+      </div>
+
+    } @else {
+
+      <!-- ================================================== -->
+        <!-- Access Restricted -->
+        <!-- ================================================== -->
+
+      <div class="order-form-card">
+
+        <div class="permission-state">
+
+          <i
+            class="bi bi-shield-lock"
+            aria-hidden="true"
+          ></i>
+
+          <h3>
+            Access Restricted
+          </h3>
+
+          <p>
+            You do not have permission to
+            {{ isEditMode ? 'update' : 'create' }}
+            orders.
+          </p>
+
+          <button
+            type="button"
+            class="btn btn-light"
+            (click)="cancel()"
+          >
+            <i class="bi bi-arrow-left me-2"></i>
+            Back to Orders
+          </button>
+
+        </div>
+
+      </div>
+
+    }
+
+  }
+
+</div>
+

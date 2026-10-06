@@ -1,0 +1,358 @@
+<div class="customers-page">
+
+  <!-- Page Header -->
+  <div class="customers-header">
+
+    <div>
+      <h1 class="customers-title">
+        Customers
+      </h1>
+
+      <p class="customers-subtitle">
+        Manage your customers and their contact information.
+      </p>
+    </div>
+
+    @if (hasPermission('CUSTOMER_CREATE')) {
+
+      <a
+        class="btn btn-primary"
+        [routerLink]="['/app/customers/new']"
+      >
+        <i
+          class="bi bi-plus-lg me-2"
+          aria-hidden="true"
+        ></i>
+
+        Add Customer
+      </a>
+
+    }
+
+  </div>
+
+  <!-- Error -->
+  @if (errorMessage) {
+
+    <div
+      class="customers-alert"
+      role="alert"
+    >
+      <i
+        class="bi bi-exclamation-circle"
+        aria-hidden="true"
+      ></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+    </div>
+
+  }
+
+  <!-- Customer Card -->
+  <div class="customers-card">
+
+    <!-- Card Header -->
+    <div class="customers-card-header">
+
+      <div>
+        <h2>
+          Customer List
+        </h2>
+
+        <p>
+          View and manage registered customers.
+        </p>
+      </div>
+
+      <div class="customers-search">
+
+        <i
+          class="bi bi-search"
+          aria-hidden="true"
+        ></i>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by name, email or phone..."
+          [(ngModel)]="searchTerm"
+          autocomplete="off"
+          aria-label="Search customers"
+        >
+
+      </div>
+
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading) {
+
+      <div class="customers-state">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>
+          Loading customers...
+        </p>
+
+      </div>
+
+    }
+
+    <!-- Empty -->
+    @else if (filteredCustomers.length === 0) {
+
+      <div class="customers-state">
+
+        <i
+          class="bi bi-people"
+          aria-hidden="true"
+        ></i>
+
+        <h3>
+          No customers found
+        </h3>
+
+        @if (searchTerm.trim()) {
+
+          <p>
+            Try adjusting your search criteria.
+          </p>
+
+        } @else {
+
+          <p>
+            There are no customers available yet.
+          </p>
+
+          @if (hasPermission('CUSTOMER_CREATE')) {
+
+            <a
+              class="btn btn-primary mt-2"
+              [routerLink]="['/app/customers/new']"
+            >
+              <i
+                class="bi bi-plus-lg me-2"
+                aria-hidden="true"
+              ></i>
+
+              Add Customer
+            </a>
+
+          }
+
+        }
+
+      </div>
+
+    }
+
+    <!-- Table -->
+    @else {
+
+      <div class="table-responsive">
+
+        <table class="table customers-table mb-0">
+
+          <thead>
+
+          <tr>
+            <th>Customer</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Status</th>
+
+            @if (hasPermission('CUSTOMER_UPDATE')) {
+              <th class="text-end">
+                Actions
+              </th>
+            }
+
+          </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              customer of filteredCustomers;
+              track customer.id
+              ) {
+
+              <tr>
+
+                <td>
+                  <div class="customer-name">
+                    {{ customer.name }}
+                  </div>
+                </td>
+
+                <td>
+                  <span class="customer-email">
+                    {{ customer.email || '-' }}
+                  </span>
+                </td>
+
+                <td>
+                  {{ customer.phone || '-' }}
+                </td>
+
+                <td>
+                  <div class="customer-address">
+                    {{ customer.address || '-' }}
+                  </div>
+                </td>
+
+                <td>
+
+                  @if (customer.active) {
+
+                    <span
+                      class="status-badge status-active"
+                    >
+                      Active
+                    </span>
+
+                  } @else {
+
+                    <span
+                      class="status-badge status-inactive"
+                    >
+                      Inactive
+                    </span>
+
+                  }
+
+                </td>
+
+                @if (hasPermission('CUSTOMER_UPDATE')) {
+
+                  <td class="text-end">
+
+                    <div class="customer-actions">
+
+                      <!-- Edit -->
+                      <a
+                        class="btn btn-sm action-btn"
+                        [routerLink]="[
+                          '/app/customers/edit',
+                          customer.id
+                        ]"
+                        title="Edit customer"
+                        aria-label="Edit customer"
+                      >
+                        <i
+                          class="bi bi-pencil"
+                          aria-hidden="true"
+                        ></i>
+                      </a>
+
+                      <!-- Deactivate -->
+                      <button
+                        type="button"
+                        class="btn btn-sm action-btn action-danger"
+                        title="Deactivate customer"
+                        aria-label="Deactivate customer"
+                        [disabled]="!customer.active"
+                        (click)="deactivateCustomer(customer)"
+                      >
+                        <i
+                          class="bi bi-person-dash"
+                          aria-hidden="true"
+                        ></i>
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                }
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+    <!-- Pagination -->
+    @if (
+      !isLoading &&
+      customers.length > 0 &&
+      totalPages > 1
+      ) {
+
+      <div class="customers-pagination">
+
+        <button
+          type="button"
+          class="btn btn-sm pagination-btn"
+          [disabled]="currentPage === 0"
+          (click)="goToPage(currentPage - 1)"
+        >
+          <i
+            class="bi bi-chevron-left"
+            aria-hidden="true"
+          ></i>
+
+          Previous
+        </button>
+
+        <div class="pagination-pages">
+
+          @for (
+            page of pageNumbers;
+            track page
+            ) {
+
+            <button
+              type="button"
+              class="btn btn-sm pagination-page"
+              [class.active]="page === currentPage"
+              (click)="goToPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+
+          }
+
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-sm pagination-btn"
+          [disabled]="
+            currentPage === totalPages - 1
+          "
+          (click)="goToPage(currentPage + 1)"
+        >
+          Next
+
+          <i
+            class="bi bi-chevron-right"
+            aria-hidden="true"
+          ></i>
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>

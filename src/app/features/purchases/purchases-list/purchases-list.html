@@ -1,0 +1,586 @@
+<div class="purchases-page">
+
+  @if (hasPermission('PURCHASE_READ')) {
+
+    <!-- Page Header -->
+    <div class="page-header">
+
+      <div>
+        <h1 class="page-title">
+          Purchases
+        </h1>
+
+        <p class="page-subtitle">
+          Manage supplier purchases and receiving.
+        </p>
+      </div>
+
+      @if (hasPermission('PURCHASE_CREATE')) {
+        <button
+          type="button"
+          class="btn btn-primary"
+          routerLink="/app/purchases/new"
+        >
+          <i class="bi bi-plus-lg me-2"></i>
+          New Purchase
+        </button>
+      }
+
+    </div>
+
+
+    <!-- Summary -->
+    <div class="summary-grid">
+
+      <div class="summary-item">
+
+        <div class="summary-icon">
+          <i class="bi bi-cart3"></i>
+        </div>
+
+        <div>
+          <span class="summary-label">
+            Total Purchases
+          </span>
+
+          <strong class="summary-value">
+            {{ totalElements }}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="summary-item">
+
+        <div class="summary-icon draft">
+          <i class="bi bi-file-earmark"></i>
+        </div>
+
+        <div>
+          <span class="summary-label">
+            Draft
+          </span>
+
+          <strong class="summary-value">
+            {{ draftCount }}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="summary-item">
+
+        <div class="summary-icon received">
+          <i class="bi bi-check-circle"></i>
+        </div>
+
+        <div>
+          <span class="summary-label">
+            Received
+          </span>
+
+          <strong class="summary-value">
+            {{ receivedCount }}
+          </strong>
+        </div>
+
+      </div>
+
+
+      <div class="summary-item">
+
+        <div class="summary-icon cancelled">
+          <i class="bi bi-x-circle"></i>
+        </div>
+
+        <div>
+          <span class="summary-label">
+            Cancelled
+          </span>
+
+          <strong class="summary-value">
+            {{ cancelledCount }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- Error Alert -->
+    @if (errorMessage) {
+
+      <div
+        class="alert alert-danger page-alert"
+        role="alert"
+      >
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ errorMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- Main Purchase Card -->
+    <div class="purchase-card">
+
+      <!-- Toolbar -->
+      <div class="purchase-toolbar">
+
+        <div class="search-wrapper">
+
+          <i class="bi bi-search"></i>
+
+          <input
+            type="text"
+            class="form-control search-input"
+            placeholder="Search reference or supplier..."
+            [(ngModel)]="searchTerm"
+          >
+
+        </div>
+
+
+        <div class="filter-wrapper">
+
+          <select
+            class="form-select status-filter"
+            [(ngModel)]="statusFilter"
+          >
+
+            <option value="">
+              All statuses
+            </option>
+
+            <option value="DRAFT">
+              Draft
+            </option>
+
+            <option value="RECEIVED">
+              Received
+            </option>
+
+            <option value="CANCELLED">
+              Cancelled
+            </option>
+
+          </select>
+
+        </div>
+
+      </div>
+
+
+      <!-- Loading / Empty / Table -->
+      @if (isLoading) {
+
+        <div class="loading-state">
+
+          <div
+            class="spinner-border text-primary"
+            role="status"
+          >
+
+            <span class="visually-hidden">
+              Loading...
+            </span>
+
+          </div>
+
+          <p>
+            Loading purchases...
+          </p>
+
+        </div>
+
+      }
+      @else {
+
+        @if (filteredPurchases.length === 0) {
+
+          <div class="empty-state">
+
+            <div class="empty-icon">
+              <i class="bi bi-cart-x"></i>
+            </div>
+
+            <h3>
+              No purchases found
+            </h3>
+
+            <p>
+              Try changing your search or status filter.
+            </p>
+
+          </div>
+
+        }
+        @else {
+
+          <!-- Purchase Table -->
+          <div class="table-responsive">
+
+            <table class="table purchase-table">
+
+              <thead>
+
+              <tr>
+
+                <th>
+                  Reference
+                </th>
+
+                <th>
+                  Supplier
+                </th>
+
+                <th>
+                  Purchase Date
+                </th>
+
+                <th>
+                  Total Amount
+                </th>
+
+                <th>
+                  Status
+                </th>
+
+                <th class="text-end">
+                  Actions
+                </th>
+
+              </tr>
+
+              </thead>
+
+
+              <tbody>
+
+                @for (
+                  purchase of filteredPurchases;
+                  track purchase.id
+                  ) {
+
+                  <tr>
+
+                    <!-- Reference -->
+                    <td>
+
+                      <div class="reference-cell">
+
+                        <div class="reference-icon">
+                          <i class="bi bi-receipt"></i>
+                        </div>
+
+                        <div>
+
+                          <strong>
+                            {{ purchase.referenceNumber }}
+                          </strong>
+
+                          <span>
+                            #{{ purchase.id }}
+                          </span>
+
+                        </div>
+
+                      </div>
+
+                    </td>
+
+
+                    <!-- Supplier -->
+                    <td>
+
+                      <div class="supplier-cell">
+
+                        <div class="supplier-avatar">
+                          {{
+                            purchase.supplierName
+                              .charAt(0)
+                              .toUpperCase()
+                          }}
+                        </div>
+
+                        <span>
+                          {{ purchase.supplierName }}
+                        </span>
+
+                      </div>
+
+                    </td>
+
+
+                    <!-- Purchase Date -->
+                    <td>
+
+                      <span class="date-cell">
+                        {{ purchase.purchaseDate }}
+                      </span>
+
+                    </td>
+
+
+                    <!-- Total Amount -->
+                    <td>
+
+                      <strong class="amount-cell">
+
+                        Rs.
+                        {{
+                          purchase.totalAmount
+                            | number:'1.2-2'
+                        }}
+
+                      </strong>
+
+                    </td>
+
+
+                    <!-- Status -->
+                    <td>
+
+                      <span
+                        class="status-badge"
+                        [class]="
+                          getStatusClass(
+                            purchase.status
+                          )
+                        "
+                      >
+
+                        <span class="status-dot"></span>
+
+                        {{
+                          getStatusLabel(
+                            purchase.status
+                          )
+                        }}
+
+                      </span>
+
+                    </td>
+
+
+                    <!-- Actions -->
+                    <td>
+
+                      <div class="action-buttons">
+
+                        @if (
+                          hasPermission('PURCHASE_READ')
+                          ) {
+
+                          <a
+                            [routerLink]="[
+                              '/app/purchases',
+                              purchase.id
+                            ]"
+                            class="action-button view"
+                            title="View purchase"
+                            aria-label="View purchase"
+                          >
+
+                            <i class="bi bi-eye"></i>
+
+                          </a>
+
+                        }
+
+                      </div>
+
+                    </td>
+
+                  </tr>
+
+                }
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+
+          <!-- Pagination -->
+          @if (totalPages > 1) {
+
+            <div class="pagination-wrapper">
+
+              <div class="pagination-info">
+
+                Showing
+
+                <strong>
+                  {{ currentPage * pageSize + 1 }}
+                </strong>
+
+                -
+
+                <strong>
+                  {{
+                    Math.min(
+                      (currentPage + 1) * pageSize,
+                      totalElements
+                    )
+                  }}
+                </strong>
+
+                of
+
+                <strong>
+                  {{ totalElements }}
+                </strong>
+
+              </div>
+
+
+              <nav aria-label="Purchase pagination">
+
+                <ul class="pagination mb-0">
+
+                  <!-- Previous -->
+                  <li
+                    class="page-item"
+                    [class.disabled]="
+                      currentPage === 0
+                    "
+                  >
+
+                    <button
+                      type="button"
+                      class="page-link"
+                      (click)="
+                        goToPage(
+                          currentPage - 1
+                        )
+                      "
+                      [disabled]="
+                        currentPage === 0
+                      "
+                      aria-label="Previous page"
+                    >
+
+                      <i
+                        class="bi bi-chevron-left"
+                        aria-hidden="true"
+                      ></i>
+
+                    </button>
+
+                  </li>
+
+
+                  <!-- Page Numbers -->
+                  @for (
+                    page of pageNumbers;
+                    track page
+                    ) {
+
+                    <li
+                      class="page-item"
+                      [class.active]="
+                        page === currentPage
+                      "
+                    >
+
+                      <button
+                        type="button"
+                        class="page-link"
+                        (click)="goToPage(page)"
+                        [attr.aria-current]="
+                          page === currentPage
+                            ? 'page'
+                            : null
+                        "
+                      >
+                        {{ page + 1 }}
+                      </button>
+
+                    </li>
+
+                  }
+
+
+                  <!-- Next -->
+                  <li
+                    class="page-item"
+                    [class.disabled]="
+                      currentPage ===
+                      totalPages - 1
+                    "
+                  >
+
+                    <button
+                      type="button"
+                      class="page-link"
+                      (click)="
+                        goToPage(
+                          currentPage + 1
+                        )
+                      "
+                      [disabled]="
+                        currentPage ===
+                        totalPages - 1
+                      "
+                      aria-label="Next page"
+                    >
+
+                      <i
+                        class="bi bi-chevron-right"
+                        aria-hidden="true"
+                      ></i>
+
+                    </button>
+
+                  </li>
+
+                </ul>
+
+              </nav>
+
+            </div>
+
+          }
+
+        }
+
+      }
+
+    </div>
+
+  }
+
+  @else {
+
+    <!-- Permission Restricted -->
+    <div class="purchase-card">
+
+      <div class="purchase-permission-state">
+
+        <i class="bi bi-shield-lock"></i>
+
+        <h3>
+          Access Restricted
+        </h3>
+
+        <p>
+          You do not have permission to view purchases.
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

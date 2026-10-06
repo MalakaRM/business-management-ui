@@ -1,0 +1,582 @@
+.inventory-detail-page {
+  width: 100%;
+}
+
+.detail-header {
+  margin-bottom: 1.5rem;
+}
+
+.detail-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.back-button {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid var(--sb-border);
+  border-radius: 9px;
+  background: var(--sb-surface);
+  color: var(--sb-text-secondary);
+  font-size: 1rem;
+  transition: 0.15s ease;
+}
+
+.back-button:hover {
+  border-color: var(--sb-primary);
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+.detail-title {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.detail-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--sb-text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Alert */
+
+.detail-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--sb-danger);
+  border-radius: var(--sb-radius-md);
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+  font-size: 0.85rem;
+}
+
+/* Shared Cards */
+
+.detail-card,
+.product-summary-card,
+.metric-card,
+.movements-card {
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-lg);
+  box-shadow: var(--sb-shadow-sm);
+}
+
+/* Loading */
+
+.detail-loading {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-loading p {
+  margin: 0.75rem 0 0;
+  color: var(--sb-text-muted);
+  font-size: 0.8rem;
+}
+
+/* Product Summary */
+
+.product-summary-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1.25rem 1.5rem;
+}
+
+.product-summary-main {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.product-large-icon {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+  font-size: 1.25rem;
+}
+
+.product-summary-main h2 {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.product-summary-main p {
+  margin: 0.25rem 0 0;
+  color: var(--sb-text-muted);
+  font-size: 0.75rem;
+}
+
+/* Status */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-active {
+  background: var(--sb-success-soft);
+  color: var(--sb-success);
+}
+
+.status-inactive {
+  background: var(--sb-surface-muted);
+  color: var(--sb-text-muted);
+}
+
+/* Stock Metrics */
+
+.stock-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.metric-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1.2rem;
+}
+
+.metric-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  font-size: 1.05rem;
+}
+
+.metric-icon-stock {
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+.metric-icon-reorder {
+  background: var(--sb-accent-soft);
+  color: var(--sb-accent);
+}
+
+.metric-icon-warning {
+  background: var(--sb-warning-soft);
+  color: var(--sb-warning);
+}
+
+.metric-icon-healthy {
+  background: var(--sb-success-soft);
+  color: var(--sb-success);
+}
+
+.metric-label {
+  display: block;
+  margin-bottom: 0.2rem;
+  color: var(--sb-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.metric-value {
+  display: block;
+  color: var(--sb-text);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.metric-warning {
+  color: var(--sb-warning);
+  font-size: 1rem;
+}
+
+.metric-success {
+  color: var(--sb-success);
+  font-size: 1rem;
+}
+
+.metric-description {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--sb-text-muted);
+  font-size: 0.68rem;
+}
+
+/* Movements */
+
+.movements-card {
+  overflow: hidden;
+}
+
+.movements-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--sb-border);
+}
+
+.movements-header h2 {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.movements-header p {
+  margin: 0.3rem 0 0;
+  color: var(--sb-text-secondary);
+  font-size: 0.78rem;
+}
+
+.movement-count {
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: var(--sb-surface-muted);
+  color: var(--sb-text-secondary);
+  font-size: 0.68rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Movement Table */
+
+.movement-table {
+  margin: 0;
+  vertical-align: middle;
+}
+
+.movement-table thead th {
+  padding: 0.85rem 1.25rem;
+  background: var(--sb-surface-muted);
+  border-bottom: 1px solid var(--sb-border);
+  color: var(--sb-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.movement-table tbody td {
+  padding: 0.95rem 1.25rem;
+  border-bottom: 1px solid var(--sb-border);
+  color: var(--sb-text-secondary);
+  font-size: 0.78rem;
+}
+
+.movement-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.movement-table tbody tr:hover {
+  background: #fafcff;
+}
+
+/* Movement Type */
+
+.movement-type {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.movement-icon {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.movement-purchase {
+  background: var(--sb-success-soft);
+  color: var(--sb-success);
+}
+
+.movement-sale {
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+.movement-damage {
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+}
+
+.movement-adjustment {
+  background: var(--sb-warning-soft);
+  color: var(--sb-warning);
+}
+
+/* Movement Data */
+
+.movement-quantity {
+  color: var(--sb-text);
+  font-weight: 700;
+}
+
+.stock-change {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.stock-change span {
+  color: var(--sb-text-muted);
+}
+
+.stock-change i {
+  color: var(--sb-text-muted);
+  font-size: 0.7rem;
+}
+
+.stock-change strong {
+  color: var(--sb-text);
+}
+
+.movement-reason {
+  color: var(--sb-text-secondary);
+}
+
+.movement-date {
+  color: var(--sb-text-muted);
+  white-space: nowrap;
+}
+
+/* Loading / Empty */
+
+.movement-loading {
+  min-height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  color: var(--sb-text-muted);
+  font-size: 0.78rem;
+}
+
+.movement-empty {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+}
+
+.movement-empty > i {
+  margin-bottom: 0.75rem;
+  color: var(--sb-text-muted);
+  font-size: 2rem;
+}
+
+.movement-empty h3 {
+  margin: 0;
+  color: var(--sb-text);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.movement-empty p {
+  margin: 0.4rem 0 0;
+  color: var(--sb-text-muted);
+  font-size: 0.75rem;
+}
+
+/* Responsive */
+
+@media (max-width: 991.98px) {
+
+  .stock-metrics {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 767.98px) {
+
+  .detail-title {
+    font-size: 1.45rem;
+  }
+
+  .product-summary-card {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .movements-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1rem;
+  }
+
+  .movement-table thead th,
+  .movement-table tbody td {
+    padding: 0.8rem;
+  }
+
+}
+
+/* =========================================================
+   Reorder Level
+   ========================================================= */
+
+.reorder-level-value {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reorder-edit-button {
+  width: 28px;
+  height: 28px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid var(--sb-border);
+  border-radius: 7px;
+
+  background: var(--sb-surface);
+  color: var(--sb-text-secondary);
+
+  font-size: 0.7rem;
+
+  cursor: pointer;
+
+  transition: 0.15s ease;
+}
+
+.reorder-edit-button:hover {
+  border-color: var(--sb-primary);
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+/* =========================================================
+   Reorder Level Edit
+   ========================================================= */
+
+.reorder-edit {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.reorder-input {
+  width: 70px;
+  height: 32px;
+
+  padding: 0.3rem 0.45rem;
+
+  border: 1px solid var(--sb-border);
+  border-radius: 7px;
+
+  color: var(--sb-text);
+  background: var(--sb-surface);
+
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  box-shadow: none;
+}
+
+.reorder-input:focus {
+  border-color: var(--sb-border-focus);
+
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+.reorder-edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.reorder-cancel-button,
+.reorder-save-button {
+  width: 30px;
+  height: 30px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1px solid var(--sb-border);
+  border-radius: 7px;
+
+  font-size: 0.7rem;
+
+  cursor: pointer;
+
+  transition: 0.15s ease;
+}
+
+.reorder-cancel-button {
+  background: var(--sb-surface);
+  color: var(--sb-text-secondary);
+}
+
+.reorder-cancel-button:hover {
+  border-color: var(--sb-danger);
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+}
+
+.reorder-save-button {
+  border-color: var(--sb-primary);
+  background: var(--sb-primary);
+  color: #ffffff;
+}
+
+.reorder-save-button:hover {
+  border-color: var(--sb-primary-hover);
+  background: var(--sb-primary-hover);
+}

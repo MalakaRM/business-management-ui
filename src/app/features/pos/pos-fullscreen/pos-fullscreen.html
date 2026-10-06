@@ -1,0 +1,695 @@
+<div class="pos-fullscreen-page">
+
+  <!-- =====================================================
+       TOP BAR
+  ====================================================== -->
+
+  <header class="pos-topbar">
+
+    <div class="brand">
+      <div class="brand-icon">
+        <i class="bi bi-shop"></i>
+      </div>
+
+      <div>
+        <h1>Point of Sale</h1>
+        <span>Fast & simple checkout</span>
+      </div>
+    </div>
+
+
+    <!-- Cashier -->
+
+    <div class="cashier-info">
+
+      <div class="cashier-icon">
+        <i class="bi bi-person"></i>
+      </div>
+
+      <div>
+        <small>Cashier</small>
+        <strong>{{ cashierName }}</strong>
+      </div>
+
+    </div>
+
+
+    <!-- Exit -->
+
+    <button
+      type="button"
+      class="exit-btn"
+      (click)="exitFullScreen()"
+    >
+      <i class="bi bi-box-arrow-right"></i>
+      Exit
+    </button>
+
+  </header>
+
+
+  <!-- =====================================================
+       MAIN POS CONTENT
+  ====================================================== -->
+
+  <main class="pos-content">
+
+
+    <!-- ===================================================
+         CUSTOMER
+    ==================================================== -->
+
+    <section class="pos-section customer-section">
+
+      <div class="section-heading">
+
+        <div class="section-icon customer-icon">
+          <i class="bi bi-person-vcard"></i>
+        </div>
+
+        <div>
+          <h2>Customer</h2>
+          <p>Select a customer for this sale</p>
+        </div>
+
+      </div>
+
+
+      <div class="customer-select-wrapper">
+
+        <i class="bi bi-person"></i>
+
+        <select
+          class="customer-select"
+          [(ngModel)]="selectedCustomerId"
+          (change)="onCustomerChange()"
+        >
+
+          <!-- Walk-in -->
+
+          <option [ngValue]="null">
+            Walk-in Customer
+          </option>
+
+
+          <!-- Customers -->
+
+          <option
+            *ngFor="let customer of customers"
+            [ngValue]="customer.id"
+          >
+            {{ customer.name }}
+          </option>
+
+        </select>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         PRODUCTS
+    ==================================================== -->
+
+    <section class="pos-section products-section">
+
+
+      <!-- Product Header -->
+
+      <div class="section-header-row">
+
+        <div class="section-heading">
+
+          <div class="section-icon product-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+
+          <div>
+            <h2>Products</h2>
+            <p>Search and add products to the sale</p>
+          </div>
+
+        </div>
+
+
+        <div class="product-count">
+
+          <i class="bi bi-box"></i>
+
+          {{ filteredProducts.length }} Products
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           SEARCH
+      ================================================== -->
+
+      <div class="product-search">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+          placeholder="Search product by name or SKU..."
+        />
+
+
+        <button
+          type="button"
+          (click)="clearSearch()"
+          *ngIf="searchTerm"
+          aria-label="Clear search"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+      </div>
+
+
+
+      <!-- =================================================
+           PRODUCT TABLE
+      ================================================== -->
+
+      <div class="product-table-wrapper">
+
+        <table class="product-table">
+
+          <thead>
+
+          <tr>
+
+            <th>Product</th>
+
+            <th>SKU</th>
+
+            <th>Stock</th>
+
+            <th>Unit Price</th>
+
+            <th class="action-column">
+              Action
+            </th>
+
+          </tr>
+
+          </thead>
+
+
+          <tbody>
+
+
+          <!-- =================================================
+               LOADING
+          ================================================== -->
+
+          <tr
+            *ngIf="isLoadingProducts || isLoadingStock"
+          >
+
+            <td
+              colspan="5"
+              class="empty-products"
+            >
+
+              <div class="empty-icon">
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+
+              <strong>
+                Loading products...
+              </strong>
+
+              <span>
+                Please wait while products and stock are loaded.
+              </span>
+
+            </td>
+
+          </tr>
+
+
+
+          <!-- =================================================
+               NO PRODUCTS
+          ================================================== -->
+
+          <tr
+            *ngIf="
+              !isLoadingProducts &&
+              !isLoadingStock &&
+              filteredProducts.length === 0
+            "
+          >
+
+            <td
+              colspan="5"
+              class="empty-products"
+            >
+
+              <div class="empty-icon">
+                <i class="bi bi-box-seam"></i>
+              </div>
+
+              <strong>
+                No products found
+              </strong>
+
+              <span>
+                Try another product name or SKU.
+              </span>
+
+            </td>
+
+          </tr>
+
+
+
+          <!-- =================================================
+               PRODUCTS
+          ================================================== -->
+
+          <tr
+            *ngFor="let product of filteredProducts"
+          >
+
+
+            <!-- Product -->
+
+            <td>
+
+              <div class="product-name-cell">
+
+                <div class="product-row-icon">
+                  <i class="bi bi-box"></i>
+                </div>
+
+                <strong>
+                  {{ product.name }}
+                </strong>
+
+              </div>
+
+            </td>
+
+
+            <!-- SKU -->
+
+            <td>
+              <span class="sku-text">
+                {{ product.sku }}
+              </span>
+            </td>
+
+
+            <!-- Stock -->
+
+            <td>
+
+              <span
+                class="stock-badge"
+                [class.stock-empty]="getStock(product.id) === 0"
+                [class.stock-low]="
+                  getStock(product.id) > 0 &&
+                  getStock(product.id) <= 5
+                "
+                [class.stock-good]="getStock(product.id) > 5"
+              >
+
+                {{ getStock(product.id) }}
+
+              </span>
+
+            </td>
+
+
+            <!-- Price -->
+
+            <td>
+
+              <strong class="price-text">
+                Rs. {{ product.price | number:'1.2-2' }}
+              </strong>
+
+            </td>
+
+
+            <!-- Action -->
+
+            <td class="action-column">
+
+              <button
+                type="button"
+                class="add-product-btn"
+                [disabled]="!canAddProduct(product.id)"
+                (click)="addToCart(product)"
+              >
+
+                <i class="bi bi-plus-lg"></i>
+
+                Add
+
+              </button>
+
+            </td>
+
+          </tr>
+
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ===================================================
+         CURRENT SALE
+    ==================================================== -->
+
+    <section class="pos-section sale-section">
+
+
+      <!-- Sale Header -->
+
+      <div class="section-header-row">
+
+        <div class="section-heading">
+
+          <div class="section-icon sale-icon">
+            <i class="bi bi-cart3"></i>
+          </div>
+
+          <div>
+            <h2>Current Sale</h2>
+            <p>Review items before payment</p>
+          </div>
+
+        </div>
+
+
+        <div class="cart-badge">
+
+          <i class="bi bi-cart3"></i>
+
+          {{ cartItemCount }} Items
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           CART ITEMS
+      ================================================== -->
+
+      <div
+        class="cart-items"
+        *ngIf="cartItems.length > 0"
+      >
+
+        <div
+          class="cart-item"
+          *ngFor="let item of cartItems"
+        >
+
+
+          <!-- Product -->
+
+          <div class="cart-product">
+
+            <div class="cart-product-icon">
+              <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div>
+
+              <strong>
+                {{ item.product.name }}
+              </strong>
+
+              <span>
+                {{ item.product.sku }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+
+          <!-- Quantity -->
+
+          <div class="quantity-control">
+
+            <button
+              type="button"
+              (click)="decreaseQuantity(item)"
+              [disabled]="item.quantity <= 1"
+              aria-label="Decrease quantity"
+            >
+              <i class="bi bi-dash"></i>
+            </button>
+
+
+            <span>
+              {{ item.quantity }}
+            </span>
+
+
+            <button
+              type="button"
+              (click)="increaseQuantity(item)"
+              [disabled]="
+                item.quantity >= getStock(item.product.id)
+              "
+              aria-label="Increase quantity"
+            >
+              <i class="bi bi-plus"></i>
+            </button>
+
+          </div>
+
+
+
+          <!-- Unit Price -->
+
+          <div class="cart-unit-price">
+
+            <small>Unit Price</small>
+
+            <strong>
+              Rs. {{ item.product.price | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+
+
+          <!-- Subtotal -->
+
+          <div class="cart-subtotal">
+
+            <small>Subtotal</small>
+
+            <strong>
+              Rs. {{ getItemSubtotal(item) | number:'1.2-2' }}
+            </strong>
+
+          </div>
+
+
+
+          <!-- Remove -->
+
+          <button
+            type="button"
+            class="remove-item-btn"
+            (click)="removeFromCart(item.product.id)"
+            aria-label="Remove product"
+          >
+            <i class="bi bi-trash3"></i>
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           EMPTY CART
+      ================================================== -->
+
+      <div
+        class="sale-empty"
+        *ngIf="cartItems.length === 0"
+      >
+
+        <div class="sale-empty-icon">
+          <i class="bi bi-cart-x"></i>
+        </div>
+
+        <h3>
+          No items in the sale
+        </h3>
+
+        <p>
+          Add products from the product list above
+          to start a new sale.
+        </p>
+
+      </div>
+
+
+
+      <!-- =================================================
+           ERROR
+      ================================================== -->
+
+      <div
+        class="sale-error"
+        *ngIf="orderError"
+      >
+
+        <i class="bi bi-exclamation-circle"></i>
+
+        <span>
+          {{ orderError }}
+        </span>
+
+      </div>
+
+
+
+      <!-- =================================================
+           SUMMARY
+      ================================================== -->
+
+      <div class="sale-summary">
+
+
+        <div class="summary-row">
+
+          <span>
+            Subtotal
+          </span>
+
+          <strong>
+            Rs. {{ cartSubtotal | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-row">
+
+          <span>
+            Discount
+          </span>
+
+          <strong>
+            Rs. {{ discount | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+
+        <div class="summary-divider"></div>
+
+
+        <div class="total-row">
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+            Rs. {{ cartTotal | number:'1.2-2' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =================================================
+           PAYMENT ACTION
+      ================================================== -->
+
+      <div class="payment-action">
+
+
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="clearCart()"
+          [disabled]="
+            cartItems.length === 0 ||
+            isCreatingOrder ||
+            isCompletingSale
+          "
+        >
+
+          <i class="bi bi-trash3"></i>
+
+          Clear Sale
+
+        </button>
+
+
+
+        <button
+          type="button"
+          class="payment-btn"
+          (click)="proceedToPayment()"
+          [disabled]="
+            cartItems.length === 0 ||
+            isCreatingOrder ||
+            isCompletingSale
+          "
+        >
+
+          <span>
+
+            <i
+              class="bi"
+              [class.bi-credit-card]="!isCreatingOrder"
+              [class.bi-arrow-repeat]="isCreatingOrder"
+            ></i>
+
+            {{ isCreatingOrder
+            ? 'Creating Order...'
+            : 'Proceed to Payment'
+            }}
+
+          </span>
+
+
+          <i
+            class="bi bi-arrow-right"
+            *ngIf="!isCreatingOrder"
+          ></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>

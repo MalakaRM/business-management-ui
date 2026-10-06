@@ -1,0 +1,812 @@
+@if (hasPermission('ORDER_CREATE')) {
+
+  <div class="pos-page">
+
+    <!-- ===================================================== -->
+    <!-- HEADER                                                -->
+    <!-- ===================================================== -->
+
+    <div class="pos-header">
+
+      <div class="pos-header-main">
+
+        <div class="pos-header-icon">
+          <i class="bi bi-calculator"></i>
+        </div>
+
+        <div>
+          <h1 class="pos-title">Point of Sale</h1>
+
+          <p class="pos-subtitle">
+            Create sales quickly and manage your checkout.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="pos-header-actions">
+
+        <div class="cashier-info">
+          <i class="bi bi-person-circle"></i>
+
+          <span>
+            Cashier: <strong>{{ cashierName }}</strong>
+          </span>
+        </div>
+
+
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="openFullScreenPos()"
+          [disabled]="isCreatingOrder || isCompletingSale"
+        >
+          <i class="bi bi-fullscreen"></i>
+          Full Screen
+        </button>
+
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="openNewPosWindow()"
+          [disabled]="isCreatingOrder || isCompletingSale"
+        >
+          <i class="bi bi-box-arrow-up-right"></i>
+          New Window
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- SUCCESS MESSAGE                                       -->
+    <!-- ===================================================== -->
+
+    @if (saleSuccessMessage) {
+
+      <div class="sale-success-message">
+
+        <i class="bi bi-check-circle-fill"></i>
+
+        <span>
+          {{ saleSuccessMessage }}
+        </span>
+
+      </div>
+
+    }
+
+
+    <!-- ===================================================== -->
+    <!-- WORKSPACE                                             -->
+    <!-- ===================================================== -->
+
+    <div class="pos-workspace">
+
+
+      <!-- =================================================== -->
+      <!-- CUSTOMER PANEL                                      -->
+      <!-- =================================================== -->
+
+      <section class="customer-panel">
+
+        <div class="panel-header">
+
+          <div class="section-heading">
+
+            <div class="section-icon customer-icon">
+              <i class="bi bi-person"></i>
+            </div>
+
+            <div>
+              <h2>Customer</h2>
+
+              <p>
+                Select a customer for this sale.
+              </p>
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <div class="customer-section">
+
+          <div class="customer-select-area">
+
+            <label
+              for="customer"
+              class="customer-label"
+            >
+              Customer
+            </label>
+
+
+            <div class="customer-select-wrapper">
+
+              <i class="bi bi-person"></i>
+
+
+              <select
+                id="customer"
+                class="form-select customer-select"
+                [(ngModel)]="selectedCustomerId"
+                (ngModelChange)="onCustomerChange()"
+                [disabled]="
+                  isLoadingCustomers ||
+                  isCreatingOrder ||
+                  isCompletingSale
+                "
+              >
+
+                <option [ngValue]="null">
+                  Walk-in Customer
+                </option>
+
+
+                @for (customer of customers; track customer.id) {
+
+                  <option [ngValue]="customer.id">
+                    {{ customer.name }}
+                    @if (customer.phone) {
+                      — {{ customer.phone }}
+                    }
+                  </option>
+
+                }
+
+              </select>
+
+
+              @if (isLoadingCustomers) {
+
+                <span class="customer-loading">
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
+                </span>
+
+              }
+
+            </div>
+
+
+            <small class="customer-hint">
+              Customer selection is optional for a walk-in sale.
+            </small>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================== -->
+      <!-- PRODUCTS PANEL                                      -->
+      <!-- =================================================== -->
+
+      <section class="products-panel">
+
+        <div class="panel-header">
+
+          <div class="section-heading">
+
+            <div class="section-icon product-icon-header">
+              <i class="bi bi-box-seam"></i>
+            </div>
+
+            <div>
+              <h2>Products</h2>
+
+              <p>
+                Search products and add them to the cart.
+              </p>
+            </div>
+
+          </div>
+
+
+          <span class="product-count">
+            {{ filteredProducts.length }} products
+          </span>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCT SEARCH                                    -->
+        <!-- ================================================= -->
+
+        <div class="product-search">
+
+          <i class="bi bi-search"></i>
+
+
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search by product name or SKU..."
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+            [disabled]="isLoadingProducts"
+          />
+
+
+          @if (searchTerm) {
+
+            <button
+              type="button"
+              class="search-clear"
+              aria-label="Clear search"
+              (click)="clearSearch()"
+              [disabled]="isLoadingProducts"
+            >
+              <i class="bi bi-x-lg"></i>
+            </button>
+
+          }
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- PRODUCTS CONTENT                                  -->
+        <!-- ================================================= -->
+
+        <div class="products-content">
+
+          @if (isLoadingProducts) {
+
+            <div class="pos-loading">
+
+              <span
+                class="spinner-border spinner-border-sm"
+                aria-hidden="true"
+              ></span>
+
+              <span>
+                Loading products...
+              </span>
+
+            </div>
+
+          }
+
+          @else if (filteredProducts.length === 0) {
+
+            <div class="empty-products">
+
+              <div class="empty-products-icon">
+                <i class="bi bi-box"></i>
+              </div>
+
+              <h3>No products found</h3>
+
+              <p>
+                Try another search term or add products to the system.
+              </p>
+
+            </div>
+
+          }
+
+          @else {
+
+            <div class="product-table-wrapper">
+
+              <table class="table product-table">
+
+                <thead>
+
+                <tr>
+
+                  <th>
+                    Product
+                  </th>
+
+                  <th>
+                    SKU
+                  </th>
+
+                  <th>
+                    Stock
+                  </th>
+
+                  <th>
+                    Price
+                  </th>
+
+                  <th class="text-end">
+                    Action
+                  </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                  @for (
+                    product of filteredProducts;
+                    track product.id
+                    ) {
+
+                    <tr
+                      class="product-row"
+                      [class.product-row-disabled]="
+                        getStock(product.id) <= 0
+                      "
+                    >
+
+                      <!-- Product -->
+
+                      <td>
+
+                        <div class="product-info">
+
+                          <div class="product-icon">
+                            <i class="bi bi-box-seam"></i>
+                          </div>
+
+
+                          <div class="product-details">
+
+                            <strong>
+                              {{ product.name }}
+                            </strong>
+
+                            <span>
+                              {{ product.description || 'No description available' }}
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </td>
+
+
+                      <!-- SKU -->
+
+                      <td>
+
+                        <span class="product-sku">
+                          {{ product.sku }}
+                        </span>
+
+                      </td>
+
+
+                      <!-- STOCK -->
+
+                      <td>
+
+                        @if (isLoadingStock) {
+
+                          <span class="stock-loading">
+                            Loading...
+                          </span>
+
+                        }
+
+                        @else {
+
+                          @if (getStock(product.id) > 0) {
+
+                            <span class="stock-value stock-available">
+                              {{ getStock(product.id) }} available
+                            </span>
+
+                          }
+
+                          @else {
+
+                            <span class="stock-value stock-out">
+                              Out of stock
+                            </span>
+
+                          }
+
+                        }
+
+                      </td>
+
+
+                      <!-- PRICE -->
+
+                      <td>
+
+                        <span class="product-price">
+                          {{ product.price | number:'1.2-2' }}
+                        </span>
+
+                      </td>
+
+
+                      <!-- ACTION -->
+
+                      <td class="text-end">
+
+                        <button
+                          type="button"
+                          class="add-product-btn"
+                          (click)="addToCart(product)"
+                          [disabled]="
+                            !canAddProduct(product.id) ||
+                            isLoadingStock ||
+                            isCreatingOrder ||
+                            isCompletingSale
+                          "
+                        >
+
+                          <i class="bi bi-plus-lg"></i>
+
+                          Add
+
+                        </button>
+
+                      </td>
+
+                    </tr>
+
+                  }
+
+                </tbody>
+
+              </table>
+
+            </div>
+
+          }
+
+        </div>
+
+      </section>
+
+
+
+      <!-- =================================================== -->
+      <!-- CART PANEL                                          -->
+      <!-- =================================================== -->
+
+      <section class="cart-panel">
+
+        <div class="panel-header">
+
+          <div class="section-heading">
+
+            <div class="section-icon cart-icon">
+              <i class="bi bi-cart3"></i>
+            </div>
+
+            <div>
+              <h2>Cart</h2>
+
+              <p>
+                Review items before proceeding to payment.
+              </p>
+            </div>
+
+          </div>
+
+
+          <span class="cart-item-count">
+            {{ cartItemCount }} items
+          </span>
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- CART CONTENT                                      -->
+        <!-- ================================================= -->
+
+        <div class="cart-content">
+
+          @if (cartItems.length === 0) {
+
+            <div class="empty-cart">
+
+              <div class="empty-cart-icon">
+                <i class="bi bi-cart3"></i>
+              </div>
+
+              <h3>Your cart is empty</h3>
+
+              <p>
+                Add products from the list above to start a sale.
+              </p>
+
+            </div>
+
+          }
+
+          @else {
+
+            <div class="cart-items">
+
+              @for (
+                item of cartItems;
+                track item.product.id
+                ) {
+
+                <div class="cart-item">
+
+
+                  <!-- ITEM INFO -->
+
+                  <div class="cart-item-info">
+
+                    <span class="cart-item-name">
+                      {{ item.product.name }}
+                    </span>
+
+                    <span class="cart-item-sku">
+                      {{ item.product.sku }}
+                    </span>
+
+                    <span class="cart-item-unit-price">
+                      Unit price:
+                      {{ item.product.price | number:'1.2-2' }}
+                    </span>
+
+                  </div>
+
+
+
+                  <!-- QUANTITY -->
+
+                  <div class="cart-item-controls">
+
+                    <button
+                      type="button"
+                      class="quantity-btn"
+                      aria-label="Decrease quantity"
+                      (click)="decreaseQuantity(item)"
+                      [disabled]="
+                        item.quantity <= 1 ||
+                        isCreatingOrder ||
+                        isCompletingSale
+                      "
+                    >
+                      <i class="bi bi-dash"></i>
+                    </button>
+
+
+                    <span class="quantity-value">
+                      {{ item.quantity }}
+                    </span>
+
+
+                    <button
+                      type="button"
+                      class="quantity-btn"
+                      aria-label="Increase quantity"
+                      (click)="increaseQuantity(item)"
+                      [disabled]="
+                        item.quantity >= getStock(item.product.id) ||
+                        isCreatingOrder ||
+                        isCompletingSale
+                      "
+                    >
+                      <i class="bi bi-plus"></i>
+                    </button>
+
+                  </div>
+
+
+
+                  <!-- SUBTOTAL -->
+
+                  <div class="cart-item-subtotal">
+
+                    {{ getItemSubtotal(item) | number:'1.2-2' }}
+
+                  </div>
+
+
+
+                  <!-- REMOVE -->
+
+                  <button
+                    type="button"
+                    class="remove-cart-item"
+                    aria-label="Remove product"
+                    (click)="removeFromCart(item.product.id)"
+                    [disabled]="
+                      isCreatingOrder ||
+                      isCompletingSale
+                    "
+                  >
+                    <i class="bi bi-trash3"></i>
+                  </button>
+
+                </div>
+
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+
+
+        <!-- ================================================= -->
+        <!-- CART SUMMARY                                      -->
+        <!-- ================================================= -->
+
+        @if (cartItems.length > 0) {
+
+          <div class="cart-summary">
+
+            <div class="summary-row">
+
+              <span>
+                Items
+              </span>
+
+              <strong>
+                {{ cartItemCount }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span>
+                Subtotal
+              </span>
+
+              <strong>
+                {{ cartSubtotal | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-row">
+
+              <span>
+                Discount
+              </span>
+
+              <strong>
+                {{ discount | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+            <div class="summary-divider"></div>
+
+
+            <div class="total-row">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                {{ cartTotal | number:'1.2-2' }}
+              </strong>
+
+            </div>
+
+
+
+            <!-- ERROR -->
+
+            @if (orderError || paymentError) {
+
+              <div class="payment-error">
+
+                <i class="bi bi-exclamation-circle"></i>
+
+                <span>
+                  {{ orderError || paymentError }}
+                </span>
+
+              </div>
+
+            }
+
+
+
+            <!-- ACTIONS -->
+
+            <div class="cart-actions">
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary clear-cart-btn"
+                (click)="clearCart()"
+                [disabled]="
+                  isCreatingOrder ||
+                  isCompletingSale
+                "
+              >
+
+                <i class="bi bi-trash3"></i>
+
+                Clear Cart
+
+              </button>
+
+
+              <button
+                type="button"
+                class="btn btn-primary complete-sale-btn"
+                (click)="proceedToPayment()"
+                [disabled]="
+                  cartItems.length === 0 ||
+                  isCreatingOrder ||
+                  isCompletingSale
+                "
+              >
+
+                @if (isCreatingOrder) {
+
+                  <span
+                    class="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+
+                  Creating Order...
+
+                }
+
+                @else {
+
+                  <i class="bi bi-credit-card me-1"></i>
+
+                  Proceed to Payment
+
+                }
+
+              </button>
+
+            </div>
+
+          </div>
+
+        }
+
+      </section>
+
+    </div>
+
+  </div>
+
+}
+@else {
+
+  <div class="pos-access-denied">
+
+    <div class="pos-access-denied-icon">
+      <i class="bi bi-shield-lock"></i>
+    </div>
+
+    <h2>Access Restricted</h2>
+
+    <p>
+      You do not have permission to access the POS.
+    </p>
+
+  </div>
+
+}

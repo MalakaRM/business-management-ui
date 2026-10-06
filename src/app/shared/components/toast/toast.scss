@@ -1,0 +1,136 @@
+.toast-container {
+  position: fixed;
+  top: calc(var(--sb-navbar-height) + 1rem);
+  right: 1.25rem;
+  z-index: 1080;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  width: min(380px, calc(100vw - 2rem));
+}
+
+.app-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  min-height: 56px;
+  padding: 0.85rem 1rem;
+
+  background: var(--sb-surface);
+  border: 1px solid var(--sb-border);
+  border-left: 4px solid transparent;
+  border-radius: var(--sb-radius-md);
+  box-shadow: var(--sb-shadow-md);
+
+  animation: toast-in 0.25s ease-out;
+}
+
+.toast-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+.toast-message {
+  flex: 1;
+
+  color: var(--sb-text);
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.toast-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  width: 28px;
+  height: 28px;
+
+  padding: 0;
+  border: 0;
+  border-radius: var(--sb-radius-sm);
+
+  background: transparent;
+  color: var(--sb-text-muted);
+
+  cursor: pointer;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.toast-close:hover {
+  background: var(--sb-surface-muted);
+  color: var(--sb-text);
+}
+
+/* Success */
+
+.toast-success {
+  border-left-color: var(--sb-success);
+
+  .toast-icon {
+    color: var(--sb-success);
+  }
+}
+
+/* Error */
+
+.toast-error {
+  border-left-color: var(--sb-danger);
+
+  .toast-icon {
+    color: var(--sb-danger);
+  }
+}
+
+/* Warning */
+
+.toast-warning {
+  border-left-color: var(--sb-warning);
+
+  .toast-icon {
+    color: var(--sb-warning);
+  }
+}
+
+/* Info */
+
+.toast-info {
+  border-left-color: var(--sb-info);
+
+  .toast-icon {
+    color: var(--sb-info);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 575.98px) {
+  .toast-container {
+    top: calc(var(--sb-navbar-height) + 0.75rem);
+    right: 0.75rem;
+    width: calc(100vw - 1.5rem);
+  }
+}

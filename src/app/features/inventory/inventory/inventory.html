@@ -1,0 +1,680 @@
+<div class="inventory-page">
+
+  <!-- Header -->
+  <div class="inventory-header">
+
+    <div>
+      <h1 class="inventory-title">
+        Inventory
+      </h1>
+
+      <p class="inventory-subtitle">
+        Monitor stock levels and manage inventory operations.
+      </p>
+    </div>
+
+  </div>
+
+
+  <!-- Summary -->
+  <div class="inventory-summary">
+
+    <div class="inventory-summary-item">
+
+      <div class="summary-icon summary-icon-stock">
+        <i class="bi bi-box-seam"></i>
+      </div>
+
+      <div>
+        <span class="summary-label">
+          Total Products
+        </span>
+
+        <strong class="summary-value">
+          {{ totalElements }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="inventory-summary-item">
+
+      <div class="summary-icon summary-icon-quantity">
+        <i class="bi bi-stack"></i>
+      </div>
+
+      <div>
+        <span class="summary-label">
+          Current Stock
+        </span>
+
+        <strong class="summary-value">
+          {{ totalStock }}
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="inventory-summary-item">
+
+      <div class="summary-icon summary-icon-warning">
+        <i class="bi bi-exclamation-triangle"></i>
+      </div>
+
+      <div>
+        <span class="summary-label">
+          Low Stock
+        </span>
+
+        <strong class="summary-value">
+          {{ lowStockCount }}
+        </strong>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- Error -->
+  @if (errorMessage) {
+
+    <div
+      class="inventory-alert"
+      role="alert"
+    >
+
+      <i class="bi bi-exclamation-circle"></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+    </div>
+
+  }
+
+
+  <!-- Main Card -->
+  <div class="inventory-card">
+
+    <div class="inventory-card-header">
+
+      <div>
+
+        <h2>
+          Stock Overview
+        </h2>
+
+        <p>
+          View current stock levels and inventory status.
+        </p>
+
+      </div>
+
+
+      <div class="inventory-search">
+
+        <i class="bi bi-search"></i>
+
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by product name..."
+          [(ngModel)]="searchTerm"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- Loading -->
+    @if (isLoading) {
+
+      <div class="inventory-state">
+
+        <div
+          class="spinner-border text-primary"
+          role="status"
+        >
+          <span class="visually-hidden">
+            Loading...
+          </span>
+        </div>
+
+        <p>
+          Loading inventory...
+        </p>
+
+      </div>
+
+    }
+
+
+    <!-- Empty -->
+    @else {
+
+      @if (filteredInventory.length === 0) {
+
+        <div class="inventory-state">
+
+          <i class="bi bi-box-seam"></i>
+
+          <h3>
+            No inventory found
+          </h3>
+
+          @if (searchTerm.trim()) {
+
+            <p>
+              Try adjusting your search criteria.
+            </p>
+
+          } @else {
+
+            <p>
+              There are no inventory records available yet.
+            </p>
+
+          }
+
+        </div>
+
+      }
+
+
+      <!-- Table -->
+      @else {
+
+        <div class="table-responsive">
+
+          <table class="table inventory-table mb-0">
+
+            <thead>
+
+            <tr>
+
+              <th>
+                Product
+              </th>
+
+              <th>
+                Current Stock
+              </th>
+
+              <th>
+                Reorder Level
+              </th>
+
+              <th>
+                Stock Status
+              </th>
+
+              <th>
+                Product Status
+              </th>
+
+              <th class="text-end">
+                Actions
+              </th>
+
+            </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (
+                item of filteredInventory;
+                track item.id
+                ) {
+
+                <tr>
+
+                  <!-- Product -->
+                  <td>
+
+                    <div class="inventory-product">
+
+                      <div class="product-icon">
+                        <i class="bi bi-box"></i>
+                      </div>
+
+                      <div>
+
+                        <div class="product-name">
+                          {{ item.productName }}
+                        </div>
+
+                        <div class="product-id">
+                          Product #{{ item.productId }}
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- Quantity -->
+                  <td>
+
+                    <div class="stock-quantity">
+
+                      <strong>
+                        {{ item.quantity }}
+                      </strong>
+
+                      <span>
+                        units
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+                  <!-- Reorder -->
+                  <td>
+
+                    <span class="reorder-level">
+                      {{ item.reorderLevel }}
+                    </span>
+
+                  </td>
+
+
+                  <!-- Stock Status -->
+                  <td>
+
+                    @if (item.lowStock) {
+
+                      <span
+                        class="status-badge status-low"
+                      >
+                        <i class="bi bi-exclamation-circle"></i>
+                        Low Stock
+                      </span>
+
+                    } @else {
+
+                      <span
+                        class="status-badge status-healthy"
+                      >
+                        <i class="bi bi-check-circle"></i>
+                        Healthy
+                      </span>
+
+                    }
+
+                  </td>
+
+
+                  <!-- Product Status -->
+                  <td>
+
+                    @if (item.active) {
+
+                      <span
+                        class="status-badge status-active"
+                      >
+                        Active
+                      </span>
+
+                    } @else {
+
+                      <span
+                        class="status-badge status-inactive"
+                      >
+                        Inactive
+                      </span>
+
+                    }
+
+                  </td>
+
+
+                  <!-- Actions -->
+                  <td class="text-end">
+
+                    <div class="inventory-actions">
+
+                      <!-- View -->
+                      @if (hasPermission('INVENTORY_READ')) {
+
+                        <a
+                          class="btn btn-sm action-btn"
+                          [routerLink]="[
+                            '/app/inventory',
+                            item.productId
+                          ]"
+                          title="View inventory"
+                          aria-label="View inventory"
+                        >
+                          <i class="bi bi-eye"></i>
+                        </a>
+
+                      }
+
+
+                      <!-- Adjust Stock -->
+                      @if (hasPermission('INVENTORY_UPDATE')) {
+
+                        <button
+                          type="button"
+                          class="btn btn-sm action-btn"
+                          title="Adjust stock"
+                          aria-label="Adjust stock"
+                          (click)="openAdjustment(item)"
+                        >
+                          <i class="bi bi-sliders"></i>
+                        </button>
+
+                      }
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      }
+
+    }
+
+
+    <!-- Pagination -->
+    @if (
+      !isLoading &&
+      inventory.length > 0 &&
+      totalPages > 1
+      ) {
+
+      <div class="inventory-pagination">
+
+        <button
+          type="button"
+          class="btn btn-sm pagination-btn"
+          [disabled]="currentPage === 0"
+          (click)="goToPage(currentPage - 1)"
+        >
+          <i class="bi bi-chevron-left"></i>
+          Previous
+        </button>
+
+
+        <div class="pagination-pages">
+
+          @for (
+            page of pageNumbers;
+            track page
+            ) {
+
+            <button
+              type="button"
+              class="btn btn-sm pagination-page"
+              [class.active]="page === currentPage"
+              [attr.aria-current]="
+                page === currentPage ? 'page' : null
+              "
+              (click)="goToPage(page)"
+            >
+              {{ page + 1 }}
+            </button>
+
+          }
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn btn-sm pagination-btn"
+          [disabled]="currentPage === totalPages - 1"
+          (click)="goToPage(currentPage + 1)"
+        >
+          Next
+          <i class="bi bi-chevron-right"></i>
+        </button>
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- Adjust Stock Modal -->
+  @if (
+    showAdjustmentModal &&
+    selectedInventory &&
+    hasPermission('INVENTORY_UPDATE')
+    ) {
+
+    <div
+      class="adjustment-modal-backdrop"
+      (click)="closeAdjustment()"
+    >
+
+      <div
+        class="adjustment-modal"
+        (click)="$event.stopPropagation()"
+      >
+
+        <!-- Modal Header -->
+        <div class="adjustment-modal-header">
+
+          <div>
+
+            <div class="adjustment-modal-icon">
+              <i class="bi bi-sliders"></i>
+            </div>
+
+            <div class="adjustment-modal-title-wrapper">
+
+              <h2>
+                Adjust Stock
+              </h2>
+
+              <p>
+                Update the physical stock quantity for this product.
+              </p>
+
+            </div>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="adjustment-close-button"
+            (click)="closeAdjustment()"
+            [disabled]="isAdjusting"
+            aria-label="Close"
+          >
+            <i class="bi bi-x-lg"></i>
+          </button>
+
+        </div>
+
+
+        <!-- Product Info -->
+        <div class="adjustment-product">
+
+          <div class="adjustment-product-icon">
+            <i class="bi bi-box-seam"></i>
+          </div>
+
+          <div>
+
+            <span class="adjustment-product-label">
+              Product
+            </span>
+
+            <strong>
+              {{ selectedInventory.productName }}
+            </strong>
+
+            <small>
+              Product #{{ selectedInventory.productId }}
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- Current Stock -->
+        <div class="adjustment-stock-info">
+
+          <div>
+
+            <span>
+              Current Stock
+            </span>
+
+            <strong>
+              {{ selectedInventory.quantity }}
+              <small>units</small>
+            </strong>
+
+          </div>
+
+
+          <i class="bi bi-arrow-right"></i>
+
+
+          <div>
+
+            <span>
+              New Quantity
+            </span>
+
+            <strong class="new-quantity">
+              {{ adjustmentQuantity }}
+              <small>units</small>
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <!-- Form -->
+        <div class="adjustment-form">
+
+          <div class="form-group">
+
+            <label
+              for="adjustmentQuantity"
+              class="form-label"
+            >
+              New Quantity
+              <span>*</span>
+            </label>
+
+            <input
+              id="adjustmentQuantity"
+              type="number"
+              class="form-control"
+              min="0"
+              [(ngModel)]="adjustmentQuantity"
+              [disabled]="isAdjusting"
+            >
+
+            <small class="form-help">
+              Enter the actual quantity currently available in stock.
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label
+              for="adjustmentReason"
+              class="form-label"
+            >
+              Reason
+              <span>*</span>
+            </label>
+
+            <textarea
+              id="adjustmentReason"
+              class="form-control"
+              rows="3"
+              maxlength="255"
+              placeholder="e.g. Physical stock count correction"
+              [(ngModel)]="adjustmentReason"
+              [disabled]="isAdjusting"
+            ></textarea>
+
+            <small class="form-help">
+              Explain why the stock quantity is being adjusted.
+            </small>
+
+          </div>
+
+        </div>
+
+
+        <!-- Modal Footer -->
+        <div class="adjustment-modal-footer">
+
+          <button
+            type="button"
+            class="btn btn-light adjustment-cancel-button"
+            (click)="closeAdjustment()"
+            [disabled]="isAdjusting"
+          >
+            Cancel
+          </button>
+
+
+          <button
+            type="button"
+            class="btn btn-primary adjustment-submit-button"
+            [disabled]="isAdjusting"
+            (click)="submitAdjustment()"
+          >
+
+            @if (isAdjusting) {
+
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+              ></span>
+
+              Adjusting...
+
+            } @else {
+
+              <i class="bi bi-check2"></i>
+              Adjust Stock
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

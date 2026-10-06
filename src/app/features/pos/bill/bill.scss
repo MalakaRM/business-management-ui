@@ -1,0 +1,545 @@
+.bill-page {
+  min-height: 100vh;
+
+  padding: 24px;
+
+  background: var(--sb-bg);
+}
+
+.bill-wrapper {
+  width: 100%;
+  max-width: 420px;
+
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.bill-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  margin-bottom: 16px;
+}
+
+.bill-action-group {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.bill-actions .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 38px;
+
+  padding: 0 14px;
+
+  border-radius: 7px;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   RECEIPT
+   ========================================================= */
+
+.bill {
+  width: 100%;
+  max-width: 380px;
+
+  margin: 0 auto;
+
+  padding: 24px 20px;
+
+  color: var(--sb-text);
+
+  background: var(--sb-surface);
+
+  border: 1px solid var(--sb-border);
+
+  border-radius: 8px;
+
+  box-shadow: var(--sb-shadow-sm);
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.bill-header {
+  text-align: center;
+}
+
+.bill-header h1 {
+  margin: 0 0 5px;
+
+  color: var(--sb-text);
+
+  font-size: 18px;
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+}
+
+.bill-header p {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 11px;
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.bill-divider {
+  height: 1px;
+
+  margin: 14px 0;
+
+  background: var(--sb-border);
+}
+
+
+/* =========================================================
+   INVOICE INFO
+   ========================================================= */
+
+.bill-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 6px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+
+  width: 100%;
+
+  text-align: center;
+}
+
+.info-row span {
+  color: var(--sb-text-secondary);
+
+  font-size: 11px;
+}
+
+.info-row strong {
+  color: var(--sb-text);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: center;
+
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+
+/* =========================================================
+   ITEMS
+   ========================================================= */
+
+.bill-items {
+  width: 100%;
+}
+
+.items-header,
+.item-row {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    38px
+    72px
+    78px;
+
+  align-items: center;
+
+  gap: 6px;
+}
+
+.items-header {
+  padding-bottom: 6px;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.03em;
+}
+
+.item-row {
+  padding: 7px 0;
+
+  border-top: 1px solid var(--sb-surface-muted);
+
+  font-size: 11px;
+}
+
+.product-col {
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.qty-col,
+.price-col,
+.amount-col {
+  text-align: right;
+}
+
+.amount-col {
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+.bill-summary {
+  display: flex;
+  flex-direction: column;
+
+  gap: 7px;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.summary-row span {
+  color: var(--sb-text-secondary);
+
+  font-size: 11px;
+}
+
+.summary-row strong {
+  color: var(--sb-text);
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: right;
+}
+
+.total-row {
+  padding: 4px 0;
+}
+
+.total-row span,
+.total-row strong {
+  color: var(--sb-text);
+
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.payment-row {
+  margin-top: 2px;
+}
+
+.payment-row strong {
+  color: var(--sb-primary);
+
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.bill-footer {
+  padding-top: 2px;
+
+  text-align: center;
+}
+
+.bill-footer p {
+  margin: 0;
+
+  color: var(--sb-text-muted);
+
+  font-size: 10px;
+
+  line-height: 1.5;
+}
+
+.bill-footer .thank-you {
+  margin-bottom: 3px;
+
+  color: var(--sb-text);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* =========================================================
+   LOADING / ERROR / ACCESS
+   ========================================================= */
+
+.bill-state {
+  min-height: 350px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+
+  color: var(--sb-text-secondary);
+
+  text-align: center;
+}
+
+.bill-state p {
+  margin: 0;
+
+  font-size: 13px;
+}
+
+.error-state i {
+  color: var(--sb-danger);
+
+  font-size: 28px;
+}
+
+.access-restricted-state {
+  padding: 24px;
+}
+
+.state-icon {
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: var(--sb-primary);
+
+  background: var(--sb-primary-soft);
+
+  border-radius: 50%;
+
+  font-size: 1.35rem;
+}
+
+.access-restricted-state h2 {
+  margin: 0.75rem 0 0;
+
+  color: var(--sb-text);
+
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.access-restricted-state p {
+  max-width: 320px;
+
+  color: var(--sb-text-secondary);
+
+  line-height: 1.5;
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+  .bill-page {
+    padding: 16px 10px;
+  }
+
+  .bill-wrapper {
+    max-width: 100%;
+  }
+
+  .bill {
+    max-width: 380px;
+
+    padding: 20px 16px;
+  }
+
+  .bill-actions {
+    margin-bottom: 12px;
+  }
+
+  .bill-action-group {
+    gap: 6px;
+  }
+
+  .bill-actions .btn {
+    min-height: 36px;
+
+    padding: 0 11px;
+
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   PRINT
+   ONLY .bill WILL BE PRINTED
+   ========================================================= */
+
+@media print {
+
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  html,
+  body {
+    width: 80mm;
+
+    margin: 0;
+    padding: 0;
+
+    background: #ffffff !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  .bill,
+  .bill * {
+    visibility: visible;
+  }
+
+  .bill {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 80mm;
+    max-width: 80mm;
+
+    margin: 0;
+
+    padding: 8mm 5mm;
+
+    border: 0;
+    border-radius: 0;
+
+    box-shadow: none;
+
+    background: #ffffff;
+
+    color: #0f172a;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .bill-page {
+    min-height: 0;
+
+    padding: 0;
+    margin: 0;
+
+    background: #ffffff;
+  }
+
+  .bill-wrapper {
+    max-width: none;
+
+    margin: 0;
+  }
+
+  .bill-divider {
+    margin: 10px 0;
+  }
+
+  .bill-header h1 {
+    font-size: 16px;
+  }
+
+  .bill-header p {
+    font-size: 9px;
+  }
+
+  .info-row span,
+  .info-row strong,
+  .summary-row span,
+  .summary-row strong {
+    font-size: 9px;
+  }
+
+  .items-header {
+    font-size: 8px;
+  }
+
+  .item-row {
+    font-size: 9px;
+
+    padding: 5px 0;
+  }
+
+  .total-row span,
+  .total-row strong {
+    font-size: 12px;
+  }
+
+  .bill-footer .thank-you {
+    font-size: 11px;
+  }
+
+  .bill-footer p {
+    font-size: 8px;
+  }
+}

@@ -1,0 +1,604 @@
+.audit-page {
+  width: 100%;
+}
+
+
+// ─────────────────────────────────────────────
+// Access Restricted
+// ─────────────────────────────────────────────
+
+.audit-access-card {
+  max-width: 520px;
+
+  margin: 70px auto;
+  padding: 40px 30px;
+
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius);
+
+  background: var(--sb-surface);
+
+  text-align: center;
+
+  box-shadow: var(--sb-shadow-sm);
+}
+
+.audit-access-icon {
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto 18px;
+
+  border-radius: 50%;
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+
+  font-size: 1.5rem;
+}
+
+.audit-access-card h2 {
+  margin: 0 0 0.5rem;
+
+  color: var(--sb-text);
+
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.audit-access-card p {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.875rem;
+}
+
+
+// ─────────────────────────────────────────────
+// Header
+// ─────────────────────────────────────────────
+
+.audit-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.audit-title {
+  margin: 0 0 0.35rem;
+
+  color: var(--sb-text);
+
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.audit-subtitle {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.9rem;
+}
+
+
+// ─────────────────────────────────────────────
+// Alert
+// ─────────────────────────────────────────────
+
+.audit-alert {
+  display: flex;
+  align-items: center;
+
+  gap: 0.65rem;
+
+  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+
+  border: 1px solid var(--sb-danger);
+  border-radius: var(--sb-radius-sm);
+
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+
+  font-size: 0.875rem;
+}
+
+
+// ─────────────────────────────────────────────
+// Main Card
+// ─────────────────────────────────────────────
+
+.audit-card {
+  overflow: hidden;
+
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius);
+
+  background: var(--sb-surface);
+
+  box-shadow: var(--sb-shadow-sm);
+}
+
+
+// ─────────────────────────────────────────────
+// Filters
+// ─────────────────────────────────────────────
+
+.audit-filters {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 1rem;
+
+  padding: 1.25rem;
+
+  border-bottom: 1px solid var(--sb-border);
+
+  background: var(--sb-surface);
+}
+
+.audit-filter-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.audit-filter-group .form-label {
+  display: block;
+
+  margin-bottom: 0.45rem;
+
+  color: var(--sb-text);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.audit-filter-group .form-control {
+  min-height: 40px;
+
+  border-color: var(--sb-border);
+  border-radius: var(--sb-radius-sm);
+
+  color: var(--sb-text);
+
+  font-size: 0.875rem;
+}
+
+.audit-filter-group .form-control::placeholder {
+  color: var(--sb-text-muted);
+}
+
+.audit-filter-group .form-control:focus {
+  border-color: var(--sb-primary);
+
+  box-shadow:
+    0 0 0 3px
+    var(--sb-primary-soft);
+}
+
+.audit-filter-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 0.5rem;
+}
+
+.audit-filter-actions .btn {
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+
+// ─────────────────────────────────────────────
+// Card Header
+// ─────────────────────────────────────────────
+
+.audit-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 1.25rem;
+
+  border-bottom: 1px solid var(--sb-border);
+}
+
+.audit-card-header h2 {
+  margin: 0 0 0.25rem;
+
+  color: var(--sb-text);
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.audit-card-header p {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.8rem;
+}
+
+
+// ─────────────────────────────────────────────
+// Table
+// ─────────────────────────────────────────────
+
+.audit-table {
+  width: 100%;
+  margin: 0;
+
+  vertical-align: middle;
+}
+
+.audit-table thead th {
+  padding: 0.8rem 1rem;
+
+  border-bottom: 1px solid var(--sb-border);
+
+  background: var(--sb-bg);
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.72rem;
+  font-weight: 700;
+
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  white-space: nowrap;
+}
+
+.audit-table tbody td {
+  padding: 0.9rem 1rem;
+
+  border-bottom: 1px solid var(--sb-border);
+
+  color: var(--sb-text);
+
+  font-size: 0.84rem;
+}
+
+.audit-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.audit-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.audit-table tbody tr:hover {
+  background: var(--sb-bg);
+}
+
+
+// ─────────────────────────────────────────────
+// Date & Time
+// ─────────────────────────────────────────────
+
+.audit-date {
+  color: var(--sb-text);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.audit-time {
+  margin-top: 0.15rem;
+
+  color: var(--sb-text-muted);
+
+  font-size: 0.75rem;
+
+  white-space: nowrap;
+}
+
+
+// ─────────────────────────────────────────────
+// User
+// ─────────────────────────────────────────────
+
+.audit-user {
+  display: flex;
+  align-items: center;
+
+  gap: 0.6rem;
+
+  white-space: nowrap;
+}
+
+.audit-user-icon {
+  width: 30px;
+  height: 30px;
+
+  flex: 0 0 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+
+  font-size: 0.8rem;
+}
+
+.audit-user span {
+  color: var(--sb-text);
+  font-weight: 600;
+}
+
+
+// ─────────────────────────────────────────────
+// Action
+// ─────────────────────────────────────────────
+
+.audit-action {
+  display: inline-flex;
+  align-items: center;
+
+  padding: 0.3rem 0.55rem;
+
+  border-radius: 999px;
+
+  background: var(--sb-muted);
+  color: var(--sb-text-secondary);
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  letter-spacing: 0.02em;
+
+  white-space: nowrap;
+}
+
+.action-create {
+  background: var(--sb-success-soft);
+  color: var(--sb-success);
+}
+
+.action-update {
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+.action-delete,
+.action-deactivate {
+  background: var(--sb-danger-soft);
+  color: var(--sb-danger);
+}
+
+.action-login,
+.action-logout,
+.action-activate {
+  background: var(--sb-info-soft);
+  color: var(--sb-info);
+}
+
+.action-password {
+  background: var(--sb-warning-soft);
+  color: var(--sb-warning);
+}
+
+
+// ─────────────────────────────────────────────
+// Entity
+// ─────────────────────────────────────────────
+
+.entity-name {
+  color: var(--sb-text);
+
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.entity-id {
+  color: var(--sb-text-secondary);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  white-space: nowrap;
+}
+
+.audit-description {
+  display: block;
+
+  min-width: 220px;
+  max-width: 360px;
+
+  color: var(--sb-text-secondary);
+
+  line-height: 1.45;
+}
+
+
+// ─────────────────────────────────────────────
+// States
+// ─────────────────────────────────────────────
+
+.audit-state {
+  display: flex;
+
+  min-height: 260px;
+
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2rem;
+
+  text-align: center;
+}
+
+.audit-state > i {
+  margin-bottom: 0.8rem;
+
+  color: var(--sb-primary);
+
+  font-size: 2rem;
+}
+
+.audit-state h3 {
+  margin: 0 0 0.4rem;
+
+  color: var(--sb-text);
+
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.audit-state p {
+  margin: 0;
+
+  color: var(--sb-text-secondary);
+
+  font-size: 0.85rem;
+}
+
+.audit-state .spinner-border {
+  width: 2rem;
+  height: 2rem;
+
+  margin-bottom: 0.9rem;
+}
+
+
+// ─────────────────────────────────────────────
+// Pagination
+// ─────────────────────────────────────────────
+
+.audit-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  border-top: 1px solid var(--sb-border);
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+
+  gap: 0.35rem;
+}
+
+.pagination-btn,
+.pagination-page {
+  min-width: 36px;
+  min-height: 36px;
+
+  border: 1px solid var(--sb-border);
+  border-radius: var(--sb-radius-sm);
+
+  background: var(--sb-surface);
+  color: var(--sb-text-secondary);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 0.35rem;
+
+  padding-inline: 0.7rem;
+}
+
+.pagination-btn:hover:not(:disabled),
+.pagination-page:hover:not(.active) {
+  border-color: var(--sb-primary);
+
+  background: var(--sb-primary-soft);
+  color: var(--sb-primary);
+}
+
+.pagination-page.active {
+  border-color: var(--sb-primary);
+
+  background: var(--sb-primary);
+
+  color: #fff;
+}
+
+.pagination-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+
+// ─────────────────────────────────────────────
+// Responsive
+// ─────────────────────────────────────────────
+
+@media (max-width: 767.98px) {
+
+  .audit-header {
+    margin-bottom: 1rem;
+  }
+
+  .audit-title {
+    font-size: 1.3rem;
+  }
+
+  .audit-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .audit-filter-actions {
+    width: 100%;
+  }
+
+  .audit-filter-actions .btn {
+    flex: 1;
+  }
+
+  .audit-card-header {
+    padding: 1rem;
+  }
+
+  .audit-table thead th,
+  .audit-table tbody td {
+    padding: 0.75rem;
+  }
+
+  .audit-pagination {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination-pages {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .pagination-btn {
+    justify-content: center;
+  }
+
+  .audit-access-card {
+    margin: 50px auto 20px;
+    padding: 30px 20px;
+  }
+}
