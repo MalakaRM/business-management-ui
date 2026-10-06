@@ -1,59 +1,246 @@
-# BusinessManagementUi
+# Business Management System — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+A modern, responsive business management web application built with **Angular** and **Bootstrap**. The application provides a permission-based user interface for managing business operations such as products, categories, suppliers, users, roles, permissions, and dashboard analytics.
 
-## Development server
+## 🚀 Tech Stack
 
-To start a local development server, run:
+* **Angular 21**
+* **TypeScript**
+* **Bootstrap 5**
+* **Bootstrap Icons**
+* **ng2-charts**
+* **RxJS**
+* **Angular Router**
+* **REST API Integration**
+* **JWT Authentication**
+* **Role & Permission-Based Authorization**
+
+## ✨ Features
+
+### Authentication & Security
+
+* JWT-based authentication
+* Login and logout
+* Authentication guard
+* Automatic JWT token injection using HTTP interceptor
+* Password change requirement handling
+* Permission-based route protection
+* Unauthorized users redirected to a 404 page
+
+### Dashboard
+
+* Responsive dashboard
+* Business statistics and summary cards
+* Chart-based data visualization
+* Permission-aware dashboard access
+
+### User Management
+
+* User listing
+* Create and update users
+* User activation/deactivation
+* Role assignment
+* Permission-aware actions
+
+### Role & Permission Management
+
+* Role management
+* Permission management
+* Dynamic permission-based UI
+* Permission-based route access
+* Permission-aware buttons and menu items
+
+### Product Management
+
+* Product listing
+* Product creation and editing
+* Product status management
+* Category integration
+* Permission-controlled actions
+
+### Category Management
+
+* Category listing
+* Create and update categories
+* Category status management
+* Permission-controlled actions
+
+### Supplier Management
+
+* Supplier listing
+* Create and update suppliers
+* Supplier status management
+* Permission-controlled actions
+
+## 🔐 Authorization Architecture
+
+The frontend uses a permission-based authorization approach.
+
+```text
+User
+  ↓
+Role
+  ↓
+Permissions
+  ↓
+Login Response
+  ↓
+Local Storage
+  ↓
+PermissionService
+  ↓
+Guards + Routes + UI Actions
+```
+
+This allows the interface to dynamically display or hide features according to the logged-in user's permissions.
+
+## 🧭 Application Structure
+
+```text
+src/
+├── app/
+│   ├── core/
+│   │   ├── guards/
+│   │   ├── interceptors/
+│   │   ├── services/
+│   │   └── models/
+│   │
+│   ├── features/
+│   │   ├── auth/
+│   │   ├── dashboard/
+│   │   ├── users/
+│   │   ├── roles/
+│   │   ├── permissions/
+│   │   ├── products/
+│   │   ├── categories/
+│   │   └── suppliers/
+│   │
+│   └── shared/
+│
+├── environments/
+│   ├── environment.ts
+│   └── environment.prod.ts
+│
+└── assets/
+```
+
+## 🔗 Backend API
+
+The Angular application communicates with a Spring Boot REST API.
+
+### Local Development
+
+```text
+http://localhost:8080/api
+```
+
+The API URL is configured through Angular environment files.
+
+```typescript
+export const environment = {
+  production: false,
+  apiUrl: 'http://localhost:8080/api',
+};
+```
+
+## 🐳 Docker
+
+The frontend can also be run using Docker and Nginx.
+
+### Build Docker Image
+
+```bash
+docker build -t business-management-ui .
+```
+
+### Run Container
+
+```bash
+docker run -p 4200:80 business-management-ui
+```
+
+Then open:
+
+```text
+http://localhost:4200
+```
+
+## 💻 Local Development
+
+### Prerequisites
+
+* Node.js 20+
+* npm
+* Angular CLI
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Run Development Server
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Application:
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```text
+http://localhost:4200
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Production Build
 
 ```bash
-ng generate --help
+npm run build
 ```
 
-## Building
+## 📱 Responsive Design
 
-To build the project run:
+The application is designed to work across:
+
+* Desktop
+* Laptop
+* Tablet
+* Mobile
+
+Bootstrap's responsive layout system is used throughout the application.
+
+## 🔒 Security Considerations
+
+* JWT tokens are used for authenticated API requests.
+* Protected routes use Angular route guards.
+* HTTP requests automatically include the JWT authorization header.
+* UI actions are controlled using backend-provided permissions.
+* Sensitive environment values are not committed to Git.
+
+> Frontend authorization improves the user experience, but actual authorization is enforced by the backend API.
+
+## 🧪 Testing
+
+The project can be tested locally using the Angular development server and the connected Spring Boot backend.
 
 ```bash
-ng build
+npm test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 📦 Related Backend
 
-## Running unit tests
+Backend repository:
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+`https://github.com/MalakaRM/business-management-api`
 
-```bash
-ng test
-```
+## 👨‍💻 Project Purpose
 
-## Running end-to-end tests
+This project was developed as a portfolio-level full-stack business management system to demonstrate practical experience with:
 
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+* Angular application architecture
+* REST API integration
+* JWT authentication
+* Role-based and permission-based authorization
+* Responsive UI development
+* Docker containerization
+* Git and GitHub workflow
+* Full-stack application development
